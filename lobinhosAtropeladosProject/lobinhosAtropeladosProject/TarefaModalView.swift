@@ -1,11 +1,42 @@
 import SwiftUI
 
 struct TarefaModalView: View {
-    // Adicione esta propriedade para poder fechar a sheet
-    @Environment(\.dismiss) var dismiss
+    
+    let listaTarefas = TarefasList
 
+    @State var paginaAdicao: Bool
+    //quando paginaAdicao=false , sera edicao, e tera que passar o id da tarefa
+    @State var id: UUID?
+    
+    //para botao cancelar poder fechar
+    @Environment(\.dismiss) var dismiss
+    
+    
+    @State private var titulo: String = ""
+    @State private var descricao: String = ""
+    @State private var dificuldade: String = ""
+    @State private var esforco: String = ""
+    @State private var importancia: String = ""
+    @State private var duracao: Int = 30
+    
     var body: some View {
         VStack {
+            
+            TextField(
+                "",
+                text: $titulo,
+                prompt: Text("Nome da Tarefa")
+                    .foregroundStyle((Color(UIColor.systemGray3)))
+                    .font(.custom("Helvetica Neue", size: 14))
+            )
+            .font(.subheadline)
+            .foregroundStyle(.primary)
+            .padding()
+            .background {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.white)
+            }
+            
             Text("Esta é a sua Nova Sheet!")
                 .font(.largeTitle)
                 .padding()
@@ -14,16 +45,24 @@ struct TarefaModalView: View {
                 .font(.title2)
                 .padding(.bottom, 20)
 
-            Button("Fechar Sheet") {
-                dismiss() // Fecha a sheet
+            HStack {
+                Button("Cancelar") {
+                    dismiss() // Fecha a sheet
+                }
+                .buttonStyle(.borderedProminent)
+                
+                Spacer()
+                Button("Salvar") {
+                    adiciona_tarefa(Nome: titulo, Descricao: descricao, Duracao_minutos: duracao, Dificuldade: dificuldade, Esforco: esforco, Importancia : importancia)
+                }
+                .buttonStyle(.borderedProminent)
             }
-            .buttonStyle(.borderedProminent)
+
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity) // Faz a VStack preencher a tela
-        .background(Color.yellow.opacity(0.3).ignoresSafeArea()) // Um fundo para destacar
     }
 }
 
 #Preview {
-    TarefaModalView()
+    TarefaModalView(paginaAdicao: true)
 }

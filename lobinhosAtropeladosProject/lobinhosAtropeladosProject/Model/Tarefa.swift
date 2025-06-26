@@ -14,5 +14,6 @@ struct Tarefa: Identifiable {
     var duracao_minutos: Int   // para usar em hora divida por 60
     var dificuldade: String     //texto botao
     var esforco: String        // texto botao
+    var importancia: String        // texto botao
     var prioridade : Int?      // o que a IA vai alterar -> null (nil no swift) ou int
 }
