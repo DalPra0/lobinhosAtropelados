@@ -57,6 +57,7 @@ Carthage/Build/
 # https://docs.fastlane.tools/best-practices/source-control/#source-control
 
 API_KEY.plist
+.DS_Store
 
 fastlane/report.xml
 fastlane/Preview.html
