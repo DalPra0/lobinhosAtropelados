@@ -5,6 +5,7 @@
 //  Created by Lucas Dal Pra Brascher on 25/06/25.
 //
 
+
 import SwiftUI
 
 struct ContentView: View {
@@ -17,20 +18,23 @@ struct ContentView: View {
             //TelaIncialView()
             Text("Tela inicial View")
                 .tabItem {
-                    Image(systemName: "house")
+                    Image(systemName: "book.pages")
+                    Text("Tarefas")
                 }.tag(0)
             Text("Hello, World!")
                 .tabItem {
                     Image(systemName: "plus.circle")
+                    Text("Adicionar")
                 }.tag(1)
             PerfilView()
                 .tabItem {
-                    Image(systemName: "person.circle")
+                    Image(systemName: "person.fill")
+                    Text("Meu Perfil")
                 }.tag(2)
         }.accentColor(.blue)
             .sheet(isPresented: $showModal) {
                 // Conteúdo da sheet
-                TarefaModalView()
+                TarefaModalView(paginaAdicao : true)
                     .presentationDetents([.large]) //sheet ocupe a tela inteira
             }
             .onChange(of: selectedTab) {

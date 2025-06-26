@@ -8,13 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		158B52EC2E0C795600755C9F /* API_KEY.plist in Resources */ = {isa = PBXBuildFile; fileRef = 158B52EB2E0C795600755C9F /* API_KEY.plist */; };
-		46B42BD52E0DB26D0052BE6B /* API_KEY.plist in Resources */ = {isa = PBXBuildFile; fileRef = 46B42BD42E0DB2670052BE6B /* API_KEY.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		158B52DB2E0C77A800755C9F /* lobinhosAtropeladosProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lobinhosAtropeladosProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		158B52EB2E0C795600755C9F /* API_KEY.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = API_KEY.plist; sourceTree = "<group>"; };
-		46B42BD42E0DB2670052BE6B /* API_KEY.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = API_KEY.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -40,7 +38,6 @@
 			isa = PBXGroup;
 			children = (
 				158B52EB2E0C795600755C9F /* API_KEY.plist */,
-				46B42BD42E0DB2670052BE6B /* API_KEY.plist */,
 				158B52DD2E0C77A800755C9F /* lobinhosAtropeladosProject */,
 				158B52DC2E0C77A800755C9F /* Products */,
 			);
@@ -118,7 +115,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				46B42BD52E0DB26D0052BE6B /* API_KEY.plist in Resources */,
 				158B52EC2E0C795600755C9F /* API_KEY.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
