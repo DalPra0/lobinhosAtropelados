@@ -32,7 +32,7 @@ struct ContentView: View {
                 }.tag(2)
         }.accentColor(.blue)
             .sheet(isPresented: $showModal) {
-                TarefaModalView(paginaAdicao : true, id: UUID())
+                TarefaAddModalView()
                     .presentationDetents([.large])
             }
             .onChange(of: selectedTab) {
