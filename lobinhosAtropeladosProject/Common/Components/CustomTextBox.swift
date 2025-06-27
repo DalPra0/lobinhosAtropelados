@@ -8,17 +8,23 @@
 import SwiftUI
 
 struct CustomTextBox: View {
+    var placeholder: String
     @Binding var text: String
-    var isEditable: Bool = true
+    var isSecure: Bool = false
 
     var body: some View {
-        TextEditor(text: $text)
-            .frame(height: 100)
-            .padding(8)
-            .disabled(!isEditable)
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(isEditable ? Color.gray.opacity(0.3) : Color.clear)
-            )
+        Group {
+            if isSecure {
+                SecureField(placeholder, text: $text)
+                    .padding()
+            } else {
+                TextField(placeholder, text: $text)
+                    .padding()
+            }
+        }
+        .background(Color.white)
+        .cornerRadius(12)
+        .font(.body)
+        .foregroundColor(.black)
     }
 }

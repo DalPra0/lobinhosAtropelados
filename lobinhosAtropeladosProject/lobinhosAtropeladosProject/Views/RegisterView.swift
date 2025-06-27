@@ -19,24 +19,26 @@ struct RegisterView: View {
         ZStack {
             Color(red: 0.9, green: 0.95, blue: 1.0).ignoresSafeArea()
 
-            VStack(spacing: 24) {
+            VStack {
                 Spacer()
 
                 Image(systemName: "timer")
                     .resizable()
-                    .frame(width: 80, height: 80)
+                    .frame(width: 60, height: 60)
                     .foregroundColor(.black)
+                    .padding(.bottom, 8)
 
                 Text("Cadastrar")
                     .font(.title2).bold()
 
-                Text("Crie sua conta")
+                Text("Crie sua conta para começar!")
                     .foregroundColor(.black.opacity(0.7))
+                    .padding(.bottom, 8)
 
                 VStack(spacing: 12) {
-                    CustomTextBox(text: $name)
-                    CustomTextBox(text: $email)
-                    CustomTextBox(text: $password)
+                    CustomTextBox(placeholder: "Nome", text: $name)
+                    CustomTextBox(placeholder: "E-mail", text: $email)
+                    CustomTextBox(placeholder: "Senha", text: $password)
                 }
 
                 .padding(.horizontal, 32)

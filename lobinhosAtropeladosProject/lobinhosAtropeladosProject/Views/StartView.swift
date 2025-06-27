@@ -17,13 +17,14 @@ struct StartView: View {
         ZStack {
             Color(red: 0.9, green: 0.95, blue: 1.0).ignoresSafeArea()
 
-            VStack(spacing: 24) {
+            VStack(spacing: 8) {
                 Spacer()
 
                 Image(systemName: "timer")
                     .resizable()
                     .frame(width: 80, height: 80)
                     .foregroundColor(.black)
+                    .padding(.bottom, 16)
 
                 Text("Seja bem-vindo!")
                     .font(.title2).bold()

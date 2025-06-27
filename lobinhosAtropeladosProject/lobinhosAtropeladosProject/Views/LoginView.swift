@@ -11,6 +11,7 @@ struct LoginView: View {
     var onLogin: () -> Void
     @Environment(\.dismiss) var dismiss
 
+    @State private var name = ""
     @State private var email = ""
     @State private var password = ""
 
@@ -18,23 +19,25 @@ struct LoginView: View {
         ZStack {
             Color(red: 0.9, green: 0.95, blue: 1.0).ignoresSafeArea()
 
-            VStack(spacing: 24) {
+            VStack {
                 Spacer()
 
                 Image(systemName: "timer")
                     .resizable()
-                    .frame(width: 80, height: 80)
+                    .frame(width: 60, height: 60)
                     .foregroundColor(.black)
+                    .padding(.bottom, 8)
 
                 Text("Entrar")
                     .font(.title2).bold()
 
-                Text("Acesse sua conta")
+                Text("Entre na sua conta para continuar!")
                     .foregroundColor(.black.opacity(0.7))
+                    .padding(.bottom, 8)
 
                 VStack(spacing: 12) {
-                    CustomTextBox(text: $email)
-                    CustomTextBox(text: $password)
+                    CustomTextBox(placeholder: "E-mail", text: $email)
+                    CustomTextBox(placeholder: "Senha", text: $password)
                 }
 
                 .padding(.horizontal, 32)
@@ -43,7 +46,7 @@ struct LoginView: View {
 
                 HStack(spacing: 16) {
                     CustomButton(title: "Cadastrar", style: .azulClaro) {
-                        dismiss() // volta para tela inicial
+                        dismiss()
                     }
 
                     CustomButton(title: "Fazer login", style: .azulEscuro) {
