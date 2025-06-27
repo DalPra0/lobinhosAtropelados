@@ -21,6 +21,11 @@
 			path = lobinhosAtropeladosProject;
 			sourceTree = "<group>";
 		};
+		9BFAF6242E0EE1D6005B92A7 /* Common */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Common;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +43,7 @@
 			isa = PBXGroup;
 			children = (
 				158B52EB2E0C795600755C9F /* API_KEY.plist */,
+				9BFAF6242E0EE1D6005B92A7 /* Common */,
 				158B52DD2E0C77A800755C9F /* lobinhosAtropeladosProject */,
 				158B52DC2E0C77A800755C9F /* Products */,
 			);
@@ -68,6 +74,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				158B52DD2E0C77A800755C9F /* lobinhosAtropeladosProject */,
+				9BFAF6242E0EE1D6005B92A7 /* Common */,
 			);
 			name = lobinhosAtropeladosProject;
 			packageProductDependencies = (
