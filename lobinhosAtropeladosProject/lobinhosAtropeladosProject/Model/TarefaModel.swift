@@ -17,8 +17,8 @@ class TarefaModel: ObservableObject {
     static let shared = TarefaModel()  // Instância única global
     
     @Published var tarefas: [Tarefa] = [
-        Tarefa(nome: "Task 1", descricao: nil, duracao_minutos: 90, dificuldade: "Alto", esforco: "Média", importancia: "Média", prioridade: nil),
-        Tarefa(nome: "Task 2", descricao: "descricao task 2", duracao_minutos: 60, dificuldade: "Alto", esforco: "Fácil", importancia: "Média", prioridade: nil)
+        /*Tarefa(nome: "Task 1", descricao: nil, duracao_minutos: 90, dificuldade: "Alto", esforco: "Média", importancia: "Média", prioridade: nil),
+        Tarefa(nome: "Task 2", descricao: "descricao task 2", duracao_minutos: 60, dificuldade: "Alto", esforco: "Fácil", importancia: "Média", prioridade: nil)*/
     ]
     
     private init() { }

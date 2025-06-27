@@ -314,7 +314,7 @@ struct TarefaAddModalView: View {
                 }
                 Spacer()
                 Button(){
-                    if titulo.isEmpty || duracao == 0 || dificuldade.isEmpty || esforco.isEmpty || importancia.isEmpty {
+                    if titulo.isEmpty || dificuldade.isEmpty || esforco.isEmpty || importancia.isEmpty {
                         showAlertMessage = true
                     }
                     else{
