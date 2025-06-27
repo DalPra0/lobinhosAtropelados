@@ -15,5 +15,6 @@ struct Tarefa: Identifiable {
     var dificuldade: String     //texto botao
     var esforco: String        // texto botao
     var importancia: String        // texto botao
+    var concluida: Bool = false   // para selecionado da tarefa funcionar
     var prioridade : Int?      // o que a IA vai alterar -> null (nil no swift) ou int
 }
