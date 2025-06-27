@@ -12,7 +12,7 @@ struct MainAppView: View {
 
     var body: some View {
         if isLoggedIn {
-            ContentView() // já contém o TabView com TelaInicialView
+            ContentView()
         } else {
             StartView(onLogin: {
                 isLoggedIn = true

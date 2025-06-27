@@ -6,7 +6,6 @@ struct TarefaAddModalView: View {
     @ObservedObject var tarefaModel = TarefaModel.shared
 
     
-    //para botao cancelar poder fechar
     @Environment(\.dismiss) var dismiss
     
     

@@ -21,13 +21,11 @@ struct PerfilView: View {
                 VStack(spacing: 24) {
                     Spacer().frame(height: 32)
 
-                    // Ícone do perfil
                     Image(systemName: "person.crop.circle.fill")
                         .resizable()
                         .frame(width: 120, height: 120)
                         .foregroundColor(.blue)
 
-                    // Nome + botão editar
                     VStack(spacing: 4) {
                         if isEditing {
                             VStack(spacing: 2) {
@@ -46,7 +44,6 @@ struct PerfilView: View {
                                 .multilineTextAlignment(.center)
                         }
 
-                        // Botão Editar perfil (invisivel mas ocupa espaço)
                         Button(action: {
                             withAnimation {
                                 isEditing = true
@@ -63,7 +60,6 @@ struct PerfilView: View {
                         .opacity(isEditing ? 0 : 1)
                     }
 
-                    // BIO
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Sobre mim:")
                             .font(.title3.bold())
@@ -84,7 +80,6 @@ struct PerfilView: View {
                     
                     Spacer()
 
-                    // Botões cancelar e salvar
                     if isEditing {
                         HStack(spacing: 16) {
                             Button(action: {
@@ -104,7 +99,6 @@ struct PerfilView: View {
                                 withAnimation {
                                     isEditing = false
                                 }
-                                // salvar alterações aqui
                             }) {
                                 Text("Salvar")
                                     .frame(maxWidth: .infinity)

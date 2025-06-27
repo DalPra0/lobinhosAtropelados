@@ -1,145 +1,152 @@
-//
-//  TelaInicialView.swift
-//  lobinhosAtropeladosProject
-//
-//  Created by Ana Agner on 26/06/25.
-//
-
 import SwiftUI
 
-struct BotaoSelecaoView: View {
-
-    @Binding var selecionado: Bool
-    
-    var body: some View {
-        Image(systemName: selecionado ? "largecircle.fill.circle" : "circle")
-            .resizable()
-            .frame(width: 24, height: 24)
-            .foregroundColor(selecionado ? .blue : .gray)
-            .font(.system(size: 20, weight: .bold, design: .default))
-            .onTapGesture {
-                self.selecionado.toggle()
-            }
-    }
-}
-
 struct TelaInicialView: View {
-    //ADICIONEI - BIA
-    //para lista de tarefas
     @ObservedObject var tarefaModel = TarefaModel.shared
-    //para abrir modal de edicao
-    @State private var showModal = false
-    //pra passar id de tarefa
-    @State private var tarefa_id : UUID = UUID()
     
-    @State private var filtro: String = "Baixa"
+    @State private var filtro: String = "Todos"
 
+    private var tarefasFiltradas: [Tarefa] {
+        if filtro == "Todos" {
+            return tarefaModel.tarefas.filter { !$0.concluida }
+        }
+        
+        let prioridadeFiltro: Int
+        switch filtro {
+            case "Alta": prioridadeFiltro = 1
+            case "Média": prioridadeFiltro = 2
+            case "Baixa": prioridadeFiltro = 3
+            default: return [] // Caso inesperado
+        }
+        
+        return tarefaModel.tarefas.filter { !$0.concluida && $0.prioridade == prioridadeFiltro }
+    }
+    
+    private var tarefasConcluidas: [Tarefa] {
+        tarefaModel.tarefas.filter { $0.concluida }
+    }
     
     var body: some View {
-        VStack(spacing: 24){ //coloquei duas vstack pq a lista já vem com padding horizontal e queria colocar padding apenas no título e botões
-            VStack(alignment: .leading, spacing: 24) {
-                HStack{
-                    Text("Visualize suas atividades por prioridade")
-                        .font(.title)
-                        .bold()
-                    Spacer()
-                }
-                HStack(spacing:17){
-                    Button{
-                        filtro="Baixa"
-                    }
-                    label:{
-                        Text("Baixa")
-                            .foregroundColor(filtro == "Baixa" ? .white : .blue)
-                            .font(.subheadline)
-                            .padding(.horizontal, 33)
-                            .padding(.vertical, 7)
-                            .background(
-                                RoundedRectangle(cornerRadius: 40)
-                                    .fill(filtro == "Baixa" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
+        ZStack {
+            VStack(spacing: 24) {
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack {
+                        Text("Visualize suas atividades")
+                            .font(.title)
+                            .bold()
+                        Spacer()
                     }
                     
-                    Button{
-                        filtro="Média"
-                    }
-                    label:{
-                        Text("Média")
-                            .foregroundColor(filtro == "Média" ? .white : .blue)
-                            .font(.subheadline)
-                            .padding(.horizontal, 31)
-                            .padding(.vertical, 7)
-                            .background(
-                                RoundedRectangle(cornerRadius: 40)
-                                    .fill(filtro == "Média" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
-                    }
-                    
-                    Button{
-                        filtro="Alta"
-                    }
-                    label:{
-                        Text("Alta")
-                            .foregroundColor(filtro == "Alta" ? .white : .blue)
-                            .font(.subheadline)
-                            .padding(.horizontal, 38)
-                            .padding(.vertical, 7)
-                            .background(
-                                RoundedRectangle(cornerRadius: 40)
-                                    .fill(filtro == "Alta" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
-                    }
-                }
-
-                .frame(maxWidth: .infinity)
-
-            }
-            .padding(.horizontal, 24)
-            .padding(.top, 24)
-            
-                List{
-                    //o foreach pra pegar todas as tarefas da lista
-                    ForEach($tarefaModel.tarefas) { tarefa in
-                        HStack{
-                            BotaoSelecaoView(selecionado: tarefa.concluida)
-                            //EDITADO - BIA = muda quando removo ou adiciono uma tarefa, use o wrapped value para ser dinamico
-                            Text(tarefa.nome.wrappedValue)
-                                .strikethrough(tarefa.concluida.wrappedValue)
-                                .foregroundColor(tarefa.concluida.wrappedValue ? .gray : .primary)
-                        }.swipeActions {
-                            Button(){
-                                //ADICIONEI - BIA = FUNC DE TAREFA_MODEL
-                                tarefaModel.deletar_tarefa(id: tarefa.id)
-                            } label: {
-                                Label("Excluir", systemImage: "trash")
-                            }
-                            .tint(.red)
-                            
-                            /*Button(){
-                                //ADICIONEI - BIA = abrir modal com edicao
-                                tarefa_id = tarefa.id
-                                showModal = true
-                                
-                            } label: {
-                                Label("Editar", systemImage: "pencil")
-                            }
-                            .tint(.blue)*/
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            BotaoFiltro(titulo: "Todos", filtroSelecionado: $filtro)
+                            BotaoFiltro(titulo: "Alta", filtroSelecionado: $filtro)
+                            BotaoFiltro(titulo: "Média", filtroSelecionado: $filtro)
+                            BotaoFiltro(titulo: "Baixa", filtroSelecionado: $filtro)
                         }
                     }
-
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 24)
+                
+                List {
+                    Section(header: Text(filtro == "Todos" ? "Todas as Prioridades" : "Prioridade \(filtro)")) {
+                        if tarefasFiltradas.isEmpty && !tarefaModel.estaPriorizando {
+                             Text("Nenhuma tarefa com esta prioridade.")
+                                .foregroundColor(.secondary)
+                        } else {
+                            ForEach(tarefasFiltradas) { tarefa in
+                                celulaDaTarefa(tarefa: tarefa)
+                            }
+                        }
+                    }
                     
+                    if !tarefasConcluidas.isEmpty {
+                        Section(header: Text("Concluídas")) {
+                            ForEach(tarefasConcluidas) { tarefa in
+                                celulaDaTarefa(tarefa: tarefa)
+                            }
+                        }
+                    }
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
-                .background(.white)
             }
-        
-        //ADICIONEI - BIA = para mostrar modal
-        /*.sheet(isPresented: $showModal) {
-            TarefaModalView(paginaAdicao : false, id: tarefa_id)
-                .presentationDetents([.large])
-        }*/
+            
+            if tarefaModel.estaPriorizando {
+                VStack {
+                    ProgressView()
+                        .scaleEffect(1.5)
+                    Text("Priorizando tarefas...")
+                        .padding(.top, 8)
+                }
+                .padding(20)
+                .background(.thinMaterial)
+                .cornerRadius(10)
+            }
         }
     }
+    
+    @ViewBuilder
+    private func celulaDaTarefa(tarefa: Tarefa) -> some View {
+        HStack(spacing: 15) {
+            Button(action: { tarefaModel.marcarTarefa(tarefa: tarefa) }) {
+                Image(systemName: tarefa.concluida ? "checkmark.circle.fill" : "circle")
+                    .font(.title2).foregroundColor(tarefa.concluida ? .green : .secondary)
+            }.buttonStyle(.plain)
+            VStack(alignment: .leading, spacing: 5) {
+                Text(tarefa.nome).font(.headline).strikethrough(tarefa.concluida, color: .primary)
+                if let descricao = tarefa.descricao, !descricao.isEmpty {
+                    Text(descricao).font(.subheadline).lineLimit(2).foregroundColor(.secondary)
+                }
+                HStack {
+                    HStack(spacing: 4) { Image(systemName: "hourglass"); Text("\(tarefa.duracao_minutos) min") }
+                    Spacer()
+                    HStack(spacing: 4) { Image(systemName: "bolt.fill"); Text(tarefa.importancia) }
+                }.font(.caption).foregroundColor(.secondary).padding(.top, 4)
+            }
+            Spacer()
+            if !tarefa.concluida {
+                Text("\(tarefa.prioridade ?? 0)").font(.caption).fontWeight(.bold).padding(8).background(corDaPrioridade(tarefa.prioridade)).foregroundColor(.white).clipShape(Circle())
+            }
+        }.padding(.vertical, 5).opacity(tarefa.concluida ? 0.6 : 1.0)
+    }
+    
+    private func corDaPrioridade(_ prioridade: Int?) -> Color {
+        switch prioridade {
+        case 1: return .red
+        case 2: return .orange
+        case 3: return .blue
+        default: return .gray
+        }
+    }
+}
 
-
+struct BotaoFiltro: View {
+    let titulo: String
+    @Binding var filtroSelecionado: String
+    
+    var isSelected: Bool {
+        titulo == filtroSelecionado
+    }
+    
+    var body: some View {
+        Button(action: {
+            filtroSelecionado = titulo
+        }) {
+            Text(titulo)
+                .fontWeight(isSelected ? .bold : .regular)
+                .foregroundColor(isSelected ? .white : .blue)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 8)
+                .background(
+                    Capsule().fill(isSelected ? Color.blue : Color.clear)
+                )
+                .overlay(
+                    Capsule().stroke(Color.blue.opacity(0.5))
+                )
+        }
+    }
+}
 
 #Preview {
     TelaInicialView()

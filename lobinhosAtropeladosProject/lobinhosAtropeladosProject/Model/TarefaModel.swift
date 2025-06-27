@@ -1,31 +1,38 @@
 //
 //  TarefaModel.swift
-//  
+//
 //
 //  Created by Beatriz Perotto Muniz on 25/06/25.
 //
+//  Atualizado para incluir persistência de dados e a lógica de priorização com IA.
+//
 
-// IMPORTANTE = ESSE ARQV SERÁ SUBSTITUIDO
-// APENAS PARA TESTE
-
-// singleton
 import Foundation
-import Combine
+import SwiftUI
 
-
+@MainActor
 class TarefaModel: ObservableObject {
-    static let shared = TarefaModel()  // Instância única global
+    static let shared = TarefaModel()
     
-    @Published var tarefas: [Tarefa] = [
-        /*Tarefa(nome: "Task 1", descricao: nil, duracao_minutos: 90, dificuldade: "Alto", esforco: "Média", importancia: "Média", prioridade: nil),
-        Tarefa(nome: "Task 2", descricao: "descricao task 2", duracao_minutos: 60, dificuldade: "Alto", esforco: "Fácil", importancia: "Média", prioridade: nil)*/
-    ]
+    private let saveKey = "TarefasLoboApp"
+    private let geminiService = GeminiService()
+    @Published var estaPriorizando = false
     
-    private init() { }
+    @Published var tarefas: [Tarefa] = [] {
+        didSet {
+            salvarTarefas()
+        }
+    }
+    
+    private init() {
+        carregarTarefas()
+    }
+    
     
     func adiciona_tarefa(Nome: String, Descricao: String?, Duracao_minutos: Int, Dificuldade: String, Esforco: String, Importancia: String) {
-        let novaTarefa = Tarefa(nome: Nome, descricao: Descricao, duracao_minutos: Duracao_minutos, dificuldade: Dificuldade, esforco: Esforco, importancia: Importancia, prioridade: nil)
+        let novaTarefa = Tarefa(nome: Nome, descricao: Descricao, duracao_minutos: Duracao_minutos, dificuldade: Dificuldade, esforco: Esforco, importancia: Importancia)
         tarefas.append(novaTarefa)
+        repriorizarLista()
     }
     
     func deletar_tarefa(id: UUID) {
@@ -47,5 +54,42 @@ class TarefaModel: ObservableObject {
     
     func detalhe(id: UUID) -> Tarefa? {
         return tarefas.first(where: { $0.id == id })
+    }
+    
+    private func salvarTarefas() {
+        if let encodedData = try? JSONEncoder().encode(tarefas) {
+            UserDefaults.standard.set(encodedData, forKey: saveKey)
+        }
+    }
+    
+    private func carregarTarefas() {
+        guard let savedData = UserDefaults.standard.data(forKey: saveKey),
+              let decodedTasks = try? JSONDecoder().decode([Tarefa].self, from: savedData) else {
+            self.tarefas = []
+            return
+        }
+        self.tarefas = decodedTasks.sorted()
+    }
+
+    func repriorizarLista() {
+        Task {
+            self.estaPriorizando = true
+            
+            do {
+                let tarefasPriorizadas = try await geminiService.priorizarTarefas(self.tarefas)
+                self.tarefas = tarefasPriorizadas.sorted()
+            } catch {
+                print("Erro ao priorizar tarefas: \(error)")
+            }
+            
+            self.estaPriorizando = false
+        }
+    }
+    func marcarTarefa(tarefa: Tarefa) {
+        if let index = tarefas.firstIndex(where: { $0.id == tarefa.id }) {
+            tarefas[index].concluida.toggle()
+
+            tarefas.sort()
+        }
     }
 }
