@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct PerfilView: View {
-    @State private var isEditing = false
 
+    @State private var isEditing = false
     @State private var nome: String = "Mari Oliveira"
     @State private var bio: String = "Estudante de Psicologia do 5º período na UFPR em tempo integral e faço estágio de 20h semanais."
 

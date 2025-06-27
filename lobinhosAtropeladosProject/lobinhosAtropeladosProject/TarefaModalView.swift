@@ -1,12 +1,14 @@
 import SwiftUI
 
+// problema, sempre na primeira vez que abre edicao cai na generica
+
 struct TarefaModalView: View {
     
-    let listaTarefas = TarefasList
+    @ObservedObject var tarefaModel = TarefaModel.shared
 
     @State var paginaAdicao: Bool
     //quando paginaAdicao=false , sera edicao, e tera que passar o id da tarefa
-    @State var id: UUID?
+    @State var id: UUID
     
     //para botao cancelar poder fechar
     @Environment(\.dismiss) var dismiss
@@ -17,20 +19,36 @@ struct TarefaModalView: View {
     @State private var dificuldade: String = ""
     @State private var esforco: String = ""
     @State private var importancia: String = ""
-    @State private var duracao: Int = 30
+    @State private var duracao: Int = 0
     
     var body: some View {
+
+        var tarefa: Tarefa {
+            let tarefa = tarefaModel.detalhe(id: id)
+            if tarefa != nil{
+                return tarefa!
+            }
+            print(id)
+            print(tarefaModel.tarefas)
+            return Tarefa(nome: "generica", descricao: "generica", duracao_minutos: 60, dificuldade: "Alto", esforco: "Fácil", importancia: "Média", prioridade: nil)
+        }
+        
         VStack {
             
+            if (paginaAdicao){
+                Text("Adicione tarefa")
+            }else{
+                Text("Edite tarefa \(tarefa.nome)")
+            }
             TextField(
                 "",
                 text: $titulo,
                 prompt: Text("Nome da Tarefa")
-                    .foregroundStyle((Color(UIColor.systemGray3)))
-                    .font(.custom("Helvetica Neue", size: 14))
+                    .font(.body)
+                    .foregroundStyle(.tertiary)
             )
-            .font(.subheadline)
-            .foregroundStyle(.primary)
+            .font(.body)
+            .foregroundStyle(.black)
             .padding()
             .background {
                 RoundedRectangle(cornerRadius: 8)
@@ -53,16 +71,18 @@ struct TarefaModalView: View {
                 
                 Spacer()
                 Button("Salvar") {
-                    adiciona_tarefa(Nome: titulo, Descricao: descricao, Duracao_minutos: duracao, Dificuldade: dificuldade, Esforco: esforco, Importancia : importancia)
+                    tarefaModel.adiciona_tarefa(Nome: "teste", Descricao: descricao, Duracao_minutos: duracao, Dificuldade: dificuldade, Esforco: esforco, Importancia : importancia)
+                    dismiss()
                 }
                 .buttonStyle(.borderedProminent)
             }
 
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity) // Faz a VStack preencher a tela
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        
     }
 }
 
 #Preview {
-    TarefaModalView(paginaAdicao: true)
+    TarefaModalView(paginaAdicao: true, id : UUID())
 }

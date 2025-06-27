@@ -15,8 +15,7 @@ struct ContentView: View {
     var body: some View {
         
         TabView(selection: $selectedTab) {
-            //TelaIncialView()
-            Text("Tela inicial View")
+            TelaInicialView()
                 .tabItem {
                     Image(systemName: "book.pages")
                     Text("Tarefas")
@@ -33,16 +32,13 @@ struct ContentView: View {
                 }.tag(2)
         }.accentColor(.blue)
             .sheet(isPresented: $showModal) {
-                // Conteúdo da sheet
-                TarefaModalView(paginaAdicao : true)
-                    .presentationDetents([.large]) //sheet ocupe a tela inteira
+                TarefaModalView(paginaAdicao : true, id: UUID())
+                    .presentationDetents([.large])
             }
             .onChange(of: selectedTab) {
                 if selectedTab == 1 {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                         self.showModal = true
                         self.selectedTab = 0
-                    }
                 }
             }
     }
