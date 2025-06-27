@@ -5,7 +5,6 @@
 //  Created by Ana Agner on 26/06/25.
 //
 
-// PROBLEMA = QUANDO CLICO EM UM CONCLUIDO, TODAS CONCLUEM
 import SwiftUI
 
 struct BotaoSelecaoView: View {
@@ -27,13 +26,12 @@ struct BotaoSelecaoView: View {
 struct TelaInicialView: View {
     //ADICIONEI - BIA
     //para lista de tarefas
-    let listaTarefas = TarefasList
+    @ObservedObject var tarefaModel = TarefaModel.shared
     //para abrir modal de edicao
     @State private var showModal = false
     //pra passar id de tarefa
-    @State private var tarefa : UUID? = nil
+    @State private var tarefa_id : UUID = UUID()
 
-    @State private var tarefaConcluida = false
     
     var body: some View {
         VStack(spacing: 24){ //coloquei duas vstack pq a lista já vem com padding horizontal e queria colocar padding apenas no título e botões
@@ -71,16 +69,17 @@ struct TelaInicialView: View {
             
                 List{
                     //o foreach pra pegar todas as tarefas da lista
-                    ForEach(listaTarefas) { tarefa in
+                    ForEach($tarefaModel.tarefas) { tarefa in
                         HStack{
-                            BotaoSelecaoView(selecionado: $tarefaConcluida)
-                            Text(tarefa.nome)
-                                .strikethrough(tarefaConcluida)
-                                .foregroundColor(tarefaConcluida ? .gray : .primary)
+                            BotaoSelecaoView(selecionado: tarefa.concluida)
+                            //EDITADO - BIA = muda quando removo ou adiciono uma tarefa, use o wrapped value para ser dinamico
+                            Text(tarefa.nome.wrappedValue)
+                                .strikethrough(tarefa.concluida.wrappedValue)
+                                .foregroundColor(tarefa.concluida.wrappedValue ? .gray : .primary)
                         }.swipeActions {
                             Button(){
                                 //ADICIONEI - BIA = FUNC DE TAREFA_MODEL
-                                deletar_tarefa(id: tarefa.id)
+                                tarefaModel.deletar_tarefa(id: tarefa.id)
                             } label: {
                                 Label("Excluir", systemImage: "trash")
                             }
@@ -88,8 +87,8 @@ struct TelaInicialView: View {
                             
                             Button(){
                                 //ADICIONEI - BIA = abrir modal com edicao
-                                //$showModal
-                                //$tarefa = tarefa.id
+                                tarefa_id = tarefa.id
+                                showModal = true
                                 
                             } label: {
                                 Label("Editar", systemImage: "pencil")
@@ -104,10 +103,11 @@ struct TelaInicialView: View {
                 .scrollContentBackground(.hidden)
                 .background(.white)
             }
+        
+        //ADICIONEI - BIA = para mostrar modal
         .sheet(isPresented: $showModal) {
-            // Conteúdo da sheet
-            TarefaModalView(paginaAdicao : false)
-                .presentationDetents([.large]) //sheet ocupe a tela inteira
+            TarefaModalView(paginaAdicao : false, id: tarefa_id)
+                .presentationDetents([.large])
         }
         }
     }

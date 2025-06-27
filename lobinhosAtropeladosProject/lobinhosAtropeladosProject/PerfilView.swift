@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct PerfilView: View {
-    let listaTarefas = TarefasList
 
     
     var body: some View {
