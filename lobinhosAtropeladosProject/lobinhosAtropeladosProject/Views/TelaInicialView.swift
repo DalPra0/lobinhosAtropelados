@@ -31,6 +31,8 @@ struct TelaInicialView: View {
     @State private var showModal = false
     //pra passar id de tarefa
     @State private var tarefa_id : UUID = UUID()
+    
+    @State private var filtro: String = "Baixa"
 
     
     var body: some View {
@@ -42,25 +44,50 @@ struct TelaInicialView: View {
                         .bold()
                     Spacer()
                 }
-                HStack(spacing: 16){
-                    Button("Baixa"){
+                HStack(spacing:17){
+                    Button{
+                        filtro="Baixa"
                     }
-                    .cornerRadius(20)
-                    .buttonStyle(.bordered)
-                        .tint(.blue)
+                    label:{
+                        Text("Baixa")
+                            .foregroundColor(filtro == "Baixa" ? .white : .blue)
+                            .font(.subheadline)
+                            .padding(.horizontal, 33)
+                            .padding(.vertical, 7)
+                            .background(
+                                RoundedRectangle(cornerRadius: 40)
+                                    .fill(filtro == "Baixa" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
+                    }
                     
-                    Button("Média"){
+                    Button{
+                        filtro="Média"
                     }
-                    .cornerRadius(20)
-                    .buttonStyle(.bordered)
-                        .tint(.blue)
+                    label:{
+                        Text("Média")
+                            .foregroundColor(filtro == "Média" ? .white : .blue)
+                            .font(.subheadline)
+                            .padding(.horizontal, 31)
+                            .padding(.vertical, 7)
+                            .background(
+                                RoundedRectangle(cornerRadius: 40)
+                                    .fill(filtro == "Média" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
+                    }
                     
-                    Button("Alta"){
+                    Button{
+                        filtro="Alta"
                     }
-                    .cornerRadius(20)
-                    .buttonStyle(.bordered)
-                        .tint(.blue)
+                    label:{
+                        Text("Alta")
+                            .foregroundColor(filtro == "Alta" ? .white : .blue)
+                            .font(.subheadline)
+                            .padding(.horizontal, 38)
+                            .padding(.vertical, 7)
+                            .background(
+                                RoundedRectangle(cornerRadius: 40)
+                                    .fill(filtro == "Alta" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
+                    }
                 }
+
                 .frame(maxWidth: .infinity)
 
             }
@@ -85,7 +112,7 @@ struct TelaInicialView: View {
                             }
                             .tint(.red)
                             
-                            Button(){
+                            /*Button(){
                                 //ADICIONEI - BIA = abrir modal com edicao
                                 tarefa_id = tarefa.id
                                 showModal = true
@@ -93,7 +120,7 @@ struct TelaInicialView: View {
                             } label: {
                                 Label("Editar", systemImage: "pencil")
                             }
-                            .tint(.blue)
+                            .tint(.blue)*/
                         }
                     }
 
@@ -105,10 +132,10 @@ struct TelaInicialView: View {
             }
         
         //ADICIONEI - BIA = para mostrar modal
-        .sheet(isPresented: $showModal) {
+        /*.sheet(isPresented: $showModal) {
             TarefaModalView(paginaAdicao : false, id: tarefa_id)
                 .presentationDetents([.large])
-        }
+        }*/
         }
     }
 
