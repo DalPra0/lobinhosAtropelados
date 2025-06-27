@@ -258,13 +258,13 @@ struct TarefaAddModalView: View {
                             
                             
                             Text(String(format: "%02d:%02d", duracao / 60, duracao % 60))
-                                .foregroundColor(.gray)
+                                .foregroundColor(.secondary)
                                     .font(.subheadline)
                                     .padding(.horizontal, 31)
                                     .padding(.vertical, 7)
-                                    .background(
+                                    /*.background(
                                         RoundedRectangle(cornerRadius: 40)
-                                            .fill( Color.gray.opacity(0.13)))
+                                            .fill( Color.gray.opacity(0.13)))*/
                             
                             
                             Button{
@@ -320,7 +320,7 @@ struct TarefaAddModalView: View {
                     else{
                         tarefaModel.adiciona_tarefa(Nome: titulo, Descricao: descricao, Duracao_minutos: duracao, Dificuldade: dificuldade, Esforco: esforco, Importancia : importancia)
                         //teste
-                        print(tarefaModel.tarefas)
+                        //print(tarefaModel.tarefas)
                         dismiss()
                     }
                 }label:{
