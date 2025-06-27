@@ -17,20 +17,25 @@ struct TarefaModalView: View {
     @State private var dificuldade: String = ""
     @State private var esforco: String = ""
     @State private var importancia: String = ""
-    @State private var duracao: Int = 30
+    @State private var duracao: Int = 0
     
     var body: some View {
         VStack {
             
+            if (paginaAdicao){
+                Text("Adicione tarefa")
+            }else{
+                Text("Edite tarefa")
+            }
             TextField(
                 "",
                 text: $titulo,
                 prompt: Text("Nome da Tarefa")
-                    .foregroundStyle((Color(UIColor.systemGray3)))
-                    .font(.custom("Helvetica Neue", size: 14))
+                    .font(.body)
+                    .foregroundStyle(.tertiary)
             )
-            .font(.subheadline)
-            .foregroundStyle(.primary)
+            .font(.body)
+            .foregroundStyle(.black)
             .padding()
             .background {
                 RoundedRectangle(cornerRadius: 8)

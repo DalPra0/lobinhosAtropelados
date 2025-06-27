@@ -15,8 +15,7 @@ struct ContentView: View {
     var body: some View {
         
         TabView(selection: $selectedTab) {
-            //TelaIncialView()
-            Text("Tela inicial View")
+            TelaInicialView()
                 .tabItem {
                     Image(systemName: "book.pages")
                     Text("Tarefas")
