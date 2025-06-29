@@ -5,7 +5,7 @@
 //  Created by Beatriz Perotto Muniz on 25/06/25.
 //
 //  Atualizado para incluir persistência de dados e a lógica de priorização com IA.
-//
+// TO-DO CHECAR ATUALIZAR TAREFAS
 
 import Foundation
 import SwiftUI
@@ -50,10 +50,20 @@ class TarefaModel: ObservableObject {
             tarefas[index].esforco = Esforco
             tarefas[index].importancia = Importancia
         }
+        repriorizarLista()//ADICAO
     }
     
-    func detalhe(id: UUID) -> Tarefa? {
-        return tarefas.first(where: { $0.id == id })
+    func detalhe(id: UUID) -> Tarefa {
+        return tarefas.first(where: { $0.id == id }) ?? Tarefa(
+            nome: "Tarefa não encontrada",
+            descricao: "Nenhuma tarefa com esse ID.",
+            duracao_minutos: 0,
+            dificuldade: "Desconhecida",
+            esforco: "Desconhecido",
+            importancia: "Desconhecida",
+            concluida: false,
+            prioridade: nil
+        )
     }
     
     private func salvarTarefas() {
