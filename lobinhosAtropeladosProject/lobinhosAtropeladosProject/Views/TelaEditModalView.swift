@@ -1,21 +1,34 @@
 import SwiftUI
 
 
-struct TarefaAddModalView: View {
+struct TelaEditModalView: View {
     
     @ObservedObject var tarefaModel = TarefaModel.shared
 
     
     @Environment(\.dismiss) var dismiss
-    
-    
-    @State private var titulo: String = ""
-    @State private var descricao: String = ""
-    @State private var dificuldade: String = ""
-    @State private var esforco: String = ""
-    @State private var importancia: String = ""
-    @State private var duracao: Int = 0
+    @State var id: UUID
+
+    @State private var titulo:String
+    @State private var descricao: String
+    @State private var dificuldade: String
+    @State private var esforco: String
+    @State private var importancia: String
+    @State private var duracao: Int
     @State private var showAlertMessage = false
+    
+    init(id: UUID) {
+        self._id = State(initialValue: id)
+        
+        let tarefa = TarefaModel.shared.detalhe(id: id)
+        
+        self._titulo = State(initialValue: tarefa.nome)
+        self._descricao = State(initialValue: tarefa.descricao ?? "")
+        self._dificuldade = State(initialValue: tarefa.dificuldade)
+        self._esforco = State(initialValue: tarefa.esforco)
+        self._importancia = State(initialValue: tarefa.importancia)
+        self._duracao = State(initialValue: tarefa.duracao_minutos)
+    }
     
     var body: some View {
         
@@ -25,7 +38,7 @@ struct TarefaAddModalView: View {
             VStack (alignment:.leading, spacing: 16) {
                 
                 VStack (alignment:.leading, spacing : 7){
-                    Text ("Adicionar Tarefa")
+                    Text ("Editar Tarefa")
                         .font(.system(size: 22))
                         .fontWeight(.semibold)
                     
@@ -290,7 +303,7 @@ struct TarefaAddModalView: View {
                 
                 
                 if showAlertMessage {
-                    Text("Preencha todos os campos obrigatórios!")
+                    Text("Título deve ser preenchido")
                         .foregroundColor(.red)
                         .font(.caption)
                         .padding(.top, 5)
@@ -315,11 +328,11 @@ struct TarefaAddModalView: View {
                 }
                 Spacer()
                 Button(){
-                    if titulo.isEmpty || dificuldade.isEmpty || esforco.isEmpty || importancia.isEmpty {
+                    if titulo.isEmpty {
                         showAlertMessage = true
                     }
                     else{
-                        tarefaModel.adiciona_tarefa(Nome: titulo, Descricao: descricao, Duracao_minutos: duracao, Dificuldade: dificuldade, Esforco: esforco, Importancia : importancia)
+                        tarefaModel.atualizar_tarefa(id:id, Nome: titulo, Descricao: descricao, Duracao_minutos: duracao, Dificuldade: dificuldade, Esforco: esforco, Importancia : importancia)
                         //teste
                         //print(tarefaModel.tarefas)
                         dismiss()
@@ -346,6 +359,6 @@ struct TarefaAddModalView: View {
     }
 
 
-#Preview {
-    TarefaAddModalView()
-}
+/*#Preview {
+    TelaEditModalView()
+}*/

@@ -4,6 +4,11 @@ struct TelaInicialView: View {
     @ObservedObject var tarefaModel = TarefaModel.shared
     
     @State private var filtro: String = "Todos"
+    @State private var showModal = false
+    @State private var showModal_aux = false
+    @State private var tarefa_id_edicao : UUID = UUID()
+    @State private var id_tarefa_expandida : UUID = UUID()
+    @State private var expandir = false
 
     private var tarefasFiltradas: [Tarefa] {
         if filtro == "Todos" {
@@ -83,13 +88,32 @@ struct TelaInicialView: View {
                 .background(.thinMaterial)
                 .cornerRadius(10)
             }
+        }   .sheet(isPresented: $showModal) {
+            TelaEditModalView(id:tarefa_id_edicao)
+                .presentationDetents([.large])
+        }
+        .onChange(of: showModal_aux) {
+            if showModal_aux {
+                showModal = true
+            }
+        }
+        .onChange(of: showModal) {
+            if showModal {
+                showModal_aux = false
+            }
         }
     }
     
     @ViewBuilder
     private func celulaDaTarefa(tarefa: Tarefa) -> some View {
         HStack(spacing: 15) {
-            Button(action: { tarefaModel.marcarTarefa(tarefa: tarefa) }) {
+            Button(action: {
+                tarefaModel.marcarTarefa(tarefa: tarefa)
+                //para fechar automatico quando expandida
+                if(id_tarefa_expandida == tarefa.id && expandir){
+                    expandir=false
+                }
+            }) {
                 Image(systemName: tarefa.concluida ? "checkmark.circle.fill" : "circle")
                     .font(.title2).foregroundColor(tarefa.concluida ? .green : .secondary)
             }.buttonStyle(.plain)
@@ -98,17 +122,52 @@ struct TelaInicialView: View {
                 if let descricao = tarefa.descricao, !descricao.isEmpty {
                     Text(descricao).font(.subheadline).lineLimit(2).foregroundColor(.secondary)
                 }
-                HStack {
-                    HStack(spacing: 4) { Image(systemName: "hourglass"); Text("\(tarefa.duracao_minutos) min") }
-                    Spacer()
-                    HStack(spacing: 4) { Image(systemName: "bolt.fill"); Text(tarefa.importancia) }
-                }.font(.caption).foregroundColor(.secondary).padding(.top, 4)
+                if(id_tarefa_expandida != tarefa.id || expandir == false){
+                    HStack {
+                        HStack(spacing: 4) { Image(systemName: "hourglass"); Text("\(tarefa.duracao_minutos) min") }
+                        Spacer()
+                        HStack(spacing: 4) { Image(systemName: "bolt.fill"); Text(tarefa.importancia) }
+                        
+                    }.font(.caption).foregroundColor(.secondary).padding(.top, 4)
+                }
+                
+                if (id_tarefa_expandida == tarefa.id && expandir == true){
+                    Text("Dificuldade : \(tarefa.dificuldade)")
+                    .font(.subheadline).foregroundColor(.secondary).padding(.top, 4)
+                    Text("Esforço : \(tarefa.esforco)")
+                    .font(.subheadline).foregroundColor(.secondary).padding(.top, 4)
+                    Text("Importância : \(tarefa.importancia)")
+                    .font(.subheadline).foregroundColor(.secondary).padding(.top, 4)
+                    let tempo = String(format: "%dh %02dmin", tarefa.duracao_minutos / 60, tarefa.duracao_minutos % 60)
+                    Text("Duração : \(tempo)")
+                    .font(.subheadline).foregroundColor(.secondary).padding(.top, 4)
+                }
             }
             Spacer()
             if !tarefa.concluida {
                 Text("\(tarefa.prioridade ?? 0)").font(.caption).fontWeight(.bold).padding(8).background(corDaPrioridade(tarefa.prioridade)).foregroundColor(.white).clipShape(Circle())
             }
         }.padding(.vertical, 5).opacity(tarefa.concluida ? 0.6 : 1.0)
+        .swipeActions {
+            Button(){
+                tarefaModel.deletar_tarefa(id: tarefa.id)
+            } label: {
+                Label("Excluir", systemImage: "trash")
+            }
+            .tint(.red)
+            
+            Button(){
+                tarefa_id_edicao = tarefa.id
+                showModal_aux = true
+            } label: {
+                Label("Editar", systemImage: "pencil")
+            }
+            .tint(.blue)
+        }
+        .onTapGesture {
+            id_tarefa_expandida=tarefa.id
+            expandir.toggle()
+        }
     }
     
     private func corDaPrioridade(_ prioridade: Int?) -> Color {
