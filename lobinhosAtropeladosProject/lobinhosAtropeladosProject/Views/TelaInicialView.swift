@@ -2,13 +2,25 @@ import SwiftUI
 
 struct TelaInicialView: View {
     @ObservedObject var tarefaModel = TarefaModel.shared
-    
+
+    @ObservedObject var userModel = UserModel.shared
+
     @State private var filtro: String = "Todos"
     @State private var showModal = false
     @State private var showModal_aux = false
     @State private var tarefa_id_edicao : UUID = UUID()
     @State private var id_tarefa_expandida : UUID = UUID()
+    @State private var decidir_modo = false
     @State private var expandir = false
+    
+    var cor: Color {
+            switch userModel.user.modo_selecionado {
+            case 1: return .green
+            case 2: return .orange
+            case 3: return .red
+            default: return .gray
+            }
+        }
 
     private var tarefasFiltradas: [Tarefa] {
         if filtro == "Todos" {
@@ -52,6 +64,77 @@ struct TelaInicialView: View {
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 24)
+                
+                //para teste
+                HStack{
+                    Spacer()
+                    Circle()
+                        .frame(width: 50, height: 50)
+                    // Tamanho
+                        .foregroundColor(cor)
+                    // Cor de preenchimento
+                    Spacer()
+                    VStack(alignment:.leading){
+                        Text("Modo selecionado : \(userModel.user.modo_selecionado)")
+                        Button{
+                            decidir_modo.toggle()
+                        }label:{
+                            Text("Alterar")
+                        }
+                        
+                        if(decidir_modo){
+                            HStack{
+                                Button{
+                                    userModel.atualizar_modo(modo: 0)
+                                    decidir_modo.toggle()
+                                    print(userModel.user.modo_selecionado)
+                                }label:{
+                                    Circle()
+                                        .frame(width: 20, height: 20)
+                                    // Tamanho
+                                        .foregroundColor(.gray)
+                                    // Cor de preenchimento
+                                }
+                                
+                                Button{
+                                    userModel.atualizar_modo(modo: 1)
+                                    decidir_modo.toggle()
+                                    print(userModel.user.modo_selecionado)
+                                }label:{
+                                    Circle()
+                                        .frame(width: 20, height: 20)
+                                    // Tamanho
+                                        .foregroundColor(.green)
+                                    // Cor de preenchimento
+                                }
+                                Button{
+                                    userModel.atualizar_modo(modo: 2)
+                                    decidir_modo.toggle()
+                                    print(userModel.user.modo_selecionado)
+                                }label:{
+                                    Circle()
+                                        .frame(width: 20, height: 20)
+                                    // Tamanho
+                                        .foregroundColor(.orange)
+                                    // Cor de preenchimento
+                                }
+                                Button{
+                                    userModel.atualizar_modo(modo: 3)
+                                    decidir_modo.toggle()
+                                    print(userModel.user.modo_selecionado)
+                                }label:{
+                                    Circle()
+                                        .frame(width: 20, height: 20)
+                                    // Tamanho
+                                        .foregroundColor(.red)
+                                    // Cor de preenchimento
+                                }
+                            }
+                        }
+                    }
+                    Spacer()
+                }
+                //para teste
                 
                 List {
                     Section(header: Text(filtro == "Todos" ? "Todas as Prioridades" : "Prioridade \(filtro)")) {

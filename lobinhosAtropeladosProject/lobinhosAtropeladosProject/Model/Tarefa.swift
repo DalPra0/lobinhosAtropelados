@@ -5,7 +5,7 @@
 //  Created by Beatriz Perotto Muniz on 25/06/25.
 //
 //  Atualizado com a lógica de IA, persistência e ordenação.
-//
+// to- do = data de entrega
 
 import Foundation
 
