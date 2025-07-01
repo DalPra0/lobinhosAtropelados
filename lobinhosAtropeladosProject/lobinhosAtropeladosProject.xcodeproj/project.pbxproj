@@ -16,9 +16,27 @@
 		15D965182E0F2F3300F754F6 /* API_KEY.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = API_KEY.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1558B0882E131BF800499064 /* Exceptions for "lobinhosAtropeladosProject" folder in "lobinhosAtropeladosProject" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 158B52DA2E0C77A800755C9F /* lobinhosAtropeladosProject */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		1558B0832E131B8A00499064 /* Fonts */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		158B52DD2E0C77A800755C9F /* lobinhosAtropeladosProject */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1558B0882E131BF800499064 /* Exceptions for "lobinhosAtropeladosProject" folder in "lobinhosAtropeladosProject" target */,
+			);
 			path = lobinhosAtropeladosProject;
 			sourceTree = "<group>";
 		};
@@ -49,6 +67,7 @@
 		158B52D22E0C77A800755C9F = {
 			isa = PBXGroup;
 			children = (
+				1558B0832E131B8A00499064 /* Fonts */,
 				15D9651E2E0F2F6400F754F6 /* Services */,
 				9BFAF6242E0EE1D6005B92A7 /* Common */,
 				158B52DD2E0C77A800755C9F /* lobinhosAtropeladosProject */,
@@ -81,6 +100,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				1558B0832E131B8A00499064 /* Fonts */,
 				158B52DD2E0C77A800755C9F /* lobinhosAtropeladosProject */,
 				15D9651E2E0F2F6400F754F6 /* Services */,
 				9BFAF6242E0EE1D6005B92A7 /* Common */,
@@ -283,6 +303,7 @@
 				DEVELOPMENT_TEAM = 982D3NRR89;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = lobinhosAtropeladosProject/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -312,6 +333,7 @@
 				DEVELOPMENT_TEAM = 982D3NRR89;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = lobinhosAtropeladosProject/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
