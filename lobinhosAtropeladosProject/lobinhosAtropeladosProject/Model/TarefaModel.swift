@@ -29,8 +29,8 @@ class TarefaModel: ObservableObject {
     }
     
     
-    func adiciona_tarefa(Nome: String, Descricao: String?, Duracao_minutos: Int, Dificuldade: String, Esforco: String, Importancia: String) {
-        let novaTarefa = Tarefa(nome: Nome, descricao: Descricao, duracao_minutos: Duracao_minutos, dificuldade: Dificuldade, esforco: Esforco, importancia: Importancia)
+    func adiciona_tarefa(Nome: String, Descricao: String?, Duracao_minutos: Int, Dificuldade: String, Esforco: String, Importancia: String,Data_entrega: Date) {
+        let novaTarefa = Tarefa(nome: Nome, descricao: Descricao, duracao_minutos: Duracao_minutos, dificuldade: Dificuldade, esforco: Esforco, importancia: Importancia, data_entrega: Data_entrega)
         tarefas.append(novaTarefa)
         repriorizarLista()
     }
@@ -41,7 +41,7 @@ class TarefaModel: ObservableObject {
         }
     }
     
-    func atualizar_tarefa(id: UUID, Nome: String, Descricao: String?, Duracao_minutos: Int, Dificuldade: String, Esforco: String, Importancia: String) {
+    func atualizar_tarefa(id: UUID, Nome: String, Descricao: String?, Duracao_minutos: Int, Dificuldade: String, Esforco: String, Importancia: String, Data_entrega: Date) {
         if let index = tarefas.firstIndex(where: { $0.id == id }) {
             tarefas[index].nome = Nome
             tarefas[index].descricao = Descricao
@@ -49,6 +49,7 @@ class TarefaModel: ObservableObject {
             tarefas[index].dificuldade = Dificuldade
             tarefas[index].esforco = Esforco
             tarefas[index].importancia = Importancia
+            tarefas[index].data_entrega = Data_entrega
         }
         repriorizarLista()//ADICAO
     }
@@ -62,6 +63,7 @@ class TarefaModel: ObservableObject {
             esforco: "Desconhecido",
             importancia: "Desconhecida",
             concluida: false,
+            data_entrega : Date(),
             prioridade: nil
         )
     }
@@ -98,6 +100,13 @@ class TarefaModel: ObservableObject {
     func marcarTarefa(tarefa: Tarefa) {
         if let index = tarefas.firstIndex(where: { $0.id == tarefa.id }) {
             tarefas[index].concluida.toggle()
+            if tarefas[index].concluida == true {
+                tarefas[index].data_conclusao = Date()
+            }else{
+                tarefas[index].data_conclusao = nil
+            }
+            //teste
+            print(tarefas)
 
             tarefas.sort()
         }

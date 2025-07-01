@@ -14,12 +14,15 @@ struct TarefaAddModalView: View {
     @State private var dificuldade: String = ""
     @State private var esforco: String = ""
     @State private var importancia: String = ""
-    @State private var duracao: Int = 0
+    @State private var data_entrega: Date = Date()
     @State private var showAlertMessage = false
+    
+    @State private var hora_picker: Date = Calendar.current.date(bySettingHour: 1, minute: 0, second: 0, of: Date()) ?? Date()
     
     var body: some View {
         
-        
+        ScrollView{
+            
         VStack (spacing : 52){
             
             VStack (alignment:.leading, spacing: 16) {
@@ -64,7 +67,7 @@ struct TarefaAddModalView: View {
                     
                     VStack(alignment:.leading, spacing:10){
                         VStack(alignment:.leading, spacing:7){
-                           Text("🏋️‍♂️ Dificuldade")
+                            Text("🏋️‍♂️ Dificuldade")
                                 .fontWeight(.semibold)
                                 .font(.system(size: 18))
                             
@@ -231,7 +234,7 @@ struct TarefaAddModalView: View {
                     
                     VStack(alignment:.leading, spacing:10){
                         VStack(alignment:.leading, spacing:7){
-                            Text("🕐 Duração (em horas)")
+                            Text("🕐 Duração")
                                 .fontWeight(.semibold)
                                 .font(.system(size: 18))
                             
@@ -240,51 +243,36 @@ struct TarefaAddModalView: View {
                                 .foregroundStyle(.secondary)
                         }
                         
-                        HStack(spacing:17){
-                            Button{
-                                if(duracao>=30){
-                                    duracao=duracao-30
-                                }
-                            }
-                            label:{
-                                Text("-30min")
-                                    .foregroundColor(.blue)
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 26)
-                                    .padding(.vertical, 7)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 40)
-                                            .fill( Color.blue.opacity(0.13)))
-                            }
-                            
-                            
-                            Text(String(format: "%02d:%02d", duracao / 60, duracao % 60))
-                                .foregroundColor(.secondary)
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 31)
-                                    .padding(.vertical, 7)
-                                    /*.background(
-                                        RoundedRectangle(cornerRadius: 40)
-                                            .fill( Color.gray.opacity(0.13)))*/
-                            
-                            
-                            Button{
-                                duracao=duracao+30
-                            }
-                            label:{
-                                Text("+30min")
-                                    .foregroundColor( .blue)
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 26)
-                                    .padding(.vertical, 7)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 40)
-                                            .fill( Color.blue.opacity(0.13)))
-                            }
-                        }
-
+                        DatePicker("", selection: $hora_picker, displayedComponents: .hourAndMinute)
+                            .datePickerStyle(.wheel)
+                            .labelsHidden()
+                            .frame(height: 80)
+                            .clipped()
+                            .transition(.opacity)
                         
                     }
+                    
+                    
+                    VStack(alignment:.leading, spacing:10){
+                        VStack(alignment:.leading, spacing:7){
+                            Text("📆 Data de entrega")
+                                .fontWeight(.semibold)
+                                .font(.system(size: 18))
+                            
+                            Text("Qual a data de entrega?")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        DatePicker("", selection: $data_entrega, in: Date()..., displayedComponents: .date)
+                            .datePickerStyle(.wheel)
+                            .labelsHidden()
+                            .frame(height: 80)
+                            .clipped()
+                            .transition(.opacity)
+                        
+                    }
+                    
                     
                 }
                 
@@ -319,21 +307,21 @@ struct TarefaAddModalView: View {
                         showAlertMessage = true
                     }
                     else{
-                        tarefaModel.adiciona_tarefa(Nome: titulo, Descricao: descricao, Duracao_minutos: duracao, Dificuldade: dificuldade, Esforco: esforco, Importancia : importancia)
+                        tarefaModel.adiciona_tarefa(Nome: titulo, Descricao: descricao, Duracao_minutos: horas_para_minutos(horas:hora_picker), Dificuldade: dificuldade, Esforco: esforco, Importancia : importancia, Data_entrega : data_entrega)
                         //teste
                         //print(tarefaModel.tarefas)
                         dismiss()
                     }
                 }label:{
-                        Text("Salvar")
-                            .foregroundColor(.blue)
-                            .font(.subheadline)
-                            .padding(.horizontal, 41.5)
-                            .padding(.vertical, 7)
-                            .background(
-                                RoundedRectangle(cornerRadius: 40)
-                                    .fill(Color.blue.opacity(0.13))
-                            )
+                    Text("Salvar")
+                        .foregroundColor(.blue)
+                        .font(.subheadline)
+                        .padding(.horizontal, 41.5)
+                        .padding(.vertical, 7)
+                        .background(
+                            RoundedRectangle(cornerRadius: 40)
+                                .fill(Color.blue.opacity(0.13))
+                        )
                     
                 }
             }.padding(.horizontal,37)
@@ -341,6 +329,14 @@ struct TarefaAddModalView: View {
         .padding(.horizontal,24)
         .padding(.top,29)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
+    }
+    
+    private func horas_para_minutos(horas:Date) -> Int{
+        let calendario = Calendar.current
+        let componentes = calendario.dateComponents([.hour, .minute], from: horas)
+        return (componentes.hour ?? 0) * 60 + (componentes.minute ?? 0)
     }
         
     }
