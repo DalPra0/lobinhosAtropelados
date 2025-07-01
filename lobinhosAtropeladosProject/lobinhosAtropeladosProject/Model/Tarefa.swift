@@ -19,9 +19,11 @@ struct Tarefa: Codable, Identifiable, Comparable {
     var esforco: String
     var importancia: String
     var concluida: Bool
+    var data_conclusao: Date? = nil
+    var data_entrega: Date
     var prioridade: Int?
     
-    init(id: UUID = UUID(), nome: String, descricao: String?, duracao_minutos: Int, dificuldade: String, esforco: String, importancia: String, concluida: Bool = false, prioridade: Int? = nil) {
+    init(id: UUID = UUID(), nome: String, descricao: String?, duracao_minutos: Int, dificuldade: String, esforco: String, importancia: String, concluida: Bool = false, data_entrega : Date, prioridade: Int? = nil) {
         self.id = id
         self.nome = nome
         self.descricao = descricao
@@ -30,6 +32,7 @@ struct Tarefa: Codable, Identifiable, Comparable {
         self.esforco = esforco
         self.importancia = importancia
         self.concluida = concluida
+        self.data_entrega = data_entrega
         self.prioridade = prioridade
     }
     
