@@ -14,13 +14,9 @@ struct PerfilView: View {
     @State private var nome: String = "Mari Oliveira"
     @State private var bio: String = "Estudante de Psicologia do 5º período na UFPR em tempo integral e faço estágio de 20h semanais."
     
-    private var tarefas_concluidas_anteriormente: [Tarefa] {
-        let hoje = Calendar.current.startOfDay(for: Date())
-        
-        return tarefaModel.tarefas.filter {
-            $0.concluida && ($0.data_conclusao ?? Date.distantFuture) < hoje
-        }
-    }
+    @State private var filtro : String = ""
+    
+    
     
     var body: some View {
             ZStack {
@@ -121,6 +117,39 @@ struct PerfilView: View {
                     }
                     
                     // lista de tarefas concluidas nos dias anteriores
+                    
+                    HStack{
+                        HStack{
+                            
+                            Image(systemName:"magnifyingglass")
+                                .foregroundColor(Color(UIColor.systemGray3).opacity(1))
+                            
+                            TextField("Buscar", text: $filtro)
+                                .foregroundColor(.black)
+                            
+                            Button(action: {
+                                withAnimation {
+                                    filtro = ""
+                                }
+                            }) {
+                                Image(systemName: "x.circle.fill")
+                                    .foregroundColor(.black)
+                            }
+                            
+                        }
+                        .padding(10)
+                        .background(Color(UIColor.systemGray5).opacity(0.6))
+                        .cornerRadius(8)
+                        
+                    }.padding(.horizontal, 16)
+
+                    
+                    let hoje = Calendar.current.startOfDay(for: Date())
+                    
+                    let tarefas_concluidas_anteriormente = tarefaModel.tarefas.filter {
+                        $0.concluida && ($0.data_conclusao ?? Date.distantFuture) < hoje && (filtro.isEmpty || $0.nome.lowercased().contains(filtro.lowercased()))
+                    }
+                    
                     List {
                                                 
                         Section(header: Text("Concluídas")) {
