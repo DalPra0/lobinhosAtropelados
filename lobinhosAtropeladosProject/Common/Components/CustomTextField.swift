@@ -4,6 +4,8 @@
 //
 //  Created by Ruby Rosa on 27/06/25.
 //
+//  Este componente é usado nos formulários de Adicionar/Editar Tarefa.
+//
 
 import SwiftUI
 
@@ -28,5 +30,6 @@ struct CustomInputField: View {
         }
         .font(.body)
         .foregroundColor(.black)
+        .autocapitalization(.sentences) // Capitaliza o início das frases
     }
 }

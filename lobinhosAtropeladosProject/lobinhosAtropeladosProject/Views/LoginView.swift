@@ -4,53 +4,64 @@
 //
 //  Created by Ruby Rosa on 27/06/25.
 //
+//  Atualizado para usar a fonte customizada do projeto.
+//
 
 import SwiftUI
 
 struct LoginView: View {
+    // Ação a ser executada quando o login for bem-sucedido.
     var onLogin: () -> Void
+    // Permite fechar a tela modal.
     @Environment(\.dismiss) var dismiss
 
-    @State private var name = ""
+    // Estados para guardar os dados do formulário.
     @State private var email = ""
     @State private var password = ""
 
     var body: some View {
         ZStack {
-            Color(red: 0.9, green: 0.95, blue: 1.0).ignoresSafeArea()
+            // Cor de fundo da tela.
+            Color("corFundo").ignoresSafeArea()
 
-            VStack {
+            VStack(spacing: 16) {
                 Spacer()
 
-                Image(systemName: "timer")
+                // Ícone e Títulos
+                Image(systemName: "person.badge.key.fill")
                     .resizable()
+                    .scaledToFit()
                     .frame(width: 60, height: 60)
-                    .foregroundColor(.black)
+                    .foregroundColor(Color("corTextoPrimario"))
                     .padding(.bottom, 8)
 
                 Text("Entrar")
-                    .font(.title2).bold()
+                    .font(.secularOne(size: 28))
 
                 Text("Entre na sua conta para continuar!")
-                    .foregroundColor(.black.opacity(0.7))
-                    .padding(.bottom, 8)
+                    .font(.body)
+                    .foregroundColor(Color("corTextoSecundario"))
+                    .padding(.bottom, 24)
 
-                VStack(spacing: 12) {
+                // Campos de Input
+                VStack(spacing: 16) {
                     CustomTextBox(placeholder: "E-mail", text: $email)
-                    CustomTextBox(placeholder: "Senha", text: $password)
+                    CustomTextBox(placeholder: "Senha", text: $password, isSecure: true)
                 }
-
                 .padding(.horizontal, 32)
 
                 Spacer()
 
-                HStack(spacing: 16) {
-                    CustomButton(title: "Cadastrar", style: .azulClaro) {
+                // Botões de Ação
+                VStack(spacing: 16) {
+                    // Usando o seu componente de botão customizado.
+                    CustomButton(title: "Fazer login", style: .azulEscuro) {
+                        // TO-DO: Adicionar lógica de autenticação aqui.
+                        onLogin()
                         dismiss()
                     }
-
-                    CustomButton(title: "Fazer login", style: .azulEscuro) {
-                        onLogin()
+                    
+                    CustomButton(title: "Voltar", style: .azulClaro) {
                         dismiss()
                     }
                 }
@@ -58,6 +69,7 @@ struct LoginView: View {
 
                 Spacer().frame(height: 20)
             }
+            .foregroundColor(Color("corTextoPrimario"))
         }
     }
 }

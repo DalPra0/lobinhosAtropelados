@@ -4,29 +4,36 @@
 //
 //  Created by Lucas Dal Pra Brascher on 30/06/25.
 //
+//  Esta é a tela principal do onboarding, que gerencia as páginas.
+//
 
 import SwiftUI
 
 struct OnboardingView: View {
+    // Binding para comunicar ao app que o onboarding foi concluído.
     @Binding var hasCompletedOnboarding: Bool
     
+    // Controla a página atual (0, 1, ou 2).
     @State private var currentPage = 0
     
+    // Conteúdo para cada uma das 3 páginas, agora incluindo o nome do ícone.
     private let pages: [OnboardingPageInfo] = [
-        OnboardingPageInfo(title: "Feito para universitários", description: "Cadastre seu curso, período e tarefas. Deixa que a gente organiza do seu jeito!"),
-        OnboardingPageInfo(title: "Prioridades com Inteligência", description: "Nossa IA analisa suas tarefas e define as prioridades para você, otimizando seu tempo."),
-        OnboardingPageInfo(title: "Sua rotina, do seu jeito", description: "Adicione atividades, defina prioridades e visualize suas tarefas. Mais foco, menos estresse!")
+        OnboardingPageInfo(imageSymbol: "graduationcap.fill", title: "Feito para universitários", description: "Cadastre seu curso, período e tarefas. Deixa que a gente organiza do seu jeito!"),
+        OnboardingPageInfo(imageSymbol: "sparkles", title: "Prioridades com Inteligência", description: "Nossa IA analisa suas tarefas e define as prioridades para você, otimizando seu tempo."),
+        OnboardingPageInfo(imageSymbol: "list.bullet.clipboard.fill", title: "Sua rotina, do seu jeito", description: "Adicione atividades, defina prioridades e visualize suas tarefas. Mais foco, menos estresse!")
     ]
 
     var body: some View {
         VStack(spacing: 0) {
+            // TabView que permite deslizar entre as páginas.
             TabView(selection: $currentPage) {
                 ForEach(pages.indices, id: \.self) { index in
                     OnboardingPageView(page: pages[index]).tag(index)
                 }
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
+            .tabViewStyle(.page(indexDisplayMode: .never)) // Esconde os indicadores padrão.
 
+            // Nossos indicadores de página customizados.
             HStack(spacing: 8) {
                 ForEach(pages.indices, id: \.self) { index in
                     Capsule()
@@ -37,19 +44,23 @@ struct OnboardingView: View {
             .animation(.easeInOut, value: currentPage)
             .padding(.bottom, 50)
 
+            // Botões de ação.
             VStack(spacing: 16) {
                 Button("AVANÇAR") {
+                    // Se não for a última página, avança.
                     if currentPage < pages.count - 1 {
                         withAnimation {
                             currentPage += 1
                         }
                     } else {
+                        // Se for a última, conclui o onboarding.
                         hasCompletedOnboarding = true
                     }
                 }
                 .buttonStyle(OnboardingButtonStyle(isPrimary: false))
 
                 Button("COMEÇAR") {
+                    // O botão "Começar" conclui o onboarding a qualquer momento.
                     hasCompletedOnboarding = true
                 }
                 .buttonStyle(OnboardingButtonStyle(isPrimary: true))
@@ -60,12 +71,13 @@ struct OnboardingView: View {
     }
 }
 
+// Estilo customizado para os botões, para ficarem idênticos ao seu design.
 struct OnboardingButtonStyle: ButtonStyle {
     let isPrimary: Bool
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.headline.weight(.semibold))
+            .font(.secularOne(size: 16).weight(.semibold))
             .frame(maxWidth: .infinity)
             .padding()
             .background(isPrimary ? .black : .white)
@@ -79,6 +91,7 @@ struct OnboardingButtonStyle: ButtonStyle {
     }
 }
 
+// Preview para visualização no Xcode.
 #Preview {
     OnboardingView(hasCompletedOnboarding: .constant(false))
 }

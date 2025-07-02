@@ -4,6 +4,8 @@
 //
 //  Created by Ruby Rosa on 27/06/25.
 //
+//  Atualizado para usar a fonte e cores customizadas do projeto.
+//
 
 import SwiftUI
 
@@ -17,41 +19,47 @@ struct RegisterView: View {
 
     var body: some View {
         ZStack {
-            Color(red: 0.9, green: 0.95, blue: 1.0).ignoresSafeArea()
+            // Usa a cor de fundo principal
+            Color("corFundo").ignoresSafeArea()
 
-            VStack {
+            VStack(spacing: 16) {
                 Spacer()
 
-                Image(systemName: "timer")
+                // Ícone e Títulos
+                Image(systemName: "person.badge.plus.fill")
                     .resizable()
+                    .scaledToFit()
                     .frame(width: 60, height: 60)
-                    .foregroundColor(.black)
+                    .foregroundColor(Color("corTextoPrimario"))
                     .padding(.bottom, 8)
 
                 Text("Cadastrar")
-                    .font(.title2).bold()
+                    .font(.secularOne(size: 28))
 
                 Text("Crie sua conta para começar!")
-                    .foregroundColor(.black.opacity(0.7))
-                    .padding(.bottom, 8)
+                    .font(.body)
+                    .foregroundColor(Color("corTextoSecundario"))
+                    .padding(.bottom, 24)
 
-                VStack(spacing: 12) {
+                // Campos de Input
+                VStack(spacing: 16) {
                     CustomTextBox(placeholder: "Nome", text: $name)
                     CustomTextBox(placeholder: "E-mail", text: $email)
-                    CustomTextBox(placeholder: "Senha", text: $password)
+                    CustomTextBox(placeholder: "Senha", text: $password, isSecure: true)
                 }
-
                 .padding(.horizontal, 32)
 
                 Spacer()
 
-                HStack(spacing: 16) {
-                    CustomButton(title: "Fazer login", style: .azulClaro) {
+                // Botões de Ação
+                VStack(spacing: 16) {
+                    CustomButton(title: "Cadastrar", style: .azulEscuro) {
+                        // TO-DO: Adicionar lógica de registro aqui.
+                        onLogin()
                         dismiss()
                     }
-
-                    CustomButton(title: "Cadastrar", style: .azulEscuro) {
-                        onLogin()
+                    
+                    CustomButton(title: "Já tenho conta", style: .azulClaro) {
                         dismiss()
                     }
                 }
@@ -59,6 +67,7 @@ struct RegisterView: View {
 
                 Spacer().frame(height: 20)
             }
+            .foregroundColor(Color("corTextoPrimario"))
         }
     }
 }

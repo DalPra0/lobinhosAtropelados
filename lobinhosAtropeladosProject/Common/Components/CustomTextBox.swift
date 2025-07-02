@@ -26,5 +26,7 @@ struct CustomTextBox: View {
         .cornerRadius(12)
         .font(.body)
         .foregroundColor(.black)
+        .autocapitalization(.none) // Adicionado para desabilitar letras maiúsculas automáticas em e-mails
+        .disableAutocorrection(true) // Adicionado para desabilitar a autocorreção
     }
 }
