@@ -8,11 +8,20 @@
 import SwiftUI
 
 struct PerfilView: View {
+    @ObservedObject var tarefaModel = TarefaModel.shared
 
     @State private var isEditing = false
     @State private var nome: String = "Mari Oliveira"
     @State private var bio: String = "Estudante de Psicologia do 5º período na UFPR em tempo integral e faço estágio de 20h semanais."
-
+    
+    private var tarefas_concluidas_anteriormente: [Tarefa] {
+        let hoje = Calendar.current.startOfDay(for: Date())
+        
+        return tarefaModel.tarefas.filter {
+            $0.concluida && ($0.data_conclusao ?? Date.distantFuture) < hoje
+        }
+    }
+    
     var body: some View {
             ZStack {
                 Color(.systemBackground)
@@ -110,11 +119,50 @@ struct PerfilView: View {
                         }
                         .padding(.horizontal)
                     }
-
-                    Spacer().frame(height: 20)
+                    
+                    // lista de tarefas concluidas nos dias anteriores
+                    List {
+                                                
+                        Section(header: Text("Concluídas")) {
+                                ForEach(tarefas_concluidas_anteriormente) { tarefa in
+                                    celulaDaTarefa(tarefa: tarefa)
+                                }
+                        }
+                    }
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    
                 }
             }
         }
+    
+    @ViewBuilder
+    private func celulaDaTarefa(tarefa: Tarefa) -> some View {
+        HStack(spacing: 15) {
+            Button(action: {
+                tarefaModel.marcarTarefa(tarefa: tarefa)
+                //para fechar automatico quando expandida
+            }) {
+                Image(systemName: tarefa.concluida ? "checkmark.circle.fill" : "circle")
+                    .font(.title2).foregroundColor(tarefa.concluida ? .green : .secondary)
+            }.buttonStyle(.plain)
+            VStack(alignment: .leading, spacing: 5) {
+                Text(tarefa.nome).font(.headline).strikethrough(tarefa.concluida, color: .primary)
+                if let descricao = tarefa.descricao, !descricao.isEmpty {
+                    Text(descricao).font(.subheadline).lineLimit(2).foregroundColor(.secondary)
+                }
+                    HStack {
+                        HStack(spacing: 4) { Image(systemName: "hourglass"); Text("\(tarefa.duracao_minutos) min") }
+                        Spacer()
+                        HStack(spacing: 4) { Image(systemName: "bolt.fill"); Text(tarefa.importancia) }
+                        
+                    }.font(.caption).foregroundColor(.secondary).padding(.top, 4)
+                }
+                
+            Spacer()
+        }.padding(.vertical, 5).opacity(tarefa.concluida ? 0.6 : 1.0)
+    }
+    
     }
 
 #Preview {

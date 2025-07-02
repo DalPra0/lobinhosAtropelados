@@ -39,8 +39,14 @@ struct TelaInicialView: View {
     }
     
     private var tarefasConcluidas: [Tarefa] {
-        tarefaModel.tarefas.filter { $0.concluida }
+        let hoje = Calendar.current.startOfDay(for: Date())
+
+        return tarefaModel.tarefas.filter {
+            $0.concluida && ($0.data_conclusao ?? Date.distantFuture) >= hoje
+        }
     }
+    
+        
     
     var body: some View {
         ZStack {
