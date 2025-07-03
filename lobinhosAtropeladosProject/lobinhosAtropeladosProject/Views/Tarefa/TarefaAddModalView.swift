@@ -24,8 +24,8 @@ struct TarefaAddModalView: View {
         ScrollView{
             
         VStack (spacing : 52){
-            
-            VStack (alignment:.leading, spacing: 16) {
+                    
+                VStack (alignment:.leading, spacing: 16) {
                 
                 VStack (alignment:.leading, spacing : 7){
                     Text ("Adicionar Tarefa")
@@ -63,6 +63,28 @@ struct TarefaAddModalView: View {
                     }
                 }
                 
+                    
+                VStack(alignment:.leading, spacing:10){
+                    VStack(alignment:.leading, spacing:7){
+                        Text("📆 Data de entrega")
+                            .fontWeight(.semibold)
+                            .font(.system(size: 18))
+                        
+                        Text("Qual a data de entrega?")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    DatePicker("", selection: $data_entrega, in: Date()..., displayedComponents: .date)
+                        .datePickerStyle(.wheel)
+                        .labelsHidden()
+                        .frame(height: 80)
+                        .clipped()
+                        .transition(.opacity)
+                    
+                }
+
+                    
                 VStack(alignment:.leading, spacing:24){
                     
                     VStack(alignment:.leading, spacing:10){
@@ -120,158 +142,6 @@ struct TarefaAddModalView: View {
                             }
                         }
                     }
-                    VStack(alignment:.leading, spacing:10){
-                        VStack(alignment:.leading, spacing:7){
-                            Text("💪 Esforço")
-                                .fontWeight(.semibold)
-                                .font(.system(size: 18))
-                            
-                            Text("Quanto de esforço preciso aplicar nessa tarefa?")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                        //filtro
-                        HStack(spacing:17){
-                            Button{
-                                esforco="Baixo"
-                            }
-                            label:{
-                                Text("Baixo")
-                                    .foregroundColor(esforco == "Baixo" ? .white : .blue)
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 33)
-                                    .padding(.vertical, 7)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 40)
-                                            .fill(esforco == "Baixo" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
-                            }
-                            
-                            Button{
-                                esforco="Médio"
-                            }
-                            label:{
-                                Text("Médio")
-                                    .foregroundColor(esforco == "Médio" ? .white : .blue)
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 31)
-                                    .padding(.vertical, 7)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 40)
-                                            .fill(esforco == "Médio" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
-                            }
-                            
-                            Button{
-                                esforco="Alto"
-                            }
-                            label:{
-                                Text("Alto")
-                                    .foregroundColor(esforco == "Alto" ? .white : .blue)
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 38)
-                                    .padding(.vertical, 7)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 40)
-                                            .fill(esforco == "Alto" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
-                            }
-                        }
-                    }
-                    VStack(alignment:.leading, spacing:10){
-                        VStack(alignment:.leading, spacing:7){
-                            Text("📝 Importância")
-                                .fontWeight(.semibold)
-                                .font(.system(size: 18))
-                            
-                            Text("Qual a importância dessa tarefa?")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                        //filtro
-                        HStack(spacing:17){
-                            Button{
-                                importancia="Baixa"
-                            }
-                            label:{
-                                Text("Baixa")
-                                    .foregroundColor(importancia == "Baixa" ? .white : .blue)
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 33)
-                                    .padding(.vertical, 7)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 40)
-                                            .fill(importancia == "Baixa" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
-                            }
-                            
-                            Button{
-                                importancia="Média"
-                            }
-                            label:{
-                                Text("Média")
-                                    .foregroundColor(importancia == "Média" ? .white : .blue)
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 31)
-                                    .padding(.vertical, 7)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 40)
-                                            .fill(importancia == "Média" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
-                            }
-                            
-                            Button{
-                                importancia="Alta"
-                            }
-                            label:{
-                                Text("Alta")
-                                    .foregroundColor(importancia == "Alta" ? .white : .blue)
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 38)
-                                    .padding(.vertical, 7)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 40)
-                                            .fill(importancia == "Alta" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
-                            }
-                        }
-                    }
-                    
-                    
-                    VStack(alignment:.leading, spacing:10){
-                        VStack(alignment:.leading, spacing:7){
-                            Text("🕐 Duração")
-                                .fontWeight(.semibold)
-                                .font(.system(size: 18))
-                            
-                            Text("Quanto tempo vou levar para fazer essa tarefa?")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                        
-                        DatePicker("", selection: $hora_picker, displayedComponents: .hourAndMinute)
-                            .datePickerStyle(.wheel)
-                            .labelsHidden()
-                            .frame(height: 80)
-                            .clipped()
-                            .transition(.opacity)
-                        
-                    }
-                    
-                    
-                    VStack(alignment:.leading, spacing:10){
-                        VStack(alignment:.leading, spacing:7){
-                            Text("📆 Data de entrega")
-                                .fontWeight(.semibold)
-                                .font(.system(size: 18))
-                            
-                            Text("Qual a data de entrega?")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                        
-                        DatePicker("", selection: $data_entrega, in: Date()..., displayedComponents: .date)
-                            .datePickerStyle(.wheel)
-                            .labelsHidden()
-                            .frame(height: 80)
-                            .clipped()
-                            .transition(.opacity)
-                        
-                    }
                     
                     
                 }
@@ -303,7 +173,7 @@ struct TarefaAddModalView: View {
                 }
                 Spacer()
                 Button(){
-                    if titulo.isEmpty || dificuldade.isEmpty || esforco.isEmpty || importancia.isEmpty {
+                    if titulo.isEmpty || dificuldade.isEmpty {
                         showAlertMessage = true
                     }
                     else{
