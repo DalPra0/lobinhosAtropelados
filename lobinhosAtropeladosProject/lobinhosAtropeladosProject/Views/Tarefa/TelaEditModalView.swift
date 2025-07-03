@@ -192,7 +192,7 @@ struct TelaEditModalView: View {
                             showAlertMessage = true
                         }
                         else{
-                            tarefaModel.atualizar_tarefa(id:id, Nome: titulo, Descricao: descricao, Duracao_minutos: horas_para_minutos(horas:hora_picker), Dificuldade: dificuldade, Esforco: esforco, Importancia : importancia, Data_entrega: data_entrega)
+                            tarefaModel.atualizar_tarefa(id:id, Nome: titulo, Descricao: descricao, Duracao_minutos: 0, Dificuldade: dificuldade, Esforco: esforco, Importancia : importancia, Data_entrega: data_entrega)
                             //teste
                             //print(tarefaModel.tarefas)
                             dismiss()
@@ -216,12 +216,6 @@ struct TelaEditModalView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
         }
-    }
-    
-    private func horas_para_minutos(horas:Date) -> Int{
-        let calendario = Calendar.current
-        let componentes = calendario.dateComponents([.hour, .minute], from: horas)
-        return (componentes.hour ?? 0) * 60 + (componentes.minute ?? 0)
     }
         
     }
