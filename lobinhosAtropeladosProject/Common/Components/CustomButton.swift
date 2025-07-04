@@ -26,6 +26,10 @@ struct CustomButton: View {
                 .background(backgroundColor)
                 .foregroundColor(foregroundColor)
                 .cornerRadius(16)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color(Color("corPrimaria")), lineWidth: 1)
+                )
         }
     }
 
@@ -50,4 +54,8 @@ struct CustomButton: View {
             return Color(.white)
         }
     }
+}
+
+#Preview {
+    PerfilView()
 }

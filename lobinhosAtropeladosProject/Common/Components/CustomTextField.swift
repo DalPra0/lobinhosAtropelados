@@ -30,3 +30,7 @@ struct CustomTextField: View {
         }
     }
 }
+
+#Preview {
+    PerfilView()
+}

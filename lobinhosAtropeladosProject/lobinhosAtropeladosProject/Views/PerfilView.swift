@@ -72,7 +72,7 @@ struct PerfilView: View {
                     CustomTextBox( // ALTERADO
                         placeholder: "Sobre mim",
                         text: $bio,
-                        isEditable: isEditing // NOVO
+                        isEditable: isEditing
                     )
                     .frame(height: 100)
                     .padding(.horizontal, 4)
