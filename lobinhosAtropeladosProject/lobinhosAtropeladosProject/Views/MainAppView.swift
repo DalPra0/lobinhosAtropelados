@@ -1,25 +1,15 @@
-//
-//  MainAppView.swift.swift
-//  lobinhosAtropeladosProject
-//
-//  Created by Ruby Rosa on 27/06/25.
-//
-
 import SwiftUI
 
 struct MainAppView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
-    
-    @State private var isLoggedIn = false
 
     var body: some View {
+        // Lógica limpa e correta:
         if hasCompletedOnboarding {
-            if isLoggedIn {
-                ContentView()
-            } else {
-                TelaInicialView()
-            }
+            // Se já passou do onboarding, vai para a tela "Começar".
+            ComecarView()
         } else {
+            // Se não, mostra o onboarding.
             OnboardingView(hasCompletedOnboarding: $hasCompletedOnboarding)
         }
     }

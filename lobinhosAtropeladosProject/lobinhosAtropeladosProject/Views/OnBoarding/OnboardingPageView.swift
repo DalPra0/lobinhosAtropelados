@@ -10,24 +10,18 @@ struct OnboardingPageView: View {
     let page: OnboardingPageInfo
 
     var body: some View {
-        VStack(spacing: 20) {
-            Spacer()
-                .frame(height: 300)
-            
+        VStack(alignment: .center, spacing: 16) {
             Text(page.title)
-                .font(.secularOne(size: 26.8))
-//                .font(.largeTitle.bold())
+                .font(.system(size: 26.05, weight: .bold))
+                .foregroundColor(Color("corPrimaria"))
                 .multilineTextAlignment(.center)
-                .padding(.horizontal)
 
             Text(page.description)
-                .font(.body)
-                .foregroundColor(.secondary)
+                .font(.system(size: 16))
+                .foregroundColor(Color("corTextoSecundario"))
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 40)
-            
-            Spacer()
-            Spacer()
+                .lineSpacing(4)
         }
+        .padding(.horizontal, 40)
     }
 }
