@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    @Binding var hasCompletedOnboarding: Bool
+    // MODIFICADO: Agora ele se comunica com o AppState geral do app.
+    @Binding var appState: AppState
     
     @State private var currentPage = 0
     
@@ -40,7 +41,8 @@ struct OnboardingView: View {
                         if currentPage < pages.count - 1 {
                             withAnimation { currentPage += 1 }
                         } else {
-                            hasCompletedOnboarding = true
+                            // MODIFICADO: Ao concluir, muda o estado do app para '.cadastro'.
+                            appState = .cadastro
                         }
                     }) {
                         Text(currentPage == pages.count - 1 ? "VAMOS LÁ!" : "PRÓXIMO")
@@ -60,5 +62,6 @@ struct OnboardingView: View {
 }
 
 #Preview {
-    OnboardingView(hasCompletedOnboarding: .constant(false))
+    // O preview precisa ser atualizado para o novo sistema de estado.
+    OnboardingView(appState: .constant(.onboarding))
 }
