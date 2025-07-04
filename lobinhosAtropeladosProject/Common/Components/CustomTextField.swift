@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CustomInputField: View {
+struct CustomTextField: View {
     var placeholder: String
     @Binding var text: String
     var isSecure: Bool = false
@@ -16,17 +16,17 @@ struct CustomInputField: View {
         Group {
             if isSecure {
                 SecureField(placeholder, text: $text)
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(12)
+                    .font(.title2.bold())
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.primary)
+                    .background(Color.clear)
             } else {
                 TextField(placeholder, text: $text)
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(12)
+                    .font(.title2.bold())
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.primary)
+                    .background(Color.clear)
             }
         }
-        .font(.body)
-        .foregroundColor(.black)
     }
 }

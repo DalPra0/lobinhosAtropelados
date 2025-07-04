@@ -8,9 +8,9 @@
 import SwiftUI
 
 enum CustomButtonStyle {
-    case cinza
-    case azulClaro
-    case azulEscuro
+    case disabledButton
+    case strokeButton
+    case filledButton
 }
 
 struct CustomButton: View {
@@ -31,23 +31,23 @@ struct CustomButton: View {
 
     private var backgroundColor: Color {
         switch style {
-        case .cinza:
+        case .disabledButton:
             return Color(.systemGray5)
-        case .azulClaro:
-            return Color(red: 0.8, green: 0.9, blue: 1.0)
-        case .azulEscuro:
-            return Color.blue
+        case .strokeButton:
+            return Color(.clear)
+        case .filledButton:
+            return Color("corPrimaria")
         }
     }
 
     private var foregroundColor: Color {
         switch style {
-        case .azulEscuro:
-            return .white
-        case .azulClaro:
-            return .blue
-        case .cinza:
+        case .disabledButton:
             return .gray
+        case .strokeButton:
+            return Color("corPrimaria")
+        case .filledButton:
+            return Color(.white)
         }
     }
 }
