@@ -1,10 +1,8 @@
 import SwiftUI
 
 struct CadastroStep2View: View {
-    // Binding para conectar com a view principal do cadastro
     @Binding var estiloOrganizacao: String
     
-    // As opções que serão exibidas na tela
     private let opcoes = [
         "Poucas tarefas e um dia tranquilo.",
         "Algumas tarefas, mas sem sobrecarregar meu dia.",
@@ -15,7 +13,6 @@ struct CadastroStep2View: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 32) {
             
-            // --- Título ---
             VStack(alignment: .leading, spacing: 8) {
                 Text("Quando o assunto é organização, o que você prefere?")
                     .font(.system(size: 28, weight: .bold))
@@ -27,7 +24,6 @@ struct CadastroStep2View: View {
             }
             .padding(.top, 40)
 
-            // --- Botões de Opção ---
             VStack(spacing: 16) {
                 ForEach(opcoes, id: \.self) { opcao in
                     BotaoDeOpcao(
@@ -43,9 +39,7 @@ struct CadastroStep2View: View {
     }
 }
 
-// MARK: - Componente Auxiliar
 
-// Um componente reutilizável para o botão de opção com estilo de "radio button"
 private struct BotaoDeOpcao: View {
     let texto: String
     @Binding var selecaoAtual: String
@@ -63,7 +57,7 @@ private struct BotaoDeOpcao: View {
             HStack(spacing: 16) {
                 Image(systemName: isSelected ? "record.circle" : "circle")
                     .font(.title2)
-                    .foregroundColor(Color("corPrimaria"))
+                    .foregroundColor(Color("corSelect"))
                 
                 Text(texto)
                     .font(.system(size: 16))

@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    // MODIFICADO: Agora ele se comunica com o AppState geral do app.
     @Binding var appState: AppState
     
     @State private var currentPage = 0
@@ -41,7 +40,6 @@ struct OnboardingView: View {
                         if currentPage < pages.count - 1 {
                             withAnimation { currentPage += 1 }
                         } else {
-                            // MODIFICADO: Ao concluir, muda o estado do app para '.cadastro'.
                             appState = .cadastro
                         }
                     }) {
@@ -62,6 +60,5 @@ struct OnboardingView: View {
 }
 
 #Preview {
-    // O preview precisa ser atualizado para o novo sistema de estado.
     OnboardingView(appState: .constant(.onboarding))
 }

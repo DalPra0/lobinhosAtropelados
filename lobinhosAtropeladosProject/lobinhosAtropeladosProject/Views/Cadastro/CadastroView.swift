@@ -8,22 +8,17 @@
 import SwiftUI
 
 struct CadastroView: View {
-    // Binding para comunicar ao app que o cadastro foi concluído.
     @Binding var appState: AppState
     
-    // Instância do nosso modelo de usuário para salvar os dados.
     @ObservedObject private var userModel = UserModel.shared
     
-    // --- Estados para guardar os dados coletados nas 3 telas ---
     @State private var nome: String = ""
     @State private var curso: String = ""
     @State private var periodo: String = ""
     @State private var estiloOrganizacao: String = ""
     
-    // Controla a página atual do carrossel.
     @State private var currentPage = 0
     
-    // Controla a exibição de mensagens de erro.
     @State private var mostrarAlerta = false
     @State private var mensagemAlerta = ""
     
@@ -33,7 +28,6 @@ struct CadastroView: View {
             
             VStack(spacing: 24) {
                 
-                // Carrossel de páginas
                 TabView(selection: $currentPage) {
                     CadastroStep1View(nome: $nome, curso: $curso, periodo: $periodo)
                         .tag(0)
@@ -44,11 +38,9 @@ struct CadastroView: View {
                     CadastroStep3View()
                         .tag(2)
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never)) // Esconde os indicadores padrão
+                .tabViewStyle(.page(indexDisplayMode: .never))
                 
-                // Controles (pontos e botão)
                 VStack(spacing: 24) {
-                    // Indicadores de página
                     HStack(spacing: 8) {
                         ForEach(0..<3) { index in
                             Circle()
@@ -58,14 +50,12 @@ struct CadastroView: View {
                     }
                     .animation(.easeInOut, value: currentPage)
 
-                    // Mensagem de alerta
                     if mostrarAlerta {
                         Text(mensagemAlerta)
                             .font(.caption)
                             .foregroundColor(Color("corDestaqueAlta"))
                     }
 
-                    // Botão de ação
                     Button(action: proximaPagina) {
                         Text(currentPage == 2 ? "VAMOS LÁ!" : "PRÓXIMO")
                             .font(.system(size: 16, weight: .bold))
@@ -82,13 +72,11 @@ struct CadastroView: View {
         }
     }
     
-    // Função que controla a navegação e validação entre as telas.
     private func proximaPagina() {
-        mostrarAlerta = false // Reseta o alerta
+        mostrarAlerta = false
         
         switch currentPage {
         case 0:
-            // Validação da primeira tela
             if nome.isEmpty || curso.isEmpty || periodo.isEmpty {
                 mensagemAlerta = "Por favor, preencha todos os campos."
                 mostrarAlerta = true
@@ -96,7 +84,6 @@ struct CadastroView: View {
                 withAnimation { currentPage += 1 }
             }
         case 1:
-            // Validação da segunda tela
             if estiloOrganizacao.isEmpty {
                 mensagemAlerta = "Por favor, selecione uma preferência."
                 mostrarAlerta = true
@@ -104,11 +91,9 @@ struct CadastroView: View {
                 withAnimation { currentPage += 1 }
             }
         case 2:
-            // Ação final: salvar tudo e ir para o app
             userModel.atualizarUsuario(nome: nome, bio: userModel.user.bio, curso: curso, periodo: periodo)
             userModel.atualizarEstiloOrganizacao(estilo: estiloOrganizacao)
             
-            // Muda o estado do app para 'mainApp', concluindo o fluxo.
             appState = .mainApp
         default:
             break
