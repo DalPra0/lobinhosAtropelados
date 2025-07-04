@@ -1,12 +1,3 @@
-//
-//  TarefaModel.swift
-//
-//
-//  Created by Beatriz Perotto Muniz on 25/06/25.
-//
-//  Atualizado para incluir persistência de dados e a lógica de priorização com IA.
-// TO-DO CHECAR ATUALIZAR TAREFAS
-
 import Foundation
 import SwiftUI
 
@@ -26,10 +17,12 @@ class TarefaModel: ObservableObject {
     
     private init() {
         carregarTarefas()
+        if !tarefas.isEmpty {
+            repriorizarLista()
+        }
     }
     
-    
-    func adiciona_tarefa(Nome: String, Descricao: String?, Duracao_minutos: Int, Dificuldade: String, Esforco: String, Importancia: String,Data_entrega: Date) {
+    func adiciona_tarefa(Nome: String, Descricao: String?, Duracao_minutos: Int, Dificuldade: String, Esforco: String, Importancia: String, Data_entrega: Date) {
         let novaTarefa = Tarefa(nome: Nome, descricao: Descricao, duracao_minutos: Duracao_minutos, dificuldade: Dificuldade, esforco: Esforco, importancia: Importancia, data_entrega: Data_entrega)
         tarefas.append(novaTarefa)
         repriorizarLista()
@@ -51,7 +44,7 @@ class TarefaModel: ObservableObject {
             tarefas[index].importancia = Importancia
             tarefas[index].data_entrega = Data_entrega
         }
-        repriorizarLista()//ADICAO
+        repriorizarLista()
     }
     
     func detalhe(id: UUID) -> Tarefa {
@@ -62,10 +55,20 @@ class TarefaModel: ObservableObject {
             dificuldade: "Desconhecida",
             esforco: "Desconhecido",
             importancia: "Desconhecida",
-            concluida: false,
-            data_entrega : Date(),
-            prioridade: nil
+            data_entrega: Date()
         )
+    }
+    
+    func marcarTarefa(tarefa: Tarefa) {
+        if let index = tarefas.firstIndex(where: { $0.id == tarefa.id }) {
+            tarefas[index].concluida.toggle()
+            if tarefas[index].concluida {
+                tarefas[index].data_conclusao = Date()
+            } else {
+                tarefas[index].data_conclusao = nil
+            }
+            tarefas.sort()
+        }
     }
     
     private func salvarTarefas() {
@@ -87,28 +90,25 @@ class TarefaModel: ObservableObject {
         Task {
             self.estaPriorizando = true
             
+            let tarefasPendentes = self.tarefas.filter { !$0.concluida }
+            let tarefasConcluidas = self.tarefas.filter { $0.concluida }
+            
             do {
-                let tarefasPriorizadas = try await geminiService.priorizarTarefas(self.tarefas)
-                self.tarefas = tarefasPriorizadas.sorted()
+                let resultado = try await geminiService.gerarPlanoDiario(
+                    tarefasPendentes: tarefasPendentes,
+                    tarefasConcluidas: tarefasConcluidas,
+                    perfilUsuario: UserModel.shared.user
+                )
+                
+                let todasAsTarefasAtualizadas = (resultado.planoDoDia + resultado.naoPlanejado + tarefasConcluidas).sorted()
+                
+                self.tarefas = todasAsTarefasAtualizadas
+                
             } catch {
-                print("Erro ao priorizar tarefas: \(error)")
+                print("Erro ao gerar plano diário: \(error)")
             }
             
             self.estaPriorizando = false
-        }
-    }
-    func marcarTarefa(tarefa: Tarefa) {
-        if let index = tarefas.firstIndex(where: { $0.id == tarefa.id }) {
-            tarefas[index].concluida.toggle()
-            if tarefas[index].concluida == true {
-                tarefas[index].data_conclusao = Date()
-            }else{
-                tarefas[index].data_conclusao = nil
-            }
-            //teste
-            print(tarefas)
-
-            tarefas.sort()
         }
     }
 }
