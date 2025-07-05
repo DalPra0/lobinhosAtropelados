@@ -163,7 +163,7 @@ struct TelaInicialView: View {
                 Spacer()
                 
             }.padding(.horizontal,24)
-                .padding(.vertical,64)
+                .padding(.top,64)
                 .ignoresSafeArea()
             
 
