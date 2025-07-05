@@ -14,12 +14,25 @@ struct TelaInicialView: View {
     @State private var decidir_modo = false
     @State private var expandir = false
     
+    
     var cor: Color {
             switch userModel.user.modo_selecionado {
-            case 1: return .green
-            case 2: return .orange
-            case 3: return .red
+            case 1: return .corModoTranquilo
+            case 2: return .corModoModerado
+            case 3: return .corModoIntenso
             default: return .gray
+            }
+        }
+    
+    var texto: String {
+//IMPLEMENTAR ---------------------------------------
+            //no momento esta com base no numero, mas no cadastro (aparentemente muda apenas o estilo de organizacao, em string)
+            //ou mudar aqui com base nos textos das opcoes
+            switch userModel.user.modo_selecionado {
+            case 1: return "tranquilo"
+            case 2: return "moderado"
+            case 3: return "intenso"
+            default: return "a escolher"
             }
         }
 
@@ -28,25 +41,18 @@ struct TelaInicialView: View {
             return tarefaModel.tarefas.filter { !$0.concluida }
         }
         
-        let prioridadeFiltro: Int
-        switch filtro {
-            case "Alta": prioridadeFiltro = 1
-            case "Média": prioridadeFiltro = 2
-            case "Baixa": prioridadeFiltro = 3
-            default: return [] // Caso inesperado
+        if filtro == "Concluídas" {
+            return tarefaModel.tarefas.filter { $0.concluida }
         }
         
-        return tarefaModel.tarefas.filter { !$0.concluida && $0.prioridade == prioridadeFiltro }
-    }
-    
-    private var tarefasConcluidas: [Tarefa] {
-        let hoje = Calendar.current.startOfDay(for: Date())
-
-        return tarefaModel.tarefas.filter {
-            $0.concluida && ($0.data_conclusao ?? Date.distantFuture) >= hoje
+        if filtro == "Para hoje" {
+//IMPLEMENTAR ---------------------------------------
+            return tarefaModel.tarefas.filter { $0.concluida }
         }
+        
+        return tarefaModel.tarefas
     }
-    
+        
         
     
     //tela
@@ -83,7 +89,83 @@ struct TelaInicialView: View {
             }
             
             
-            //t
+            //painel com perfil/nome etc
+            VStack(alignment:.leading, spacing:32){
+                HStack(spacing:8){
+                    //texto
+                    VStack(alignment:.leading, spacing:5){
+                        Text("Olá \(userModel.user.nome),")
+                            .font(.body)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.corTextoSecundario)
+                        Text("Seu dia será \(texto)!")
+                            .font(.system(size: 22))
+                            .fontWeight(.semibold)
+                            .foregroundColor(cor)
+                        
+                        Button{
+//IMPLEMENTAR ---------------------------------------
+
+                            //acao de alterar modo
+                        }label:{
+                            Text("Clique aqui para alterar")
+                                .font(.system(size: 13))
+                                .fontWeight(.regular)
+                                .foregroundColor(.corTextoTerciario)
+                        }
+                        
+                    }
+                    
+                    Spacer()
+                    
+                    //perfil
+                    VStack{
+                        Button{
+//IMPLEMENTAR ---------------------------------------
+                            //ir para perfil
+                        }label:{
+                            Image(systemName: "person")
+                                .foregroundColor(.corPrimaria)
+                                .font(.system(size: 30))
+                                .bold()
+                            
+                        }
+                    }
+                }
+                
+                VStack(alignment:.leading, spacing:24){
+                    Text("Minhas tarefas")
+                        .bold()
+                        .font(.system(size: 25))
+                    
+                    //filtros
+                    HStack(spacing:8){
+                        BotaoFiltro(titulo: "Para hoje", filtroSelecionado: $filtro)
+                        BotaoFiltro(titulo: "Concluídas", filtroSelecionado: $filtro)
+                        BotaoFiltro(titulo: "Todas", filtroSelecionado: $filtro)
+                    }
+                    
+//IMPLEMENTAR ---------------------------------------
+
+                    //lista
+                    List{
+
+                        
+                    }
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    Spacer()
+
+                    
+                }
+                
+                
+                Spacer()
+                
+            }.padding(.horizontal,24)
+                .padding(.vertical,64)
+                .ignoresSafeArea()
+            
 
             
             //carregando
@@ -209,16 +291,22 @@ struct BotaoFiltro: View {
         Button(action: {
             filtroSelecionado = titulo
         }) {
-            Text(titulo)
-                .fontWeight(isSelected ? .bold : .regular)
-                .foregroundColor(isSelected ? .white : .blue)
-                .padding(.horizontal, 24)
-                .padding(.vertical, 8)
+            HStack{
+                Spacer()
+                Text(titulo)
+                    .font(.system(size: 15))
+                    .fontWeight(.semibold)
+                    .foregroundColor(isSelected ? .white : .corPrimaria)
+                Spacer()
+                    
+            }
+                .padding(.vertical, 7)
                 .background(
-                    Capsule().fill(isSelected ? Color.blue : Color.clear)
+                    RoundedRectangle(cornerRadius: 12.0).fill(isSelected ? Color.corPrimaria : Color.clear)
+
                 )
                 .overlay(
-                    Capsule().stroke(Color.blue.opacity(0.5))
+                    RoundedRectangle(cornerRadius: 12.0).stroke(Color.corPrimaria, lineWidth: 1.0)
                 )
         }
     }
