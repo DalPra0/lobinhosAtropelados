@@ -12,18 +12,21 @@ struct TarefaAddModalView: View {
     @State private var titulo: String = ""
     @State private var descricao: String = ""
     @State private var dificuldade: String = ""
-    @State private var esforco: String = ""
-    @State private var importancia: String = ""
     @State private var data_entrega: Date = Date()
     @State private var showAlertMessage = false
     @State private var showPickerDataEntrega = false
     
+    
+    @State private var dataSelecionada = false
+    //@State private var difi: Int = 0
+
     
     var body: some View {
         ZStack{
             //fundo
                 Color.corFundo
                     .ignoresSafeArea()
+            
             
             VStack (alignment:.leading,spacing : 30){
                 //botao de fechar
@@ -46,10 +49,10 @@ struct TarefaAddModalView: View {
                         .font(.system(size: 30, weight: .bold))
                         .foregroundColor(.corPrimaria)
                     
-                    VStack(alignment:.leading, spacing: 15){
+                    VStack(alignment:.leading, spacing: 17){
                         
                         //titulo
-                        VStack(alignment:.leading, spacing: 8){
+                        VStack(alignment:.leading, spacing: 10){
                             Text("Tarefa")
                                 .font(.system(size: 16, weight: .medium))
                                 .foregroundColor(.corTextoSecundario)
@@ -74,7 +77,7 @@ struct TarefaAddModalView: View {
                         }
                         
                         //descricao
-                        VStack(alignment:.leading, spacing: 8){
+                        VStack(alignment:.leading, spacing: 10){
                             Text("Descrição (opcional)")
                                 .font(.system(size: 16, weight: .medium))
                                 .foregroundColor(.corTextoSecundario)
@@ -100,65 +103,51 @@ struct TarefaAddModalView: View {
                         }
 
                         //data
-                        VStack(alignment:.leading, spacing: 8){
+                        VStack(alignment:.leading, spacing: 10){
                             Text("Prazo de entrega")
                                 .font(.system(size: 16, weight: .medium))
                                 .foregroundColor(.corTextoSecundario)
 
                             
                             //campo
-                            HStack{
-                                TextField(
-                                    "",
-                                    text: $titulo,
-                                    prompt: Text(data_entrega.formatted(date: .numeric, time: .omitted))
-                                        .font(.system(size: 13, weight: .bold))
-                                        .foregroundColor(.corStroke)
-                                )
-                                .font(.body)
-                                .foregroundStyle(.black)
-                                .padding()
+
+                            
+                            HStack {
+                                DatePicker("", selection: $data_entrega, in: Date()..., displayedComponents: .date)
+                                    .datePickerStyle(.compact)
+                                    .labelsHidden()
+                                    .padding(.vertical, 10)
+                                    .padding(.leading,15)
+                                    .environment(\.locale, Locale(identifier: "pt_BR"))
                                 
-                                Button{
-                                    withAnimation(.easeInOut) {
-                                                    showPickerDataEntrega.toggle()
-                                                }
-                                }label:{
-                                    Image(systemName: "calendar")
-                                        .foregroundColor(.corPrimaria)
-                                        .font(.system(size: 20))
-                                        .padding(.horizontal,11)
-                                }
+                                Spacer()
                                 
-                            }
-                            .background {
+                                /*Image(systemName: "calendar")
+                                    .foregroundColor(.corStroke)
+                                    .font(.system(size: 20))
+                                    .padding(.horizontal,11)*/
+                                
+                            }.background {
                                 RoundedRectangle(cornerRadius: 12)
                                     .fill(.corFundo)
                                     .stroke(Color.corStroke, lineWidth: 2)
-                            }
+                        }
+                        
                             
-                            if showPickerDataEntrega{
-                                DatePicker("", selection: $data_entrega, in: Date()..., displayedComponents: .date)
-                                    .datePickerStyle(.wheel)
-                                    .labelsHidden()
-                                    .frame(height: 80)
-                                    .clipped()
-                                    .transition(.opacity)
-                                    .environment(\.locale, Locale(identifier: "pt_BR"))
-
-                            }
                         }
                         
                         //dificuldade
-                        VStack(alignment:.leading, spacing: 8){
+                        VStack(alignment:.leading, spacing: 10){
                             Text("Dificuldade da tarefa")
                                 .font(.system(size: 16, weight: .medium))
                                 .foregroundColor(.corTextoSecundario)
 
                             
                             //opcoes
+                            //usando componente
+                            //CustomNivelSelector(selected: $difi)
                             
-                            HStack(spacing: 23){
+                            HStack(spacing: 26){
                                 Button{
                                     dificuldade = "1"
                                 }label:{
@@ -244,15 +233,7 @@ struct TarefaAddModalView: View {
                     }
                 }
                 
-                
                 Spacer()
-                
-                if showAlertMessage {
-                    Text("Preencha todos os campos obrigatórios!")
-                        .foregroundColor(.red)
-                        .font(.subheadline)
-                        .multilineTextAlignment(.center)
-                }
                 
             }
                 .padding(.horizontal,24)
@@ -261,13 +242,22 @@ struct TarefaAddModalView: View {
             
             VStack{
                 Spacer()
+                if showAlertMessage {
+                    Text("Preencha todos os campos obrigatórios!")
+                        .foregroundColor(.red)
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                        .padding(.vertical,5)
+                }
+
+                
                 Button{
                     if titulo.isEmpty || dificuldade.isEmpty {
                         showAlertMessage = true
                     }
                     else{
                         showAlertMessage = false
-                        tarefaModel.adiciona_tarefa(Nome: titulo, Descricao: descricao, Duracao_minutos: 0, Dificuldade: dificuldade, Esforco: esforco, Importancia : importancia, Data_entrega : data_entrega)
+                        tarefaModel.adiciona_tarefa(Nome: titulo, Descricao: descricao, Dificuldade: dificuldade, Data_entrega : data_entrega)
                         dismiss()
                     }
                 }label:{

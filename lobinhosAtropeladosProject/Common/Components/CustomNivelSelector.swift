@@ -34,7 +34,7 @@ struct CustomNivelSelector: View {
                 }
             }
         }
-        .padding(.horizontal)
+        //.padding(.horizontal)
     }
 }
 

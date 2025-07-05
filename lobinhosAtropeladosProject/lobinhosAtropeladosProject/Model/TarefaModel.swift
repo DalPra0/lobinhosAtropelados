@@ -22,8 +22,8 @@ class TarefaModel: ObservableObject {
         }
     }
     
-    func adiciona_tarefa(Nome: String, Descricao: String?, Duracao_minutos: Int, Dificuldade: String, Esforco: String, Importancia: String, Data_entrega: Date) {
-        let novaTarefa = Tarefa(nome: Nome, descricao: Descricao, duracao_minutos: Duracao_minutos, dificuldade: Dificuldade, esforco: Esforco, importancia: Importancia, data_entrega: Data_entrega)
+    func adiciona_tarefa(Nome: String, Descricao: String?, Dificuldade: String, Data_entrega: Date) {
+        let novaTarefa = Tarefa(nome: Nome, descricao: Descricao, dificuldade: Dificuldade, data_entrega: Data_entrega)
         tarefas.append(novaTarefa)
         repriorizarLista()
     }
@@ -34,14 +34,11 @@ class TarefaModel: ObservableObject {
         }
     }
     
-    func atualizar_tarefa(id: UUID, Nome: String, Descricao: String?, Duracao_minutos: Int, Dificuldade: String, Esforco: String, Importancia: String, Data_entrega: Date) {
+    func atualizar_tarefa(id: UUID, Nome: String, Descricao: String?, Dificuldade: String, Data_entrega: Date) {
         if let index = tarefas.firstIndex(where: { $0.id == id }) {
             tarefas[index].nome = Nome
             tarefas[index].descricao = Descricao
-            tarefas[index].duracao_minutos = Duracao_minutos
             tarefas[index].dificuldade = Dificuldade
-            tarefas[index].esforco = Esforco
-            tarefas[index].importancia = Importancia
             tarefas[index].data_entrega = Data_entrega
         }
         repriorizarLista()
@@ -51,10 +48,7 @@ class TarefaModel: ObservableObject {
         return tarefas.first(where: { $0.id == id }) ?? Tarefa(
             nome: "Tarefa não encontrada",
             descricao: "Nenhuma tarefa com esse ID.",
-            duracao_minutos: 0,
             dificuldade: "Desconhecida",
-            esforco: "Desconhecido",
-            importancia: "Desconhecida",
             data_entrega: Date()
         )
     }

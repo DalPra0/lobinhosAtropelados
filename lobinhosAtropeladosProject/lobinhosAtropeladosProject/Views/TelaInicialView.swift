@@ -81,6 +81,9 @@ struct TelaInicialView: View {
                     .padding(.vertical,20)
                 }
             }
+            
+            
+            //t
 
             
             //carregando
@@ -96,15 +99,20 @@ struct TelaInicialView: View {
                 .cornerRadius(10)
             }
         }
+        
+        //sem < back
         .navigationBarHidden(true)
+        //se clica no botao -> sheet de add
         .sheet(isPresented: $showModal_add) {
             TarefaAddModalView()
                 .presentationDetents([.large])
         }
+        //se clica no editar -> modal de edicao
         .sheet(isPresented: $showModal) {
             TelaEditModalView(id:tarefa_id_edicao)
                 .presentationDetents([.large])
         }
+        //variavel auxiliar pra abrir modal de edicao -> correcao de bug------------------------------------------------
         .onChange(of: showModal_aux) {
             if showModal_aux {
                 showModal = true
@@ -115,6 +123,7 @@ struct TelaInicialView: View {
                 showModal_aux = false
             }
         }
+        //------------------------------------------------
     }
     
     
@@ -143,14 +152,14 @@ struct TelaInicialView: View {
                 }
                 if(id_tarefa_expandida != tarefa.id || expandir == false){
                     HStack {
-                        HStack(spacing: 4) { Image(systemName: "hourglass"); Text("\(tarefa.duracao_minutos) min") }
+                        HStack(spacing: 4) { Image(systemName: "hourglass"); Text("\(tarefa.data_entrega) min") }
                         Spacer()
-                        HStack(spacing: 4) { Image(systemName: "bolt.fill"); Text(tarefa.importancia) }
+                        HStack(spacing: 4) { Image(systemName: "bolt.fill"); Text(tarefa.dificuldade) }
                         
                     }.font(.caption).foregroundColor(.secondary).padding(.top, 4)
                 }
                 
-                if (id_tarefa_expandida == tarefa.id && expandir == true){
+                /*if (id_tarefa_expandida == tarefa.id && expandir == true){
                     Text("Dificuldade : \(tarefa.dificuldade)")
                     .font(.subheadline).foregroundColor(.secondary).padding(.top, 4)
                     Text("Esforço : \(tarefa.esforco)")
@@ -160,7 +169,7 @@ struct TelaInicialView: View {
                     let tempo = String(format: "%dh %02dmin", tarefa.duracao_minutos / 60, tarefa.duracao_minutos % 60)
                     Text("Duração : \(tempo)")
                     .font(.subheadline).foregroundColor(.secondary).padding(.top, 4)
-                }
+                }*/
             }
             Spacer()
         }.padding(.vertical, 5).opacity(tarefa.concluida ? 0.6 : 1.0)

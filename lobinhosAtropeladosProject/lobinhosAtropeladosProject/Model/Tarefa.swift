@@ -14,23 +14,17 @@ struct Tarefa: Codable, Identifiable, Comparable {
     let id: UUID
     var nome: String
     var descricao: String?
-    var duracao_minutos: Int
     var dificuldade: String
-    var esforco: String
-    var importancia: String
     var concluida: Bool
     var data_conclusao: Date? = nil
     var data_entrega: Date
     var prioridade: Int?
     
-    init(id: UUID = UUID(), nome: String, descricao: String?, duracao_minutos: Int, dificuldade: String, esforco: String, importancia: String, concluida: Bool = false, data_entrega : Date, prioridade: Int? = nil) {
+    init(id: UUID = UUID(), nome: String, descricao: String?, dificuldade: String, concluida: Bool = false, data_entrega : Date, prioridade: Int? = nil) {
         self.id = id
         self.nome = nome
         self.descricao = descricao
-        self.duracao_minutos = duracao_minutos
         self.dificuldade = dificuldade
-        self.esforco = esforco
-        self.importancia = importancia
         self.concluida = concluida
         self.data_entrega = data_entrega
         self.prioridade = prioridade

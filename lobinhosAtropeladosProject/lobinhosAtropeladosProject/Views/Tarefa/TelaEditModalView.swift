@@ -12,8 +12,6 @@ struct TelaEditModalView: View {
     @State private var titulo:String
     @State private var descricao: String
     @State private var dificuldade: String
-    @State private var esforco: String
-    @State private var importancia: String
     @State private var data_entrega: Date = Date()
     @State private var showAlertMessage = false
     
@@ -28,195 +26,265 @@ struct TelaEditModalView: View {
         self._titulo = State(initialValue: tarefa.nome)
         self._descricao = State(initialValue: tarefa.descricao ?? "")
         self._dificuldade = State(initialValue: tarefa.dificuldade)
-        self._esforco = State(initialValue: tarefa.esforco)
-        self._importancia = State(initialValue: tarefa.importancia)
         self._data_entrega = State(initialValue: tarefa.data_entrega)
-        let horas = tarefa.duracao_minutos / 60
-        let minutos = tarefa.duracao_minutos % 60
-        let date = Calendar.current.date(bySettingHour: horas, minute: minutos, second: 0, of: Date()) ?? Date()
-        self._hora_picker = State(initialValue: date)
     }
     
     var body: some View {
-        ScrollView{
+        ZStack{
+            //fundo
+                Color.corFundo
+                    .ignoresSafeArea()
             
-            VStack (spacing : 52){
-                
-                VStack (alignment:.leading, spacing: 16) {
-                    
-                    VStack (alignment:.leading, spacing : 7){
-                        Text ("Editar Tarefa")
-                            .font(.system(size: 22))
-                            .fontWeight(.semibold)
-                        
-                        TextField(
-                            "",
-                            text: $titulo,
-                            prompt: Text("Nome da Tarefa...")
-                                .font(.body)
-                                .foregroundStyle(Color(uiColor: .tertiaryLabel))
-                        )
-                        .font(.body)
-                        .foregroundStyle(.black)
-                        .padding()
-                        .background {
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(.white)
-                        }
-                        
-                        TextField(
-                            "",
-                            text: $descricao,
-                            prompt: Text("Descrição...")
-                                .font(.body)
-                                .foregroundStyle(Color(uiColor: .tertiaryLabel))
-                        )
-                        .font(.body)
-                        .foregroundStyle(.black)
-                        .padding()
-                        .background {
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(.white)
-                        }
-                    }
-                    
-                    VStack(alignment:.leading, spacing:10){
-                        VStack(alignment:.leading, spacing:7){
-                            Text("📆 Data de entrega")
-                                .fontWeight(.semibold)
-                                .font(.system(size: 18))
-                            
-                            Text("Qual a data de entrega?")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                        
-                        DatePicker("", selection: $data_entrega, in: Date()..., displayedComponents: .date)
-                            .datePickerStyle(.wheel)
-                            .labelsHidden()
-                            .frame(height: 80)
-                            .clipped()
-                            .transition(.opacity)
-                        
-                    }
-                    
-                    VStack(alignment:.leading, spacing:24){
-                        
-                        VStack(alignment:.leading, spacing:10){
-                            VStack(alignment:.leading, spacing:7){
-                                Text("🏋️‍♂️ Dificuldade")
-                                    .fontWeight(.semibold)
-                                    .font(.system(size: 18))
-                                
-                                Text("Qual a dificuldade dessa tarefa?")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-                            //filtro
-                            HStack(spacing:17){
-                                Button{
-                                    dificuldade="Baixa"
-                                }
-                                label:{
-                                    Text("Baixa")
-                                        .foregroundColor(dificuldade == "Baixa" ? .white : .blue)
-                                        .font(.subheadline)
-                                        .padding(.horizontal, 33)
-                                        .padding(.vertical, 7)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 40)
-                                                .fill(dificuldade == "Baixa" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
-                                }
-                                
-                                Button{
-                                    dificuldade="Média"
-                                }
-                                label:{
-                                    Text("Média")
-                                        .foregroundColor(dificuldade == "Média" ? .white : .blue)
-                                        .font(.subheadline)
-                                        .padding(.horizontal, 31)
-                                        .padding(.vertical, 7)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 40)
-                                                .fill(dificuldade == "Média" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
-                                }
-                                
-                                Button{
-                                    dificuldade="Alta"
-                                }
-                                label:{
-                                    Text("Alta")
-                                        .foregroundColor(dificuldade == "Alta" ? .white : .blue)
-                                        .font(.subheadline)
-                                        .padding(.horizontal, 38)
-                                        .padding(.vertical, 7)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 40)
-                                                .fill(dificuldade == "Alta" ? Color.blue.opacity(1) : Color.blue.opacity(0.13)))
-                                }
-                            }
-                        }
-                        
-                        
-                    }
-                    
-                    
-                    if showAlertMessage {
-                        Text("Título deve ser preenchido")
-                            .foregroundColor(.red)
-                            .font(.caption)
-                            .padding(.top, 5)
-                    }
-                    
-                    
-                }
-                
-                HStack {
-                    Button(){
+            
+            VStack (alignment:.leading,spacing : 30){
+                //botao de fechar
+                HStack{
+                    Button{
                         dismiss() // Fecha a sheet
-                    }label: {
-                        Text("Cancelar")
-                            .foregroundColor(.red)
-                            .font(.subheadline)
-                            .padding(.horizontal, 32.5)
-                            .padding(.vertical, 7)
-                            .background(
-                                RoundedRectangle(cornerRadius: 40)
-                                    .fill(Color.red.opacity(0.13))
-                            )
+                    }label:{
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.corPrimaria)
+                            .font(.system(size: 22))
+                            .bold()
                     }
                     Spacer()
-                    Button(){
-                        if titulo.isEmpty {
-                            showAlertMessage = true
-                        }
-                        else{
-                            tarefaModel.atualizar_tarefa(id:id, Nome: titulo, Descricao: descricao, Duracao_minutos: 0, Dificuldade: dificuldade, Esforco: esforco, Importancia : importancia, Data_entrega: data_entrega)
-                            //teste
-                            //print(tarefaModel.tarefas)
-                            dismiss()
-                        }
-                    }label:{
-                        Text("Salvar")
-                            .foregroundColor(.blue)
-                            .font(.subheadline)
-                            .padding(.horizontal, 41.5)
-                            .padding(.vertical, 7)
-                            .background(
-                                RoundedRectangle(cornerRadius: 40)
-                                    .fill(Color.blue.opacity(0.13))
+                }
+                
+                
+                VStack(alignment:.leading, spacing: 30)
+                {
+                    Text("Editar Tarefa")
+                        .font(.system(size: 30, weight: .bold))
+                        .foregroundColor(.corPrimaria)
+                    
+                    VStack(alignment:.leading, spacing: 17){
+                        
+                        //titulo
+                        VStack(alignment:.leading, spacing: 10){
+                            Text("Tarefa")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.corTextoSecundario)
+                            
+                            //campo
+                            TextField(
+                                "",
+                                text: $titulo,
+                                prompt: Text("NOME DA TAREFA")
+                                    .font(.system(size: 13, weight: .bold))
+                                    .foregroundColor(.corStroke)
                             )
+                            .font(.body)
+                            .foregroundStyle(.black)
+                            .padding()
+                            .background {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(.corFundo)
+                                    .stroke(Color.corStroke, lineWidth: 2)
+                            }
+                            
+                        }
+                        
+                        //descricao
+                        VStack(alignment:.leading, spacing: 10){
+                            Text("Descrição (opcional)")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.corTextoSecundario)
+
+                            
+                            //campo
+                            TextField(
+                                "",
+                                text: $descricao,
+                                prompt: Text("DESCRIÇÃO DA TAREFA")
+                                    .font(.system(size: 13, weight: .bold))
+                                    .foregroundColor(.corStroke)
+                            )
+                            .font(.body)
+                            .foregroundStyle(.black)
+                            .padding()
+                            .background {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(.corFundo)
+                                    .stroke(Color.corStroke, lineWidth: 2)
+                            }
+                            
+                        }
+
+                        //data
+                        VStack(alignment:.leading, spacing: 10){
+                            Text("Prazo de entrega")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.corTextoSecundario)
+
+                            
+                            //campo
+
+                            
+                            HStack {
+                                DatePicker("", selection: $data_entrega, in: Date()..., displayedComponents: .date)
+                                    .datePickerStyle(.compact)
+                                    .labelsHidden()
+                                    .padding(.vertical, 10)
+                                    .padding(.leading,15)
+                                    .environment(\.locale, Locale(identifier: "pt_BR"))
+                                
+                                Spacer()
+                                
+                                /*Image(systemName: "calendar")
+                                    .foregroundColor(.corStroke)
+                                    .font(.system(size: 20))
+                                    .padding(.horizontal,11)*/
+                                
+                            }.background {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(.corFundo)
+                                    .stroke(Color.corStroke, lineWidth: 2)
+                        }
+                        
+                            
+                        }
+                        
+                        //dificuldade
+                        VStack(alignment:.leading, spacing: 10){
+                            Text("Dificuldade da tarefa")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.corTextoSecundario)
+
+                            
+                            //opcoes
+                            //usando componente
+                            //CustomNivelSelector(selected: $difi)
+                            
+                            HStack(spacing: 26){
+                                Button{
+                                    dificuldade = "1"
+                                }label:{
+                                    Text("1")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(dificuldade == "1" ? .white : .corStroke)
+                                        .padding(.vertical,14)
+                                        .padding(.horizontal,20)
+                                        .background {
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .fill(dificuldade == "1" ? .corPrimaria : .corFundo)
+                                                .stroke(dificuldade == "1" ? .corPrimaria : .corStroke, lineWidth: 2)
+                                        }
+                                }
+                                
+                                Button{
+                                    dificuldade = "2"
+                                }label:{
+                                    Text("2")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(dificuldade == "2" ? .white : .corStroke)
+                                        .padding(.vertical,14)
+                                        .padding(.horizontal,20)
+                                        .background {
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .fill(dificuldade == "2" ? .corPrimaria : .corFundo)
+                                                .stroke(dificuldade == "2" ? .corPrimaria : .corStroke, lineWidth: 2)
+                                        }
+                                }
+                                
+                                Button{
+                                    dificuldade = "3"
+                                }label:{
+                                    Text("3")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(dificuldade == "3" ? .white : .corStroke)
+                                        .padding(.vertical,14)
+                                        .padding(.horizontal,20)
+                                        .background {
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .fill(dificuldade == "3" ? .corPrimaria : .corFundo)
+                                                .stroke(dificuldade == "3" ? .corPrimaria : .corStroke, lineWidth: 2)
+                                        }
+                                }
+                                
+                                Button{
+                                    dificuldade = "4"
+                                }label:{
+                                    Text("4")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(dificuldade == "4" ? .white : .corStroke)
+                                        .padding(.vertical,14)
+                                        .padding(.horizontal,20)
+                                        .background {
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .fill(dificuldade == "4" ? .corPrimaria : .corFundo)
+                                                .stroke(dificuldade == "4" ? .corPrimaria : .corStroke, lineWidth: 2)
+                                        }
+                                }
+                                
+                                Button{
+                                    dificuldade = "5"
+                                }label:{
+                                    Text("5")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(dificuldade == "5" ? .white : .corStroke)
+                                        .padding(.vertical,14)
+                                        .padding(.horizontal,20)
+                                        .background {
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .fill(dificuldade == "5" ? .corPrimaria : .corFundo)
+                                                .stroke(dificuldade == "5" ? .corPrimaria : .corStroke, lineWidth: 2)
+                                        }
+                                }
+                            }
+                            
+                            
+                            
+                        }
+
+                        
                         
                     }
-                }.padding(.horizontal,37)
+                }
+                
+                Spacer()
+                
             }
-            .padding(.horizontal,24)
-            .padding(.top,29)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.horizontal,24)
+                .padding(.top,64)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             
+            VStack{
+                Spacer()
+                if showAlertMessage {
+                    Text("Preencha todos os campos obrigatórios!")
+                        .foregroundColor(.red)
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                        .padding(.vertical,5)
+                }
+
+                
+                Button{
+                    if titulo.isEmpty {
+                        showAlertMessage = true
+                    }
+                    else{
+                        showAlertMessage = false
+                        tarefaModel.atualizar_tarefa(id: id, Nome: titulo, Descricao: descricao, Dificuldade: dificuldade, Data_entrega : data_entrega)
+                        dismiss()
+                    }
+                }label:{
+                    Text("SALVAR")
+                        .foregroundColor(.white)
+                        .font(.system(size: 14, weight: .bold))
+                        .padding(.horizontal, 144)
+                        .padding(.vertical, 16)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.corPrimaria)
+                        )
+                }
+            }
+            .padding(.bottom,64)
+            .ignoresSafeArea()
+
+            }
         }
-    }
         
     }
 
