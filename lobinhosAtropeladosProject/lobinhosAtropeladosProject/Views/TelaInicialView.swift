@@ -5,6 +5,7 @@ struct TelaInicialView: View {
 
     @ObservedObject var userModel = UserModel.shared
 
+    @State private var showModal_add = false
     @State private var filtro: String = "Todos"
     @State private var showModal = false
     @State private var showModal_aux = false
@@ -48,124 +49,41 @@ struct TelaInicialView: View {
     
         
     
+    //tela
+    
     var body: some View {
         ZStack {
-            VStack(spacing: 24) {
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Text("Visualize suas atividades")
-                            .font(.title)
-                            .bold()
-                        Spacer()
-                    }
-                    
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 12) {
-                            BotaoFiltro(titulo: "Todos", filtroSelecionado: $filtro)
-                            BotaoFiltro(titulo: "Alta", filtroSelecionado: $filtro)
-                            BotaoFiltro(titulo: "Média", filtroSelecionado: $filtro)
-                            BotaoFiltro(titulo: "Baixa", filtroSelecionado: $filtro)
-                        }
-                    }
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 24)
-                
-                //para teste
-                HStack{
-                    Spacer()
-                    Circle()
-                        .frame(width: 50, height: 50)
-                    // Tamanho
-                        .foregroundColor(cor)
-                    // Cor de preenchimento
-                    Spacer()
-                    VStack(alignment:.leading){
-                        Text("Modo selecionado : \(userModel.user.modo_selecionado)")
-                        Button{
-                            decidir_modo.toggle()
-                        }label:{
-                            Text("Alterar")
-                        }
-                        
-                        if(decidir_modo){
-                            HStack{
-                                Button{
-                                    userModel.atualizar_modo(modo: 0)
-                                    decidir_modo.toggle()
-                                    print(userModel.user.modo_selecionado)
-                                }label:{
-                                    Circle()
-                                        .frame(width: 20, height: 20)
-                                    // Tamanho
-                                        .foregroundColor(.gray)
-                                    // Cor de preenchimento
-                                }
-                                
-                                Button{
-                                    userModel.atualizar_modo(modo: 1)
-                                    decidir_modo.toggle()
-                                    print(userModel.user.modo_selecionado)
-                                }label:{
-                                    Circle()
-                                        .frame(width: 20, height: 20)
-                                    // Tamanho
-                                        .foregroundColor(.green)
-                                    // Cor de preenchimento
-                                }
-                                Button{
-                                    userModel.atualizar_modo(modo: 2)
-                                    decidir_modo.toggle()
-                                    print(userModel.user.modo_selecionado)
-                                }label:{
-                                    Circle()
-                                        .frame(width: 20, height: 20)
-                                    // Tamanho
-                                        .foregroundColor(.orange)
-                                    // Cor de preenchimento
-                                }
-                                Button{
-                                    userModel.atualizar_modo(modo: 3)
-                                    decidir_modo.toggle()
-                                    print(userModel.user.modo_selecionado)
-                                }label:{
-                                    Circle()
-                                        .frame(width: 20, height: 20)
-                                    // Tamanho
-                                        .foregroundColor(.red)
-                                    // Cor de preenchimento
-                                }
-                            }
-                        }
-                    }
-                    Spacer()
-                }
-                //para teste
-                
-                List {
-                    Section(header: Text(filtro == "Todos" ? "Todas as Prioridades" : "Prioridade \(filtro)")) {
-                        if tarefasFiltradas.isEmpty && !tarefaModel.estaPriorizando {
-                             Text("Nenhuma tarefa com esta prioridade.")
-                                .foregroundColor(.secondary)
-                        } else {
-                            ForEach(tarefasFiltradas) { tarefa in
-                                celulaDaTarefa(tarefa: tarefa)
-                            }
-                        }
-                    }
-                    
-                    if !tarefasConcluidas.isEmpty {
-                        Section(header: Text("Concluídas")) {
-                            ForEach(tarefasConcluidas) { tarefa in
-                                celulaDaTarefa(tarefa: tarefa)
-                            }
-                        }
-                    }
-                }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-            }
+            //fundo
+            Color.corFundo
+                .ignoresSafeArea()
             
+            VStack(alignment:.leading, spacing :32){
+                
+            }
+            .padding(.horizontal, 24)
+            .padding(.horizontal, 32)
+            
+            //botao flutuante
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button{
+                        showModal_add = true
+                    }
+                    label:{
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundColor(.corPrimaria)
+                            .font(.system(size: 45))
+
+                    }
+                    .padding(.horizontal,16)
+                    .padding(.vertical,20)
+                }
+            }
+
+            
+            //carregando
             if tarefaModel.estaPriorizando {
                 VStack {
                     ProgressView()
@@ -177,7 +95,13 @@ struct TelaInicialView: View {
                 .background(.thinMaterial)
                 .cornerRadius(10)
             }
-        }   .sheet(isPresented: $showModal) {
+        }
+        .navigationBarHidden(true)
+        .sheet(isPresented: $showModal_add) {
+            TarefaAddModalView()
+                .presentationDetents([.large])
+        }
+        .sheet(isPresented: $showModal) {
             TelaEditModalView(id:tarefa_id_edicao)
                 .presentationDetents([.large])
         }
@@ -192,6 +116,12 @@ struct TelaInicialView: View {
             }
         }
     }
+    
+    
+    
+    
+    
+    
     
     @ViewBuilder
     private func celulaDaTarefa(tarefa: Tarefa) -> some View {
@@ -233,9 +163,6 @@ struct TelaInicialView: View {
                 }
             }
             Spacer()
-            if !tarefa.concluida {
-                Text("\(tarefa.prioridade ?? 0)").font(.caption).fontWeight(.bold).padding(8).background(corDaPrioridade(tarefa.prioridade)).foregroundColor(.white).clipShape(Circle())
-            }
         }.padding(.vertical, 5).opacity(tarefa.concluida ? 0.6 : 1.0)
         .swipeActions {
             Button(){
@@ -258,16 +185,8 @@ struct TelaInicialView: View {
             expandir.toggle()
         }
     }
-    
-    private func corDaPrioridade(_ prioridade: Int?) -> Color {
-        switch prioridade {
-        case 1: return .red
-        case 2: return .orange
-        case 3: return .blue
-        default: return .gray
-        }
-    }
 }
+
 
 struct BotaoFiltro: View {
     let titulo: String

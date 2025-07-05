@@ -28,7 +28,7 @@ struct MainAppView: View {
             
         case .mainApp:
             // Uma vez que tudo foi concluído, o fluxo normal do app começa.
-            ComecarView()
+            ContentView()
         }
     }
 }
