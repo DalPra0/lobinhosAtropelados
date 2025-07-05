@@ -15,6 +15,7 @@ class TarefaModel: ObservableObject {
         }
     }
     
+    
     private init() {
         carregarTarefas()
         if !tarefas.isEmpty {
