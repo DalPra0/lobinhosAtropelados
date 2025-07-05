@@ -42,15 +42,20 @@ struct CelulaDaTarefaView: View {
                         .foregroundColor(tarefa.concluida ? Color("corSelect") : Color("corPrimaria"))
                 }.buttonStyle(.plain)
                 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text(tarefa.nome)
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.system(size: 16, weight: .bold))
                         .strikethrough(tarefa.concluida, color: Color("corTextoSecundario"))
                     
                     if !tarefa.concluida {
-                        Text(tempoRestante)
-                            .font(.caption)
-                            .foregroundColor(Color("corTextoSecundario"))
+                        HStack(spacing: 4) {
+                            Image(systemName: "hourglass")
+                                .font(.caption)
+                                .foregroundColor(Color("corTextoSecundario"))
+                            Text(tempoRestante)
+                                .font(.caption)
+                                .foregroundColor(Color("corTextoSecundario"))
+                        }
                     }
                 }
                 Spacer()
@@ -71,28 +76,30 @@ struct CelulaDaTarefaView: View {
                 }
             }
             
-            // --- CONTEÚDO EXPANDIDO ---
+            // --- CONTEÚDO EXPANDIDO (DESIGN FINAL) ---
             if isExpanded {
                 VStack(alignment: .leading, spacing: 12) {
-                    Divider().padding(.vertical, 4)
                     
                     if let descricao = tarefa.descricao, !descricao.isEmpty {
-                        Text(descricao).font(.callout)
+                        // Combina um texto em negrito com um normal
+                        (Text("Descrição: ").bold() + Text(descricao))
+                            .font(.callout)
+                            .foregroundColor(Color(UIColor.darkGray))
                     }
                     
-                    // CORREÇÃO APLICADA AQUI: .long foi trocado por .wide
-                    detalheItem(titulo: "Prazo", valor: tarefa.data_entrega.formatted(.dateTime.day().month(.wide).year()))
-                    detalheItem(titulo: "Dificuldade", valor: "Nível \(tarefa.dificuldade)")
+                    // Detalhes com ícones e formatação correta
+                    detalheItem(icone: "hourglass", label: "Prazo: ", value: tarefa.data_entrega.formatted(.dateTime.day().month(.wide).year()))
+                    detalheItem(icone: "bolt.horizontal.icloud.fill", label: "Dificuldade: ", value: "Nível \(tarefa.dificuldade)")
+
                 }
                 .padding([.horizontal, .bottom])
-                .transition(.asymmetric(insertion: .opacity.combined(with: .move(edge: .top)), removal: .opacity))
+                .transition(.asymmetric(insertion: .opacity.combined(with: .move(edge: .top)), removal: .opacity.animation(nil)))
             }
         }
-        .padding(.horizontal)
-        .background(Color("corCardPrincipal"))
+        .background(Color("corFundoTarefa"))
         .cornerRadius(16)
-        .foregroundColor(tarefa.concluida ? Color("corTextoSecundario") : .black)
-        .swipeActions {
+        .foregroundColor(tarefa.concluida ? Color("corTextoSecundario") : Color(UIColor.label))
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             if !tarefa.concluida {
                 Button(role: .destructive, action: { tarefaModel.deletar_tarefa(id: tarefa.id) }) {
                     Label("Excluir", systemImage: "trash")
@@ -107,14 +114,19 @@ struct CelulaDaTarefaView: View {
         }
     }
     
-    // A definição da função permanece a mesma.
-    private func detalheItem(titulo: String, valor: String) -> some View {
-        HStack {
-            Text(titulo)
-                .font(.caption.bold())
-            Spacer()
-            Text(valor)
+    // View auxiliar para os itens de detalhe no modo expandido
+    private func detalheItem(icone: String, label: String, value: String) -> some View {
+        HStack(alignment: .top) {
+            Image(systemName: icone)
                 .font(.caption)
+                .foregroundColor(.secondary)
+            
+            // Combina o rótulo em negrito com o valor normal
+            (Text(label).bold() + Text(value))
+                .font(.caption)
+                .foregroundColor(.primary)
+            
+            Spacer()
         }
     }
 }

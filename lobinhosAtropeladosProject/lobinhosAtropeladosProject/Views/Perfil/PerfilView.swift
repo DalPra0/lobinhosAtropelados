@@ -1,113 +1,120 @@
-//
-//  PerfilView.swift
-//  lobinhosAtropeladosProject
-//
-//  Created by Beatriz Perotto Muniz on 26/06/25.
-//
-//PODE EXCLUIR, TAVA DANDO ERRO
-
 import SwiftUI
 
 struct PerfilView: View {
-    @ObservedObject var tarefaModel = TarefaModel.shared
+    @ObservedObject var userModel = UserModel.shared
+    @Environment(\.dismiss) var dismiss
 
-    @State private var isEditing = false
-    @State private var nome: String = "Mari Oliveira"
-    @State private var bio: String = "Estudante de Psicologia do 5º período na UFPR em tempo integral e faço estágio de 20h semanais."
+    // States locais para edição, inicializados com os dados do usuário
+    @State private var curso: String
+    @State private var periodo: String
+
+    // Controla o foco dos campos de texto para o botão "Editar" funcionar
+    @FocusState private var isCursoFocused: Bool
+    @FocusState private var isPeriodoFocused: Bool
+
+    init() {
+        // Inicializa os states com os valores atuais do usuário
+        _curso = State(initialValue: UserModel.shared.user.curso)
+        _periodo = State(initialValue: UserModel.shared.user.periodo)
+    }
 
     var body: some View {
         ZStack {
-            Color(.systemBackground)
-                .ignoresSafeArea()
+            Color("corFundo").ignoresSafeArea()
 
-            VStack(spacing: 24) {
-                Spacer().frame(height: 32)
-
-                Image(systemName: "person.crop.circle.fill")
-                    .resizable()
-                    .frame(width: 120, height: 120)
-                    .foregroundColor(Color("corSelect"))
-
-                VStack(spacing: 4) {
-                    if isEditing {
-                        VStack(spacing: 2) {
-                            CustomTextField( // ALTERADO
-                                placeholder: "Nome",
-                                text: $nome
-                            )
-                            .frame(width: 200)
-
-                            Rectangle()
-                                .frame(width: 200, height: 1)
-                                .foregroundColor(.gray.opacity(0.4))
-                        }
-                    } else {
-                        Text(nome)
-                            .font(.title2.bold())
-                            .multilineTextAlignment(.center)
+            VStack(alignment: .leading, spacing: 0) {
+                // 1. Cabeçalho com botão de voltar
+                HStack {
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(Color("corPrimaria"))
+                            .font(.title2.weight(.semibold))
                     }
-
-                    Button(action: {
-                        withAnimation {
-                            isEditing = true
-                        }
-                    }) {
-                        HStack(spacing: 4) {
-                            Text("Editar perfil")
-                                .font(.subheadline)
-                            Image(systemName: "pencil")
-                                .font(.subheadline)
-                        }
-                        .foregroundColor(.gray)
-                    }
-                    .opacity(isEditing ? 0 : 1)
+                    Spacer()
                 }
+                .padding(.bottom, 30)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Sobre mim:")
-                        .font(.title3.bold())
-                        .foregroundColor(.secondary)
-                        .padding(.leading, 16)
-                        .padding(.bottom, isEditing ? 2 : -12)
+                // 2. Títulos
+                Text("Meu perfil")
+                    .font(.system(size: 16))
+                    .foregroundColor(Color("corTextoSecundario"))
+                
+                Text(userModel.user.nome)
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundColor(Color("corPrimaria"))
+                    .padding(.bottom, 40)
 
-                    CustomTextBox( // ALTERADO
-                        placeholder: "Sobre mim",
-                        text: $bio,
-                        isEditable: isEditing
-                    )
-                    .frame(height: 100)
-                    .padding(.horizontal, 4)
-                }
-                .padding(.horizontal, 16)
+                // 3. Campos de Edição
+                campoDeEdicao(titulo: "Eu curso:", placeholder: "MEU CURSO", texto: $curso, isFocused: $isCursoFocused)
+                    .padding(.bottom, 30)
+                
+                campoDeEdicao(titulo: "E estou no:", placeholder: "PERÍODO DO CURSO", texto: $periodo, isFocused: $isPeriodoFocused)
 
-                Spacer()
+                Spacer() // Empurra o botão de salvar para baixo
 
-                if isEditing {
-                    HStack(spacing: 16) {
-                        CustomButton(
-                            title: "Cancelar",
-                            style: .strokeButton,
-                            action: {
-                                withAnimation {
-                                    isEditing = false
-                                }
-                            }
-                        )
-
-                        CustomButton(
-                            title: "Salvar",
-                            style: .filledButton,
-                            action: {
-                                withAnimation {
-                                    isEditing = false
-                                }
-                            }
-                        )
-                    }
-                    .padding(.horizontal)
+                // 4. Botão de Salvar
+                Button(action: salvarAlteracoes) {
+                    Text("SALVAR")
+                        .font(.system(size: 16, weight: .bold))
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color("corPrimaria"))
+                        .foregroundColor(Color("corFundo"))
+                        .cornerRadius(16)
                 }
             }
+            .padding(.horizontal, 24)
+            .padding(.top, 20)
+            .padding(.bottom, 40)
         }
+        .navigationBarHidden(true)
+    }
+
+    /// View reutilizável para os campos de texto, para manter o código limpo.
+    @ViewBuilder
+    private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>, isFocused: FocusState<Bool>.Binding) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(titulo)
+                    .font(.system(size: 14))
+                    .foregroundColor(Color("corTextoSecundario"))
+                Spacer()
+                Button("Editar") {
+                    isFocused.wrappedValue = true
+                }
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(Color("corPrimaria"))
+            }
+            
+            // --- CAMPO DE TEXTO COM DESIGN 100% CORRIGIDO ---
+            TextField("", text: texto, prompt: Text(placeholder)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundColor(Color("corStroke"))
+            )
+                .textInputAutocapitalization(.words)
+                .font(.system(size: 16))
+                .padding()
+                .background(Color("corCardPrincipal"))
+                .cornerRadius(12)
+                .foregroundColor(.black)
+                .focused(isFocused)
+                .overlay(
+                    // Borda visível o tempo todo, que muda de cor quando focada.
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(isFocused.wrappedValue ? Color("corPrimaria") : Color("corStroke"), lineWidth: 1)
+                )
+        }
+    }
+
+    /// Salva os dados alterados no UserModel e fecha a tela.
+    private func salvarAlteracoes() {
+        userModel.atualizarUsuario(
+            nome: userModel.user.nome,
+            bio: userModel.user.bio,
+            curso: curso,
+            periodo: periodo
+        )
+        dismiss()
     }
 }
 
