@@ -14,31 +14,54 @@ struct TelaInicialView: View {
     @State private var id_tarefa_expandida: UUID? = nil
     
     @State private var mostrandoAlertaLimpar = false
-    @State private var mostrandoTelaPerfil = false // State para controlar a exibição da tela de perfil
+    @State private var mostrandoTelaPerfil = false
+    @State private var mostrandoTelaAlterarModo = false
     
     // MARK: - Computed Properties
+    private var textoModo: String {
+        switch userModel.user.modo_selecionado {
+        case 1:
+            return "Seu dia será tranquilo!"
+        case 2:
+            return "Seu dia será moderado!"
+        case 3:
+            return "Seu dia será intenso!"
+        default:
+            return "Defina seu ritmo de hoje!"
+        }
+    }
+    
+    private var corModo: Color {
+        switch userModel.user.modo_selecionado {
+        case 1:
+            return Color("corModoTranquilo")
+        case 2:
+            return Color("corModoModerado")
+        case 3:
+            return Color("corModoIntenso")
+        default:
+            return .gray
+        }
+    }
+    
     private var tarefasPendentesFiltradas: [Tarefa] {
         if filtro == "Para hoje" {
             return tarefaModel.tarefas.filter { tarefa in
                 return Calendar.current.isDateInToday(tarefa.data_entrega) && !tarefa.concluida
             }
         }
-        // "Todas" e qualquer outro caso mostram as não concluídas
         return tarefaModel.tarefas.filter { !$0.concluida }
     }
     
     private var tarefasConcluidasAgrupadas: [Date: [Tarefa]] {
         let tarefasConcluidas = tarefaModel.tarefas.filter { $0.concluida && $0.data_conclusao != nil }
-        
         let groupedDictionary = Dictionary(grouping: tarefasConcluidas) { tarefa in
-            // Normaliza a data para agrupar por dia, ignorando a hora
             return Calendar.current.startOfDay(for: tarefa.data_conclusao!)
         }
         return groupedDictionary
     }
     
     private var datasOrdenadas: [Date] {
-        // Ordena as chaves do dicionário (as datas) em ordem decrescente
         return tarefasConcluidasAgrupadas.keys.sorted(by: >)
     }
 
@@ -74,32 +97,24 @@ struct TelaInicialView: View {
             }
         }
         .navigationBarHidden(true)
-        .sheet(isPresented: $showModal_add) {
-            TarefaAddModalView()
-                .presentationDetents([.large])
-        }
+        .sheet(isPresented: $showModal_add) { TarefaAddModalView().presentationDetents([.large]) }
         .sheet(isPresented: $showModal) {
-            if let id = tarefa_id_edicao {
-                TelaEditModalView(id: id)
-                    .presentationDetents([.large])
-            }
+            if let id = tarefa_id_edicao { TelaEditModalView(id: id).presentationDetents([.large]) }
         }
-        .sheet(isPresented: $mostrandoTelaPerfil) { // Abre a tela de perfil
-            PerfilView()
+        .sheet(isPresented: $mostrandoTelaPerfil) { PerfilView() }
+        .sheet(isPresented: $mostrandoTelaAlterarModo) { AlterarModoView() }
+        // --- AVISOS CORRIGIDOS ---
+        .onChange(of: showModal_aux) {
+            if showModal_aux { showModal = true }
         }
-        .onChange(of: showModal_aux) { newValue in
-            if newValue { showModal = true }
-        }
-        .onChange(of: showModal) { newValue in
-            if !newValue {
+        .onChange(of: showModal) {
+            if !showModal {
                 showModal_aux = false
                 tarefa_id_edicao = nil
             }
         }
         .alert("Atenção", isPresented: $mostrandoAlertaLimpar) {
-            Button("Apagar Tudo", role: .destructive) {
-                tarefaModel.limparTarefasConcluidas()
-            }
+            Button("Apagar Tudo", role: .destructive) { tarefaModel.limparTarefasConcluidas() }
             Button("Cancelar", role: .cancel) { }
         } message: {
             Text("Isso apagará seu histórico de tarefas concluídas e pode afetar a precisão da priorização futura. Deseja continuar?")
@@ -114,18 +129,19 @@ struct TelaInicialView: View {
                     .font(.body)
                     .fontWeight(.semibold)
                     .foregroundColor(.corTextoSecundario)
-                Text("Seu dia será intenso!") // Exemplo, pode ser dinâmico
+                
+                Text(textoModo)
                     .font(.system(size: 22))
                     .fontWeight(.semibold)
-                    .foregroundColor(.corModoIntenso) // Exemplo
+                    .foregroundColor(corModo)
                 
-                Button("Clique aqui para alterar") { /* Ação */ }
+                Button("Clique aqui para alterar") { mostrandoTelaAlterarModo = true }
                     .font(.system(size: 13))
                     .fontWeight(.regular)
                     .foregroundColor(.corTextoTerciario)
             }
             Spacer()
-            Button(action: { mostrandoTelaPerfil = true }) { // Ação para abrir o perfil
+            Button(action: { mostrandoTelaPerfil = true }) {
                 Image(systemName: "person")
                     .foregroundColor(.corPrimaria)
                     .font(.system(size: 30)).bold()
@@ -182,11 +198,9 @@ struct TelaInicialView: View {
                                     .font(.headline)
                                     .foregroundColor(.corTextoSecundario)
                                 Spacer()
-                                Button("Limpar") {
-                                    mostrandoAlertaLimpar = true
-                                }
-                                .font(.caption)
-                                .foregroundColor(.red)
+                                Button("Limpar") { mostrandoAlertaLimpar = true }
+                                    .font(.caption)
+                                    .foregroundColor(.red)
                             }
                         }
                     }
@@ -201,29 +215,22 @@ struct TelaInicialView: View {
             Spacer()
             HStack {
                 Spacer()
-                Button {
-                    showModal_add = true
-                } label: {
+                Button { showModal_add = true } label: {
                     Image(systemName: "plus.circle.fill")
                         .foregroundColor(.corPrimaria)
                         .font(.system(size: 45))
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 20)
+                .padding([.horizontal, .bottom], 20)
             }
         }
     }
     
     private var indicadorDeProgressoView: some View {
         VStack {
-            ProgressView()
-                .scaleEffect(1.5)
-            Text("Priorizando tarefas...")
-                .padding(.top, 8)
+            ProgressView().scaleEffect(1.5)
+            Text("Priorizando tarefas...").padding(.top, 8)
         }
-        .padding(20)
-        .background(.thinMaterial)
-        .cornerRadius(10)
+        .padding(20).background(.thinMaterial).cornerRadius(10)
     }
 }
 

@@ -21,21 +21,10 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				Views/PerfilView.txt,
 			);
 			target = 158B52DA2E0C77A800755C9F /* lobinhosAtropeladosProject */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		4690ACC12E18B84F005FECAB /* Exceptions for "lobinhosAtropeladosProject" folder in "Compile Sources" phase from "lobinhosAtropeladosProject" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = 158B52D72E0C77A800755C9F /* Sources */;
-			membershipExceptions = (
-				Views/PerfilView.txt,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		1558B0832E131B8A00499064 /* Fonts */ = {
@@ -47,7 +36,6 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				1558B0882E131BF800499064 /* Exceptions for "lobinhosAtropeladosProject" folder in "lobinhosAtropeladosProject" target */,
-				4690ACC12E18B84F005FECAB /* Exceptions for "lobinhosAtropeladosProject" folder in "Compile Sources" phase from "lobinhosAtropeladosProject" target */,
 			);
 			path = lobinhosAtropeladosProject;
 			sourceTree = "<group>";

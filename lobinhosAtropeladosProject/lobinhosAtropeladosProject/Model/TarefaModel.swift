@@ -17,23 +17,22 @@ class TarefaModel: ObservableObject {
     
     private init() {
         carregarTarefas()
+        // Ao iniciar, dispara uma priorização inicial se houver tarefas pendentes.
         if !tarefas.filter({ !$0.concluida }).isEmpty {
             repriorizarLista()
         }
     }
     
-    // As assinaturas das suas funções foram mantidas.
     func adiciona_tarefa(Nome: String, Descricao: String?, Dificuldade: String, Data_entrega: Date) {
         let novaTarefa = Tarefa(nome: Nome, descricao: Descricao, dificuldade: Dificuldade, data_entrega: Data_entrega)
         tarefas.append(novaTarefa)
-        tarefas.sort()
-        repriorizarLista()
+        tarefas.sort() // Ordena localmente para feedback imediato
+        repriorizarLista() // Chama a IA em segundo plano
     }
     
     func deletar_tarefa(id: UUID) {
         if let index = tarefas.firstIndex(where: { $0.id == id }) {
             tarefas.remove(at: index)
-            // Não é necessário repriorizar ao deletar, a menos que seja uma regra de negócio
         }
     }
     
@@ -107,7 +106,9 @@ class TarefaModel: ObservableObject {
                 
                 for i in 0..<self.tarefas.count {
                     let idDaTarefa = self.tarefas[i].id
+                    // Se a IA retornou informações para esta tarefa, nós a atualizamos.
                     if let tarefaAtualizada = mapaDeTarefas[idDaTarefa] {
+                        // Apenas atualiza a prioridade.
                         self.tarefas[i].prioridade = tarefaAtualizada.prioridade
                     }
                 }
@@ -122,7 +123,6 @@ class TarefaModel: ObservableObject {
         }
     }
     
-    // --- NOVA FUNÇÃO ADICIONADA ---
     func limparTarefasConcluidas() {
         // Mantém apenas as tarefas que não estão concluídas
         tarefas.removeAll { $0.concluida }
