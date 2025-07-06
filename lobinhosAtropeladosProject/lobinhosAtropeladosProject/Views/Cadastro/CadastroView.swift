@@ -5,13 +5,12 @@ struct CadastroView: View {
     
     @ObservedObject private var userModel = UserModel.shared
     
-    // Dados do usuário
     @State private var nome: String = ""
     @State private var curso: String = ""
     @State private var periodo: String = ""
     @State private var estiloOrganizacao: String = ""
     
-    @State private var currentPage = 0 // Apenas 2 páginas: 0 e 1
+    @State private var currentPage = 0
     
     private let modoMapping: [String: Int] = [
         "Poucas tarefas e um dia tranquilo.": 1,
@@ -26,7 +25,7 @@ struct CadastroView: View {
             
             VStack(spacing: 24) {
                 HStack(spacing: 8) {
-                    ForEach(0..<2) { index in // Apenas 2 bolinhas indicadoras
+                    ForEach(0..<2) { index in
                         Circle()
                             .fill(currentPage == index ? Color("corPrimaria") : Color.gray.opacity(0.4))
                             .frame(width: 8, height: 8)
@@ -74,13 +73,11 @@ struct CadastroView: View {
         if currentPage == 0 {
             withAnimation { currentPage = 1 }
         } else {
-            // Último passo: Salva tudo e muda o estado do app
             guard let modo = modoMapping[estiloOrganizacao] else { return }
             userModel.atualizarUsuario(nome: nome, bio: "", curso: curso, periodo: periodo)
             userModel.atualizarEstiloOrganizacao(estilo: estiloOrganizacao)
             userModel.atualizar_modo(modo: modo)
             
-            // Avisa que o cadastro terminou
             appState = .mainApp
         }
     }

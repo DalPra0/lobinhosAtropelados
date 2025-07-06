@@ -1,10 +1,3 @@
-//
-//  CustomButton.swift.swift
-//  lobinhosAtropeladosProject
-//
-//  Created by Ruby Rosa on 27/06/25.
-//
-
 import SwiftUI
 
 enum CustomButtonStyle {

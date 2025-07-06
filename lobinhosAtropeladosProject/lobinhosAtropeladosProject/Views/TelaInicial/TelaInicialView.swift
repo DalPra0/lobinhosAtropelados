@@ -4,7 +4,6 @@ struct TelaInicialView: View {
     @ObservedObject var tarefaModel = TarefaModel.shared
     @ObservedObject var userModel = UserModel.shared
     
-    // MARK: - States
     @State private var showModal_add = false
     @State private var showModal = false
     @State private var showModal_aux = false
@@ -17,7 +16,6 @@ struct TelaInicialView: View {
     @State private var mostrandoTelaPerfil = false
     @State private var mostrandoTelaAlterarModo = false
     
-    // MARK: - Computed Properties
     private var textoModo: String {
         switch userModel.user.modo_selecionado {
         case 1: return "Seu dia será tranquilo!"
@@ -113,7 +111,6 @@ struct TelaInicialView: View {
         }
     }
     
-    // MARK: - Subviews
     private var cabecalhoView: some View {
         HStack(spacing: 8) {
             VStack(alignment: .leading, spacing: 5) {

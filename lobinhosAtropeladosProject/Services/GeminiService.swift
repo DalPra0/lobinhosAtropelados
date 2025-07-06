@@ -10,8 +10,6 @@ class GeminiService {
         self.generativeModel = GenerativeModel(name: "gemini-1.5-flash", apiKey: APIKeyManager.geminiKey, generationConfig: config)
     }
     
-    // A função agora recebe apenas as tarefas pendentes e concluídas.
-    // A IA sempre tentará criar o melhor plano possível com os dados fornecidos.
     func gerarPlanoDiario(
         tarefasPendentes: [Tarefa],
         tarefasConcluidas: [Tarefa],
@@ -22,7 +20,6 @@ class GeminiService {
             return (planoDoDia: [], naoPlanejado: [])
         }
         
-        // --- PROMPT FINAL E SIMPLIFICADO ---
         let prompt = """
         Você é um Estrategista de Produtividade Acadêmica de Elite. Sua única missão é analisar o estado atual das tarefas de um estudante e montar o plano de estudos diário mais otimizado possível.
 
@@ -71,11 +68,9 @@ class GeminiService {
             let naoPlanejado: [Tarefa]
         }
         
-        // --- CORREÇÃO APLICADA AQUI ---
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         let decodedResponse = try decoder.decode(GeminiResponse.self, from: responseData)
-        // --- FIM DA CORREÇÃO ---
         
         print("Plano diário recebido e decodificado!")
         return (planoDoDia: decodedResponse.planoDoDia, naoPlanejado: decodedResponse.naoPlanejado)

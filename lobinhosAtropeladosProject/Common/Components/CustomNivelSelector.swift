@@ -1,14 +1,7 @@
-//
-//  CustomNivelSelector.swift
-//  lobinhosAtropeladosProject
-//
-//  Created by Ruby Rosa on 04/07/25.
-//
-
 import SwiftUI
 
 struct CustomNivelSelector: View {
-    @Binding var selected: Int // valor de 1 a 5
+    @Binding var selected: Int
 
     var body: some View {
         HStack {

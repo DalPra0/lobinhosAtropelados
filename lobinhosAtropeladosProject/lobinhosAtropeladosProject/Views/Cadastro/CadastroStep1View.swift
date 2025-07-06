@@ -24,7 +24,6 @@ struct CadastroStep1View: View {
         .padding(.horizontal, 24)
     }
     
-    // Componente reutilizável para os campos de texto, mantendo o estilo consistente
     @ViewBuilder
     private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 8) {

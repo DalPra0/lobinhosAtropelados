@@ -1,10 +1,3 @@
-//
-//  SecularOne.swift
-//  lobinhosAtropeladosProject
-//
-//  Created by Lucas Dal Pra Brascher on 30/06/25.
-//
-
 import SwiftUI
 
 extension Font {

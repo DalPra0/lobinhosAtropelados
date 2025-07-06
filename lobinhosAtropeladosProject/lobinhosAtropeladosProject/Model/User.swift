@@ -1,11 +1,3 @@
-//
-//  Tarefa.swift
-//
-//
-//  Created by Beatriz Perotto Muniz on 25/06/25.
-//
-//to-do = salvar local, comparable
-
 import Foundation
 
 struct User: Codable, Identifiable {

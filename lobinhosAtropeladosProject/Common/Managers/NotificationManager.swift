@@ -1,10 +1,3 @@
-//
-//  NotificationManager.swift
-//  lobinhosAtropeladosProject
-//
-//  Created by Lucas Dal Pra Brascher on 05/07/25.
-//
-
 import Foundation
 import UserNotifications
 

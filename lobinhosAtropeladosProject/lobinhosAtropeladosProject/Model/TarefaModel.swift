@@ -20,18 +20,12 @@ class TarefaModel: ObservableObject {
         carregarTarefas()
     }
     
-    // MARK: - Funções Públicas de Gerenciamento
     
-    // NOVA FUNÇÃO: Verifica se o plano do dia precisa ser gerado.
-    // Esta função será chamada toda vez que a tela inicial aparecer.
     func verificarEGerarPlanoDoDia() {
         let ultimaAtualizacao = UserDefaults.standard.object(forKey: lastUpdateKey) as? Date
         
-        // Condição 1: É um novo dia (a data da última atualização não é hoje).
         let éNovoDia = ultimaAtualizacao == nil || !Calendar.current.isDateInToday(ultimaAtualizacao!)
         
-        // Condição 2: Não existe nenhuma tarefa marcada como parte do plano de hoje.
-        // Isso cobre o caso de o usuário ter concluído tudo ou adicionado tarefas sem um plano ativo.
         let naoExistePlano = !tarefas.contains(where: { $0.fazParteDoPlanoDeHoje && !$0.concluida })
 
         if éNovoDia || naoExistePlano {
@@ -42,8 +36,6 @@ class TarefaModel: ObservableObject {
         }
     }
     
-    // A função antiga foi removida para evitar confusão.
-    // A nova função `chamarIA` agora é a única responsável por isso.
     
     func adiciona_tarefa(Nome: String, Descricao: String?, Dificuldade: String, Data_entrega: Date) {
         let novaTarefa = Tarefa(nome: Nome, descricao: Descricao, dificuldade: Dificuldade, data_entrega: Data_entrega)
@@ -93,9 +85,7 @@ class TarefaModel: ObservableObject {
         return tarefas.first(where: { $0.id == id }) ?? Tarefa(nome: "Não encontrada", descricao: nil, dificuldade: "1", data_entrega: Date())
     }
 
-    // MARK: - Lógica Central da IA
     
-    // FUNÇÃO ATUALIZADA: Agora é pública para ser chamada de outros locais, como a tela de alterar modo.
     func chamarIA(paraGerarPlanoCompleto: Bool) {
         Task {
             self.estaPriorizando = true
@@ -105,7 +95,6 @@ class TarefaModel: ObservableObject {
             
             guard !tarefasPendentes.isEmpty else {
                 self.estaPriorizando = false
-                // Se não há tarefas pendentes, garantimos que não há plano ativo.
                 self.tarefas.indices.forEach { self.tarefas[$0].fazParteDoPlanoDeHoje = false }
                 return
             }
@@ -142,7 +131,6 @@ class TarefaModel: ObservableObject {
         }
     }
 
-    // MARK: - Funções de Persistência e Utilitários
     
     func limparTarefasConcluidas() {
         let tarefasParaLimpar = tarefas.filter { $0.concluida }

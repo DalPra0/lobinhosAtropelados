@@ -1,10 +1,3 @@
-//
-//  ModoIntensoView.swift
-//  lobinhosAtropeladosProject
-//
-//  Created by Lucas Dal Pra Brascher on 06/07/25.
-//
-
 import SwiftUI
 
 struct ModoIntensoView: View {

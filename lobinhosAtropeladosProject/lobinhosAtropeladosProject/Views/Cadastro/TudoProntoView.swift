@@ -1,10 +1,3 @@
-//
-//  TudoProntoView.swift
-//  lobinhosAtropeladosProject
-//
-//  Created by Lucas Dal Pra Brascher on 06/07/25.
-//
-
 import SwiftUI
 
 struct TudoProntoView: View {
@@ -56,7 +49,6 @@ struct TudoProntoView: View {
                     .multilineTextAlignment(.center)
                 
                 Button(action: {
-                    // Ao clicar, marca que a tela já foi vista e some
                     foiApresentada = true
                 }) {
                     Text("COMEÇAR A USAR")
