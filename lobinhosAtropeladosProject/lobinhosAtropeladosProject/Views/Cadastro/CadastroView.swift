@@ -5,15 +5,13 @@ struct CadastroView: View {
     
     @ObservedObject private var userModel = UserModel.shared
     
+    // Dados do usuário
     @State private var nome: String = ""
     @State private var curso: String = ""
     @State private var periodo: String = ""
     @State private var estiloOrganizacao: String = ""
     
-    @State private var currentPage = 0
-    
-    @State private var mostrarAlerta = false
-    @State private var mensagemAlerta = ""
+    @State private var currentPage = 0 // Apenas 2 páginas: 0 e 1
     
     private let modoMapping: [String: Int] = [
         "Poucas tarefas e um dia tranquilo.": 1,
@@ -27,6 +25,15 @@ struct CadastroView: View {
             Color("corFundo").ignoresSafeArea()
             
             VStack(spacing: 24) {
+                HStack(spacing: 8) {
+                    ForEach(0..<2) { index in // Apenas 2 bolinhas indicadoras
+                        Circle()
+                            .fill(currentPage == index ? Color("corPrimaria") : Color.gray.opacity(0.4))
+                            .frame(width: 8, height: 8)
+                    }
+                }
+                .padding(.top)
+                .animation(.easeInOut, value: currentPage)
                 
                 TabView(selection: $currentPage) {
                     CadastroStep1View(nome: $nome, curso: $curso, periodo: $periodo)
@@ -34,78 +41,47 @@ struct CadastroView: View {
                     
                     CadastroStep2View(estiloOrganizacao: $estiloOrganizacao)
                         .tag(1)
-                    
-                    CadastroStep3View()
-                        .tag(2)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 
-                VStack(spacing: 24) {
-                    HStack(spacing: 8) {
-                        ForEach(0..<3) { index in
-                            Circle()
-                                .fill(currentPage == index ? Color("corPrimaria") : Color.gray.opacity(0.4))
-                                .frame(width: 8, height: 8)
-                        }
-                    }
-                    .animation(.easeInOut, value: currentPage)
-
-                    if mostrarAlerta {
-                        Text(mensagemAlerta)
-                            .font(.caption)
-                            .foregroundColor(Color("corDestaqueAlta"))
-                    }
-
-                    Button(action: proximaPagina) {
-                        Text(currentPage == 2 ? "VAMOS LÁ!" : "PRÓXIMO")
-                            .font(.system(size: 16, weight: .bold))
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color("corPrimaria"))
-                            .foregroundColor(Color("corFundo"))
-                            .cornerRadius(16)
-                    }
+                Button(action: proximaPagina) {
+                    Text(currentPage == 1 ? "FINALIZAR CADASTRO" : "PRÓXIMO")
+                        .font(.system(size: 16, weight: .bold))
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(isButtonDisabled ? Color.gray.opacity(0.5) : Color("corPrimaria"))
+                        .foregroundColor(Color("corFundo"))
+                        .cornerRadius(16)
                 }
+                .disabled(isButtonDisabled)
                 .padding(.horizontal, 24)
             }
-            .padding(.bottom, 64)
+            .padding(.bottom, 40)
+        }
+    }
+    
+    private var isButtonDisabled: Bool {
+        if currentPage == 0 {
+            return nome.trimmingCharacters(in: .whitespaces).isEmpty ||
+                   curso.trimmingCharacters(in: .whitespaces).isEmpty ||
+                   periodo.trimmingCharacters(in: .whitespaces).isEmpty
+        } else {
+            return estiloOrganizacao.isEmpty
         }
     }
     
     private func proximaPagina() {
-        mostrarAlerta = false
-        
-        switch currentPage {
-        case 0:
-            if nome.isEmpty || curso.isEmpty || periodo.isEmpty {
-                mensagemAlerta = "Por favor, preencha todos os campos."
-                mostrarAlerta = true
-            } else {
-                withAnimation { currentPage += 1 }
-            }
-        case 1:
-            if estiloOrganizacao.isEmpty {
-                mensagemAlerta = "Por favor, selecione uma preferência."
-                mostrarAlerta = true
-            } else {
-                withAnimation { currentPage += 1 }
-            }
-        case 2:
-            userModel.atualizarUsuario(nome: nome, bio: userModel.user.bio, curso: curso, periodo: periodo)
-            
+        if currentPage == 0 {
+            withAnimation { currentPage = 1 }
+        } else {
+            // Último passo: Salva tudo e muda o estado do app
+            guard let modo = modoMapping[estiloOrganizacao] else { return }
+            userModel.atualizarUsuario(nome: nome, bio: "", curso: curso, periodo: periodo)
             userModel.atualizarEstiloOrganizacao(estilo: estiloOrganizacao)
+            userModel.atualizar_modo(modo: modo)
             
-            if let modo = modoMapping[estiloOrganizacao] {
-                userModel.atualizar_modo(modo: modo)
-            }
-            
+            // Avisa que o cadastro terminou
             appState = .mainApp
-        default:
-            break
         }
     }
-}
-
-#Preview {
-    CadastroView(appState: .constant(.cadastro))
 }

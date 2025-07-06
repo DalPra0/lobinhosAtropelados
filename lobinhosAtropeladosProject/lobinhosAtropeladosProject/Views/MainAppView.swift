@@ -8,6 +8,8 @@ enum AppState: String, RawRepresentable {
 
 struct MainAppView: View {
     @AppStorage("appState") private var appState: AppState = .onboarding
+    // Nova variável para controlar a tela "Tudo Pronto"
+    @AppStorage("viuTelaTudoPronto") private var viuTelaTudoPronto: Bool = false
     
     var body: some View {
         switch appState {
@@ -18,13 +20,14 @@ struct MainAppView: View {
             CadastroView(appState: $appState)
             
         case .mainApp:
-            // Uma vez que tudo foi concluído, o fluxo normal do app começa.
-            ContentView()
-
+            // Lógica para mostrar a tela certa
+            if !viuTelaTudoPronto {
+                // Se o usuário ainda não viu, mostra a tela "Tudo Pronto"
+                TudoProntoView(foiApresentada: $viuTelaTudoPronto)
+            } else {
+                // Se já viu, vai direto para o app principal
+                ContentView()
+            }
         }
     }
-}
-
-#Preview {
-    MainAppView()
 }

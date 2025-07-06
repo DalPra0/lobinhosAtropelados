@@ -55,9 +55,9 @@ private struct BotaoDeOpcao: View {
             }
         }) {
             HStack(spacing: 16) {
-                Image(systemName: isSelected ? "record.circle" : "circle")
+                Image(systemName: isSelected ? "largecircle.fill.circle" : "circle")
                     .font(.title2)
-                    .foregroundColor(Color("corSelect"))
+                    .foregroundColor(Color("corPrimaria"))
                 
                 Text(texto)
                     .font(.system(size: 16))
@@ -65,7 +65,7 @@ private struct BotaoDeOpcao: View {
                 
                 Spacer()
             }
-            .padding()
+            .padding(12)
             .background(
                 RoundedRectangle(cornerRadius: 16)
                     .fill(Color("corCardPrincipal"))
@@ -77,13 +77,5 @@ private struct BotaoDeOpcao: View {
         }
         .buttonStyle(.plain)
         .foregroundColor(.black)
-    }
-}
-
-
-#Preview {
-    ZStack {
-        Color("corFundo").ignoresSafeArea()
-        CadastroStep2View(estiloOrganizacao: .constant("Poucas tarefas e um dia tranquilo."))
     }
 }

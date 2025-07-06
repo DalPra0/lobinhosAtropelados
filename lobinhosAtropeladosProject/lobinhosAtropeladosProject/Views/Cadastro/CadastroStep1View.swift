@@ -14,59 +14,30 @@ struct CadastroStep1View: View {
                 .padding(.top, 40)
 
             VStack(spacing: 24) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Qual o seu nome?")
-                        .font(.system(size: 14))
-                        .foregroundColor(Color("corTextoSecundario"))
-                    
-                    TextField("NOME", text: $nome)
-                        .font(.system(size: 16))
-                        .padding()
-                        .background(Color("corCardPrincipal"))
-                        .cornerRadius(12)
-                        .foregroundColor(.black)
-                }
-                
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Qual o seu curso?")
-                        .font(.system(size: 14))
-                        .foregroundColor(Color("corTextoSecundario"))
-                    
-                    TextField("CURSO", text: $curso)
-                        .font(.system(size: 16))
-                        .padding()
-                        .background(Color("corCardPrincipal"))
-                        .cornerRadius(12)
-                        .foregroundColor(.black)
-                }
-                
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Em qual período você está?")
-                        .font(.system(size: 14))
-                        .foregroundColor(Color("corTextoSecundario"))
-                    
-                    TextField("PERÍODO", text: $periodo)
-                        .font(.system(size: 16))
-                        .padding()
-                        .background(Color("corCardPrincipal"))
-                        .cornerRadius(12)
-                        .foregroundColor(.black)
-                }
+                campoDeEdicao(titulo: "Qual o seu nome?", placeholder: "NOME", texto: $nome)
+                campoDeEdicao(titulo: "Qual o seu curso?", placeholder: "CURSO", texto: $curso)
+                campoDeEdicao(titulo: "Em qual período você está?", placeholder: "PERÍODO", texto: $periodo)
             }
             
             Spacer()
         }
         .padding(.horizontal, 24)
     }
-}
-
-#Preview {
-    ZStack {
-        Color("corFundo").ignoresSafeArea()
-        CadastroStep1View(
-            nome: .constant(""),
-            curso: .constant(""),
-            periodo: .constant("")
-        )
+    
+    // Componente reutilizável para os campos de texto, mantendo o estilo consistente
+    @ViewBuilder
+    private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(titulo)
+                .font(.system(size: 14))
+                .foregroundColor(Color("corTextoSecundario"))
+            
+            TextField(placeholder, text: texto)
+                .font(.system(size: 16))
+                .padding()
+                .background(Color("corCardPrincipal"))
+                .cornerRadius(12)
+                .foregroundColor(.black)
+        }
     }
 }
