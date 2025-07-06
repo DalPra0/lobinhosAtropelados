@@ -6,17 +6,12 @@ class GeminiService {
     private var generativeModel: GenerativeModel
     
     init() {
-        let config = GenerationConfig(
-            responseMIMEType: "application/json"
-        )
-        
-        self.generativeModel = GenerativeModel(
-            name: "gemini-1.5-flash",
-            apiKey: APIKeyManager.geminiKey,
-            generationConfig: config
-        )
+        let config = GenerationConfig(responseMIMEType: "application/json")
+        self.generativeModel = GenerativeModel(name: "gemini-1.5-flash", apiKey: APIKeyManager.geminiKey, generationConfig: config)
     }
     
+    // A função agora recebe apenas as tarefas pendentes e concluídas.
+    // A IA sempre tentará criar o melhor plano possível com os dados fornecidos.
     func gerarPlanoDiario(
         tarefasPendentes: [Tarefa],
         tarefasConcluidas: [Tarefa],
@@ -27,46 +22,43 @@ class GeminiService {
             return (planoDoDia: [], naoPlanejado: [])
         }
         
-        // --- PROMPT TOTALMENTE REESCRITO ---
+        // --- PROMPT FINAL E SIMPLIFICADO ---
         let prompt = """
-        Você é um Estrategista de Produtividade Acadêmica de Elite. Sua missão é analisar o perfil de um estudante e suas tarefas para criar um plano de estudos focado e realista.
+        Você é um Estrategista de Produtividade Acadêmica de Elite. Sua única missão é analisar o estado atual das tarefas de um estudante e montar o plano de estudos diário mais otimizado possível.
 
-        INFORMAÇÕES DISPONÍVEIS:
+        **INFORMAÇÕES DISPONÍVEIS:**
         - Perfil do Estudante: Cursa \(perfilUsuario.curso) (\(perfilUsuario.periodo)).
-        - Estilo de Organização Preferido: "\(perfilUsuario.estiloOrganizacao ?? "Não definido")". Este é o fator MAIS IMPORTANTE para montar o plano do dia.
-        - Tarefas Pendentes: A lista de tarefas a serem planejadas.
-        - Histórico de Conclusão: Tarefas que o estudante já completou, use isso para entender o comportamento dele.
+        - Estilo de Organização Preferido: "\(perfilUsuario.estiloOrganizacao ?? "Não definido")". Este é o fator que define o TAMANHO do plano do dia.
+        - Tarefas Pendentes: A lista COMPLETA de todas as tarefas que o usuário ainda não concluiu.
+        - Histórico de Conclusão: Tarefas que o estudante já completou. Use para entender o comportamento e a velocidade do usuário.
 
-        SEU PROCESSO DE ANÁLISE DEVE SEGUIR RIGOROSAMENTE ESTES 2 PASSOS:
+        **SEU PROCESSO DE ANÁLISE (A SER SEGUIDO RIGOROSAMENTE):**
 
-        **Passo 1: PRIORIZAR A LISTA COMPLETA (Análise Estratégica).**
-        Sua primeira e única tarefa de análise é atribuir uma `prioridade` numérica (1 = mais alta, 2, 3, etc.) para TODAS as tarefas pendentes. Siga esta hierarquia de regras:
-        - **Regra de Ouro: Prazo de Entrega é Soberano.** Uma tarefa com `data_entrega` para amanhã tem prioridade mais alta do que qualquer outra tarefa para a próxima semana, independentemente da dificuldade.
-        - **Regra Comportamental: Análise de Procrastinação.** Analise o `Histórico de Conclusão`. Compare a `data_conclusao` com a `data_entrega`. Se o estudante consistentemente conclui tarefas perto do prazo, ele tem um perfil procrastinador. Aumente sutilmente a prioridade de tarefas futuras similares para incentivá-lo a começar mais cedo.
-        - **Regra de Contexto:** Use o campo `dificuldade` como critério de desempate final.
+        **Passo 1: PRIORIZAR TODAS AS TAREFAS PENDENTES.**
+        Sua primeira tarefa é analisar a lista de "Tarefas Pendentes" e atribuir uma `prioridade` numérica (1 = mais alta, 2, 3, etc.) para CADA UMA delas. Use as seguintes regras em ordem:
+        1.  **Prazo de Entrega:** Tarefas com prazo mais próximo são mais importantes.
+        2.  **Análise Comportamental:** Use o "Histórico de Conclusão" para identificar padrões. Se o usuário costuma deixar tarefas de um certo tipo para a última hora, aumente sutilmente a prioridade de tarefas similares.
+        3.  **Dificuldade:** Use como critério de desempate.
 
-        **Passo 2: SELECIONAR O PLANO DO DIA (Montagem do Plano de Ação).**
-        Com a lista final priorizada, monte o "Plano do Dia". A quantidade de tarefas a serem selecionadas depende DIRETAMENTE do `Estilo de Organização` do usuário:
+        **Passo 2: MONTAR O PLANO DO DIA.**
+        Com a lista de tarefas agora priorizada, selecione as tarefas que farão parte do "planoDoDia". A quantidade de tarefas a serem selecionadas depende DIRETAMENTE do `Estilo de Organização` do usuário:
         - Se o estilo for "Poucas tarefas e um dia tranquilo.": Selecione exatamente as **2 tarefas** de maior prioridade.
-        - Se o estilo for "Algumas tarefas, mas sem sobrecarregar meu dia." ou "Ser produtivo, mas ter pausas para um descanso.": Selecione exatamente as **4 tarefas** de maior prioridade.
-        - Se o estilo for "Foco total, quero finalizar minhas tarefas o mais rápido possível.": Selecione exatamente as **6 tarefas** de maior prioridade.
+        - Se o estilo for "Algumas tarefas..." ou "Ser produtivo...": Selecione exatamente as **4 tarefas** de maior prioridade.
+        - Se o estilo for "Foco total...": Selecione exatamente as **6 tarefas** de maior prioridade.
 
-        FORMATO DA RESPOSTA:
+        **FORMATO DA RESPOSTA:**
         Sua resposta DEVE ser um único objeto JSON com DUAS chaves:
-        1.  `"planoDoDia"`: um array contendo **apenas** as tarefas que você selecionou para o plano de hoje.
-        2.  `"naoPlanejado"`: um array contendo **todas as outras tarefas pendentes** que não couberam no plano de hoje.
+        1.  `"planoDoDia"`: um array contendo as tarefas que você selecionou para o plano de hoje.
+        2.  `"naoPlanejado"`: um array contendo TODAS as outras tarefas pendentes que não couberam no plano.
         
-        É CRUCIAL que TODAS as tarefas pendentes originais estejam em um desses dois arrays e que TODAS tenham o campo `prioridade` preenchido por você. Não inclua nenhum outro campo que não exista na estrutura original da tarefa. Não inclua texto fora do objeto JSON.
+        É CRUCIAL que TODAS as tarefas pendentes originais estejam em um desses dois arrays e que TODAS tenham o campo `prioridade` preenchido por você. Não inclua texto fora do objeto JSON.
 
-        DADOS PARA ANÁLISE:
-        - TAREFAS PENDENTES:
-        \(tarefasPendentes.toJsonString())
-        
-        - HISTÓRICO DE CONCLUSÃO:
-        \(tarefasConcluidas.toJsonString())
+        **DADOS PARA ANÁLISE:**
+        - TAREFAS PENDENTES: \(tarefasPendentes.toJsonString())
+        - HISTÓRICO DE CONCLUSÃO: \(tarefasConcluidas.toJsonString())
         """
         
-        print("Enviando prompt de Estrategista de Produtividade para o Gemini...")
+        print("Enviando prompt unificado para o Gemini...")
         let response = try await generativeModel.generateContent(prompt)
         
         guard let textResponse = response.text,
@@ -79,7 +71,11 @@ class GeminiService {
             let naoPlanejado: [Tarefa]
         }
         
-        let decodedResponse = try JSONDecoder().decode(GeminiResponse.self, from: responseData)
+        // --- CORREÇÃO APLICADA AQUI ---
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decodedResponse = try decoder.decode(GeminiResponse.self, from: responseData)
+        // --- FIM DA CORREÇÃO ---
         
         print("Plano diário recebido e decodificado!")
         return (planoDoDia: decodedResponse.planoDoDia, naoPlanejado: decodedResponse.naoPlanejado)

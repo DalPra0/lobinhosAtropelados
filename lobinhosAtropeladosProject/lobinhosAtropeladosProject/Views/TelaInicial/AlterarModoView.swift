@@ -1,14 +1,8 @@
-//
-//  AlterarModoView.swift
-//  lobinhosAtropeladosProject
-//
-//  Created by Lucas Dal Pra Brascher on 05/07/25.
-//
-
 import SwiftUI
 
 struct AlterarModoView: View {
     @ObservedObject var userModel = UserModel.shared
+    @ObservedObject var tarefaModel = TarefaModel.shared // Adicionado para chamar a IA
     @Environment(\.dismiss) var dismiss
 
     @State private var estiloSelecionado: String
@@ -60,16 +54,16 @@ struct AlterarModoView: View {
     }
 
     private func salvarAlteracao() {
+        // Salva as novas preferências do usuário
         userModel.atualizarEstiloOrganizacao(estilo: estiloSelecionado)
-        
         if let modo = opcoes[estiloSelecionado] {
             userModel.atualizar_modo(modo: modo)
         }
         
+        // AQUI ESTÁ A MUDANÇA: Força a IA a gerar um novo plano com base no novo modo.
+        tarefaModel.chamarIA(paraGerarPlanoCompleto: true)
+        
+        // Fecha a tela
         dismiss()
     }
-}
-
-#Preview {
-    AlterarModoView()
 }

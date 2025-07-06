@@ -4,6 +4,7 @@ struct TelaInicialView: View {
     @ObservedObject var tarefaModel = TarefaModel.shared
     @ObservedObject var userModel = UserModel.shared
     
+    // MARK: - States
     @State private var showModal_add = false
     @State private var showModal = false
     @State private var showModal_aux = false
@@ -16,29 +17,22 @@ struct TelaInicialView: View {
     @State private var mostrandoTelaPerfil = false
     @State private var mostrandoTelaAlterarModo = false
     
+    // MARK: - Computed Properties
     private var textoModo: String {
         switch userModel.user.modo_selecionado {
-        case 1:
-            return "Seu dia será tranquilo!"
-        case 2:
-            return "Seu dia será moderado!"
-        case 3:
-            return "Seu dia será intenso!"
-        default:
-            return "Defina seu ritmo de hoje!"
+        case 1: return "Seu dia será tranquilo!"
+        case 2: return "Seu dia será moderado!"
+        case 3: return "Seu dia será intenso!"
+        default: return "Defina seu ritmo de hoje!"
         }
     }
     
     private var corModo: Color {
         switch userModel.user.modo_selecionado {
-        case 1:
-            return Color("corModoTranquilo")
-        case 2:
-            return Color("corModoModerado")
-        case 3:
-            return Color("corModoIntenso")
-        default:
-            return .gray
+        case 1: return Color("corModoTranquilo")
+        case 2: return Color("corModoModerado")
+        case 3: return Color("corModoIntenso")
+        default: return .gray
         }
     }
     
@@ -114,8 +108,12 @@ struct TelaInicialView: View {
         } message: {
             Text("Isso apagará seu histórico de tarefas concluídas e pode afetar a precisão da priorização futura. Deseja continuar?")
         }
+        .onAppear {
+            tarefaModel.verificarEGerarPlanoDoDia()
+        }
     }
     
+    // MARK: - Subviews
     private var cabecalhoView: some View {
         HStack(spacing: 8) {
             VStack(alignment: .leading, spacing: 5) {
