@@ -4,16 +4,13 @@ struct PerfilView: View {
     @ObservedObject var userModel = UserModel.shared
     @Environment(\.dismiss) var dismiss
 
-    // States locais para edição, inicializados com os dados do usuário
     @State private var curso: String
     @State private var periodo: String
 
-    // Controla o foco dos campos de texto para o botão "Editar" funcionar
     @FocusState private var isCursoFocused: Bool
     @FocusState private var isPeriodoFocused: Bool
 
     init() {
-        // Inicializa os states com os valores atuais do usuário
         _curso = State(initialValue: UserModel.shared.user.curso)
         _periodo = State(initialValue: UserModel.shared.user.periodo)
     }
@@ -23,7 +20,6 @@ struct PerfilView: View {
             Color("corFundo").ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 0) {
-                // 1. Cabeçalho com botão de voltar
                 HStack {
                     Button(action: { dismiss() }) {
                         Image(systemName: "chevron.left")
@@ -34,7 +30,6 @@ struct PerfilView: View {
                 }
                 .padding(.bottom, 30)
 
-                // 2. Títulos
                 Text("Meu perfil")
                     .font(.system(size: 16))
                     .foregroundColor(Color("corTextoSecundario"))
@@ -44,15 +39,13 @@ struct PerfilView: View {
                     .foregroundColor(Color("corPrimaria"))
                     .padding(.bottom, 40)
 
-                // 3. Campos de Edição
                 campoDeEdicao(titulo: "Eu curso:", placeholder: "MEU CURSO", texto: $curso, isFocused: $isCursoFocused)
                     .padding(.bottom, 30)
                 
                 campoDeEdicao(titulo: "E estou no:", placeholder: "PERÍODO DO CURSO", texto: $periodo, isFocused: $isPeriodoFocused)
 
-                Spacer() // Empurra o botão de salvar para baixo
+                Spacer()
 
-                // 4. Botão de Salvar
                 Button(action: salvarAlteracoes) {
                     Text("SALVAR")
                         .font(.system(size: 16, weight: .bold))
@@ -70,7 +63,6 @@ struct PerfilView: View {
         .navigationBarHidden(true)
     }
 
-    /// View reutilizável para os campos de texto, para manter o código limpo.
     @ViewBuilder
     private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>, isFocused: FocusState<Bool>.Binding) -> some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -86,7 +78,6 @@ struct PerfilView: View {
                 .foregroundColor(Color("corPrimaria"))
             }
             
-            // --- CAMPO DE TEXTO COM DESIGN 100% CORRIGIDO ---
             TextField("", text: texto, prompt: Text(placeholder)
                 .font(.system(size: 13, weight: .bold))
                 .foregroundColor(Color("corStroke"))
@@ -99,14 +90,12 @@ struct PerfilView: View {
                 .foregroundColor(.black)
                 .focused(isFocused)
                 .overlay(
-                    // Borda visível o tempo todo, que muda de cor quando focada.
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(isFocused.wrappedValue ? Color("corPrimaria") : Color("corStroke"), lineWidth: 1)
                 )
         }
     }
 
-    /// Salva os dados alterados no UserModel e fecha a tela.
     private func salvarAlteracoes() {
         userModel.atualizarUsuario(
             nome: userModel.user.nome,

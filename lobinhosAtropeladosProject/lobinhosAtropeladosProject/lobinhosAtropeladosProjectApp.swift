@@ -1,14 +1,11 @@
-//
-//  lobinhosAtropeladosProjectApp.swift
-//  lobinhosAtropeladosProject
-//
-//  Created by Lucas Dal Pra Brascher on 25/06/25.
-//
-
 import SwiftUI
 
 @main
 struct lobinhosAtropeladosProjectApp: App {
+    init() {
+        NotificationManager.shared.requestAuthorization()
+    }
+    
     var body: some Scene {
         WindowGroup {
             MainAppView()

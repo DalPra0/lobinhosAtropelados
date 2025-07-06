@@ -1,12 +1,3 @@
-//
-//  Tarefa.swift
-//
-//
-//  Created by Beatriz Perotto Muniz on 25/06/25.
-//
-//  Atualizado com a lógica de IA, persistência e ordenação.
-// to- do = data de entrega
-
 import Foundation
 
 struct Tarefa: Codable, Identifiable, Comparable {
@@ -19,8 +10,9 @@ struct Tarefa: Codable, Identifiable, Comparable {
     var data_conclusao: Date? = nil
     var data_entrega: Date
     var prioridade: Int?
+    var fazParteDoPlanoDeHoje: Bool
     
-    init(id: UUID = UUID(), nome: String, descricao: String?, dificuldade: String, concluida: Bool = false, data_entrega : Date, prioridade: Int? = nil) {
+    init(id: UUID = UUID(), nome: String, descricao: String?, dificuldade: String, concluida: Bool = false, data_entrega : Date, prioridade: Int? = nil, fazParteDoPlanoDeHoje: Bool = false) {
         self.id = id
         self.nome = nome
         self.descricao = descricao
@@ -28,6 +20,7 @@ struct Tarefa: Codable, Identifiable, Comparable {
         self.concluida = concluida
         self.data_entrega = data_entrega
         self.prioridade = prioridade
+        self.fazParteDoPlanoDeHoje = fazParteDoPlanoDeHoje
     }
     
     static func < (lhs: Tarefa, rhs: Tarefa) -> Bool {
@@ -39,6 +32,6 @@ struct Tarefa: Codable, Identifiable, Comparable {
             return lhs.prioridade ?? Int.max < rhs.prioridade ?? Int.max
         }
         
-        return lhs.nome < rhs.nome
+        return lhs.data_conclusao ?? Date() > rhs.data_conclusao ?? Date()
     }
 }

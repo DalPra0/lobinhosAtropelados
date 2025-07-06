@@ -1,10 +1,3 @@
-//
-//  CadastroView.swift
-//  lobinhosAtropeladosProject
-//
-//  Created by Lucas Dal Pra Brascher on 04/07/25.
-//
-
 import SwiftUI
 
 struct CadastroView: View {
@@ -21,6 +14,13 @@ struct CadastroView: View {
     
     @State private var mostrarAlerta = false
     @State private var mensagemAlerta = ""
+    
+    private let modoMapping: [String: Int] = [
+        "Poucas tarefas e um dia tranquilo.": 1,
+        "Algumas tarefas, mas sem sobrecarregar meu dia.": 2,
+        "Ser produtivo, mas ter pausas para um descanso.": 2,
+        "Foco total, quero finalizar minhas tarefas o mais rápido possível.": 3
+    ]
     
     var body: some View {
         ZStack {
@@ -92,7 +92,12 @@ struct CadastroView: View {
             }
         case 2:
             userModel.atualizarUsuario(nome: nome, bio: userModel.user.bio, curso: curso, periodo: periodo)
+            
             userModel.atualizarEstiloOrganizacao(estilo: estiloOrganizacao)
+            
+            if let modo = modoMapping[estiloOrganizacao] {
+                userModel.atualizar_modo(modo: modo)
+            }
             
             appState = .mainApp
         default:

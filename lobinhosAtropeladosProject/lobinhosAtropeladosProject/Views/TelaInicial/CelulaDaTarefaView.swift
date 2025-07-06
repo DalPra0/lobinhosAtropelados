@@ -1,23 +1,18 @@
 import SwiftUI
 
 struct CelulaDaTarefaView: View {
-    // A tarefa que esta célula representa
     let tarefa: Tarefa
     
-    // Bindings para controlar o estado da UI na tela principal
     @Binding var tarefaExpandidaID: UUID?
     @Binding var tarefaParaEditar: UUID?
     @Binding var showEditModal: Bool
     
-    // Acesso ao modelo para ações
     @ObservedObject var tarefaModel = TarefaModel.shared
     
-    // Propriedade computada para saber se esta célula está expandida
     private var isExpanded: Bool {
         tarefaExpandidaID == tarefa.id
     }
     
-    // Calcula o tempo restante para a entrega
     private var tempoRestante: String {
         let calendar = Calendar.current
         let hoje = calendar.startOfDay(for: Date())
@@ -34,7 +29,6 @@ struct CelulaDaTarefaView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // --- LINHA PRINCIPAL (SEMPRE VISÍVEL) ---
             HStack(spacing: 16) {
                 Button(action: { tarefaModel.marcarTarefa(tarefa: tarefa) }) {
                     Image(systemName: tarefa.concluida ? "checkmark.circle.fill" : "circle")
@@ -76,18 +70,15 @@ struct CelulaDaTarefaView: View {
                 }
             }
             
-            // --- CONTEÚDO EXPANDIDO (DESIGN FINAL) ---
             if isExpanded {
                 VStack(alignment: .leading, spacing: 12) {
                     
                     if let descricao = tarefa.descricao, !descricao.isEmpty {
-                        // Combina um texto em negrito com um normal
                         (Text("Descrição: ").bold() + Text(descricao))
                             .font(.callout)
                             .foregroundColor(Color(UIColor.darkGray))
                     }
                     
-                    // Detalhes com ícones e formatação correta
                     detalheItem(icone: "hourglass", label: "Prazo: ", value: tarefa.data_entrega.formatted(.dateTime.day().month(.wide).year()))
                     detalheItem(icone: "bolt.horizontal.icloud.fill", label: "Dificuldade: ", value: "Nível \(tarefa.dificuldade)")
 
@@ -114,14 +105,12 @@ struct CelulaDaTarefaView: View {
         }
     }
     
-    // View auxiliar para os itens de detalhe no modo expandido
     private func detalheItem(icone: String, label: String, value: String) -> some View {
         HStack(alignment: .top) {
             Image(systemName: icone)
                 .font(.caption)
                 .foregroundColor(.secondary)
             
-            // Combina o rótulo em negrito com o valor normal
             (Text(label).bold() + Text(value))
                 .font(.caption)
                 .foregroundColor(.primary)
