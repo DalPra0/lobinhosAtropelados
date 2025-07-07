@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "gimoMascoteIcon(1).png",
+      "filename" : "Gimo 2 claro.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "gimoMascoteIcon(1) 1.png",
+      "filename" : "Gimo 1.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -25,6 +25,7 @@
           "value" : "tinted"
         }
       ],
+      "filename" : "agora vai eu tenho ctz(1).png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
