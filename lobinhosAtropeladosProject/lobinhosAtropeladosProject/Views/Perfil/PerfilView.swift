@@ -20,73 +20,78 @@ struct PerfilView: View {
     var body: some View {
         ZStack {
             Color("corFundo").ignoresSafeArea()
-
-            VStack(spacing: 0) {
-                HStack {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "chevron.left")
-                            .foregroundColor(Color("corPrimaria"))
-                            .font(.title2.weight(.semibold))
+            
+            ScrollView {
+                VStack(spacing: 0) {
+                    HStack {
+                        Button(action: { dismiss() }) {
+                            Image(systemName: "chevron.left")
+                                .foregroundColor(Color("corPrimaria"))
+                                .font(.title2.weight(.semibold))
+                        }
+                        Spacer()
                     }
-                    Spacer()
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 20)
-                .padding(.bottom, 30)
+                    .padding(.horizontal, 24)
+                    .padding(.top, 20)
+                    .padding(.bottom, 30)
 
-                VStack(alignment: .leading, spacing: 24) {
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Meu perfil")
-                            .font(.system(size: 16))
-                            .foregroundColor(Color("corTextoSecundario"))
+                    VStack(alignment: .leading, spacing: 24) {
                         
-                        Text(userModel.user.nome)
-                            .font(.system(size: 32, weight: .bold))
-                            .foregroundColor(Color("corPrimaria"))
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Meu perfil")
+                                .font(.system(size: 16))
+                                .foregroundColor(Color("corTextoSecundario"))
+                            
+                            Text(userModel.user.nome)
+                                .font(.system(size: 32, weight: .bold))
+                                .foregroundColor(Color("corPrimaria"))
+                        }
+
+                        VStack(spacing: 24) {
+                            campoDeEdicao(titulo: "Eu curso:", placeholder: "MEU CURSO", texto: $curso)
+                            campoDeEdicao(titulo: "E estou no:", placeholder: "PERÍODO DO CURSO", texto: $periodo)
+                        }
                     }
+                    .padding(.horizontal, 24)
 
-                    VStack(spacing: 24) {
-                        campoDeEdicao(titulo: "Eu curso:", placeholder: "MEU CURSO", texto: $curso)
-                        campoDeEdicao(titulo: "E estou no:", placeholder: "PERÍODO DO CURSO", texto: $periodo)
+                    Spacer()
+
+                    ZStack {
+                        Image("gimoMascoteIntenso")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 220)
+
+                        VStack(spacing: 4) {
+                            Text("\(tarefasConcluidasCount)")
+                                .font(.system(size: 50, weight: .bold))
+                                .foregroundColor(Color("corPrimaria"))
+
+                            Text("Total de tarefas concluídas")
+                                .font(.system(size: 12, weight: .regular))
+                                .foregroundColor(Color("corTextoSecundario"))
+                        }
+                        .offset(y: -20)
                     }
-                }
-                .padding(.horizontal, 24)
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 24)
 
-                Spacer()
-
-                ZStack {
-                    Image("gimoMascoteIntenso")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 220)
-
-                    VStack(spacing: 4) {
-                        Text("\(tarefasConcluidasCount)")
-                            .font(.system(size: 50, weight: .bold))
-                            .foregroundColor(Color("corPrimaria"))
-
-                        Text("Total de tarefas concluídas")
-                            .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(Color("corTextoSecundario"))
+                    Button(action: salvarAlteracoes) {
+                        Text("SALVAR")
+                            .font(.system(size: 16, weight: .bold))
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color("corPrimaria"))
+                            .foregroundColor(Color("corFundo"))
+                            .cornerRadius(16)
                     }
-                    .offset(y: -20)
+                    .padding(.horizontal, 24)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, 24)
-
-                Button(action: salvarAlteracoes) {
-                    Text("SALVAR")
-                        .font(.system(size: 16, weight: .bold))
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color("corPrimaria"))
-                        .foregroundColor(Color("corFundo"))
-                        .cornerRadius(16)
-                }
-                .padding(.horizontal, 24)
+                .padding(.bottom, 40)
             }
-            .padding(.bottom, 40)
+            .onTapGesture {
+                hideKeyboard()
+            }
         }
         .navigationBarHidden(true)
     }

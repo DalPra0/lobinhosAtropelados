@@ -6,22 +6,28 @@ struct CadastroStep1View: View {
     @Binding var periodo: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 32) {
-            
-            Text("Vamos nos conhecer melhor?")
-                .font(.system(size: 28, weight: .bold))
-                .foregroundColor(Color("corPrimaria"))
-                .padding(.top, 40)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 32) {
+                
+                Text("Vamos nos conhecer melhor?")
+                    .font(.system(size: 28, weight: .bold))
+                    .foregroundColor(Color("corPrimaria"))
+                    .padding(.top, 40)
 
-            VStack(spacing: 24) {
-                campoDeEdicao(titulo: "Qual o seu nome?", placeholder: "NOME", texto: $nome)
-                campoDeEdicao(titulo: "Qual o seu curso?", placeholder: "CURSO", texto: $curso)
-                campoDeEdicao(titulo: "Em qual período você está?", placeholder: "PERÍODO", texto: $periodo)
+                VStack(spacing: 24) {
+                    campoDeEdicao(titulo: "Qual o seu nome?", placeholder: "NOME", texto: $nome)
+                    campoDeEdicao(titulo: "Qual o seu curso?", placeholder: "CURSO", texto: $curso)
+                    campoDeEdicao(titulo: "Em qual período você está?", placeholder: "PERÍODO", texto: $periodo)
+                }
+                
+                Spacer()
             }
-            
-            Spacer()
+            .padding(.horizontal, 24)
+            .padding(.bottom, 50)
         }
-        .padding(.horizontal, 24)
+        .onTapGesture {
+            hideKeyboard()
+        }
     }
     
     @ViewBuilder
@@ -40,3 +46,13 @@ struct CadastroStep1View: View {
         }
     }
 }
+
+#if canImport(UIKit)
+
+
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+#endif
