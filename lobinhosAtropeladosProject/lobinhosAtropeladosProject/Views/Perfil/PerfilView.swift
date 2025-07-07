@@ -64,8 +64,9 @@ struct PerfilView: View {
                     HStack {
                         Button(action: { dismiss() }) {
                             Image(systemName: "chevron.left")
-                                .foregroundColor(Color("corPrimaria"))
-                                .font(.title2.weight(.semibold))
+                                .foregroundColor(.corPrimaria)
+                                .font(.system(size: 22))
+                                .bold()
                         }
                         Spacer()
                     }
@@ -73,12 +74,13 @@ struct PerfilView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Meu perfil")
-                            .font(.system(size: 16))
+                            .font(.system(size: 17))
+                            .fontWeight(.semibold)
                             .foregroundColor(Color("corTextoSecundario"))
 
                         Text(userModel.user.nome)
-                            .font(.system(size: 32, weight: .bold))
-                            .foregroundColor(Color("corTextoSecundario"))
+                            .font(.system(size: 30, weight: .bold))
+                            .foregroundColor(Color("corPrimaria"))
                     }
 
                     VStack(spacing: 24) {
@@ -88,8 +90,9 @@ struct PerfilView: View {
 
                     VStack(alignment: .leading, spacing: 20) {
                         Text("Resumo de Atividades")
-                            .font(.system(size: 16))
-                            .foregroundColor(Color("corTextoSecundario"))
+                            .font(.system(size: 20))
+                            .fontWeight(.semibold)
+                            .foregroundColor(Color("corPrimaria"))
 
                         VStack(spacing: 12) {
                             tarefasConcluidasCard()
@@ -137,22 +140,24 @@ struct PerfilView: View {
     @ViewBuilder
     private func tarefasConcluidasCard() -> some View {
         HStack(spacing: 16) {
-            ZStack {
-                Image("gimoMascotePerfil")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 80, height: 80) // Aumentando o mascote
-                
-                // --- CORREÇÃO: Posição e estilo do número ---
-                Text("\(tarefasConcluidasCount)")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundColor(Color("corPrimaria"))
-                    .offset(y: 8) // Ajuste fino para posicionar na placa
-            }
-            .frame(width: 80) // Container do ZStack
+            //GeometryReader { geometry in
+                ZStack {
+                    Image("gimoMascotePerfil")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 132, height: 132) // Aumentando o mascote
+                    
+                    // --- CORREÇÃO: Posição e estilo do número ---
+                    Text("\(tarefasConcluidasCount)")
+                        .font(.system(size: 17, weight: .bold))
+                        .foregroundColor(Color("corPrimaria"))
+                        .offset(y: 15) // Ajuste fino para posicionar na placa
+                }
+                .frame(width: 132) // Container do ZStack
+           // }
             
             Text("Tarefas\nConcluídas") // Usando \n para quebra de linha
-                .font(.system(size: 16, weight: .semibold))
+                .font(.system(size: 20, weight: .semibold))
                 .foregroundColor(Color("corTextoSecundario")) // Corrigindo a cor do texto
                 .lineSpacing(4)
             
@@ -162,7 +167,7 @@ struct PerfilView: View {
         .padding(.vertical, 16)
         .frame(maxWidth: .infinity)
         .frame(minHeight: 112) // Altura mínima para acomodar o conteúdo
-        .background(Color("corCardPrincipal"))
+        .background(Color("corCardPerfil"))
         .cornerRadius(12)
         // --- CORREÇÃO: Removido o overlay da borda ---
     }
@@ -170,23 +175,25 @@ struct PerfilView: View {
     // --- CARD DE MODO PREFERIDO (VERSÃO CORRIGIDA) ---
     @ViewBuilder
     private func modoPreferidoCard() -> some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 10) {
             Text("Modo\nPreferido")
-                .font(.system(size: 16, weight: .semibold))
+                .font(.system(size: 17, weight: .semibold))
                 .foregroundColor(Color("corTextoSecundario"))
                 .lineSpacing(4)
             
             Spacer()
             
             Text(modoPreferido)
-                .font(.system(size: 16, weight: .bold))
+                .font(.system(size: 17, weight: .semibold))
                 .foregroundColor(corDoModo)
+            
+            Spacer()
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
         .frame(maxWidth: .infinity)
         .frame(minHeight: 73)
-        .background(Color("corCardPrincipal"))
+        .background(Color("corCardPerfil"))
         .cornerRadius(12)
         // --- CORREÇÃO: Removido o overlay da borda ---
     }
