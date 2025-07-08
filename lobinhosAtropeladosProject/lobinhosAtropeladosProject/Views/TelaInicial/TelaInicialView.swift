@@ -92,7 +92,7 @@ struct TelaInicialView: View {
                 }
             }
             .padding(.horizontal, 24)
-            .padding(.top, 64)
+            .padding(.top, 80)
             //fix de posicao
             .ignoresSafeArea()
             

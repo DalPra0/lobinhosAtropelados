@@ -99,7 +99,7 @@ struct PerfilView: View {
                         
                         VStack(spacing: 24) {
                             campoDeEdicao(titulo: "Eu curso:", placeholder: "Design de Produto", texto: $curso, editando: $editando_0)
-                            campoDeEdicao(titulo: "E estou no:", placeholder: "4 Período", texto: $periodo, editando: $editando_1)
+                            campoDeEdicao(titulo: "E estou no período:", placeholder: "4", texto: $periodo, editando: $editando_1)
                         }
                         
                         VStack(alignment: .leading, spacing: 18) {

@@ -438,7 +438,7 @@
 				CODE_SIGN_ENTITLEMENTS = lobinhosAtropeladosProject/lobinhosAtropeladosProject.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
-				DEVELOPMENT_TEAM = 982D3NRR89;
+				DEVELOPMENT_TEAM = A44QNSR4R2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = lobinhosAtropeladosProject/Info.plist;
@@ -470,7 +470,7 @@
 				CODE_SIGN_ENTITLEMENTS = lobinhosAtropeladosProject/lobinhosAtropeladosProject.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
-				DEVELOPMENT_TEAM = 982D3NRR89;
+				DEVELOPMENT_TEAM = A44QNSR4R2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = lobinhosAtropeladosProject/Info.plist;
@@ -502,11 +502,12 @@
 				CODE_SIGN_ENTITLEMENTS = GimoWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
-				DEVELOPMENT_TEAM = 982D3NRR89;
+				DEVELOPMENT_TEAM = A44QNSR4R2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GimoWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GimoWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -530,11 +531,12 @@
 				CODE_SIGN_ENTITLEMENTS = GimoWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
-				DEVELOPMENT_TEAM = 982D3NRR89;
+				DEVELOPMENT_TEAM = A44QNSR4R2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GimoWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GimoWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
