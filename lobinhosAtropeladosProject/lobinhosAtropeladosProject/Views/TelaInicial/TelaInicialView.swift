@@ -93,6 +93,8 @@ struct TelaInicialView: View {
             }
             .padding(.horizontal, 24)
             .padding(.top, 64)
+            //fix de posicao
+            .ignoresSafeArea()
             
             botaoAdicionarView
             
