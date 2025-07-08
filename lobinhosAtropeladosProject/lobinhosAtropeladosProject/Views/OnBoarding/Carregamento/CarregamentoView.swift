@@ -8,14 +8,21 @@
 import SwiftUI
  
 struct CarregamentoView: View {
+    private let frames: [String] = Array(1...7).map { "Acenar-0\($0)" }
+    @State private var currentFrame = 0
+    
     @State private var drawingWidth = false
- 
+    
+    @State private var timer = Timer.publish(every: 1e-7, on: .main, in: .common).autoconnect()
+    
     var body: some View {
-        VStack(alignment: .leading) {
-
-            ZStack {
-                Color("corFundo").ignoresSafeArea()
-                
+        ZStack {
+            Color("corFundo").ignoresSafeArea()
+            
+            VStack{
+                Image(frames[currentFrame])
+                    .resizable()
+                    .frame(width: 200, height: 200)
                 
                 ZStack(alignment: .leading) {
                     
@@ -24,11 +31,15 @@ struct CarregamentoView: View {
                     RoundedRectangle(cornerRadius: 30)
                         .fill(Color("corPrimaria"))
                         .frame(width: drawingWidth ? 250 : 0, alignment: .leading)
-                        .animation(.easeInOut(duration: 10).repeatForever(autoreverses: false), value: drawingWidth)
+                        .animation(.easeInOut(duration: 3).repeatForever(autoreverses: false), value: drawingWidth)
                 }
                 .frame(width: 250, height: 12)
                 .onAppear {
                     drawingWidth.toggle()
+                }
+                .onReceive(timer) { _ in
+                    currentFrame = (currentFrame + 1) % frames.count
+                    print(currentFrame)
                 }
             }
         }
