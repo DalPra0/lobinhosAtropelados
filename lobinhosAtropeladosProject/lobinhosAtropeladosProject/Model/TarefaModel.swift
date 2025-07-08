@@ -7,6 +7,7 @@ class TarefaModel: ObservableObject {
     
     private let saveKey = "TarefasLoboApp"
     private let lastUpdateKey = "LastPlanUpdateDate"
+    private let tutorialKey = "HasCreatedTutorialTasks"
     private let geminiService = GeminiService()
     
     @Published var estaPriorizando = false
@@ -18,8 +19,35 @@ class TarefaModel: ObservableObject {
     
     private init() {
         carregarTarefas()
+        // Chama a criação do tutorial logo na inicialização
+        criarTarefasIniciaisSeNecessario()
     }
     
+    // --- NOVA FUNÇÃO PARA CRIAR TAREFAS DO TUTORIAL ---
+    func criarTarefasIniciaisSeNecessario() {
+        let tutorialJaCriado = UserDefaults.standard.bool(forKey: tutorialKey)
+        
+        // Se as tarefas do tutorial ainda não foram criadas e a lista está vazia
+        if !tutorialJaCriado && tarefas.isEmpty {
+            print("Criando tarefas do tutorial pela primeira vez.")
+            
+            let umDia: TimeInterval = 60 * 60 * 24
+            
+            let tarefasTutorial = [
+                Tarefa(nome: "Bem-vindo(a) ao Gimo! ✨", descricao: "Este é o seu plano de hoje, montado especialmente para você! Para concluir uma tarefa como esta, basta tocar no círculo à esquerda. Experimente agora e sinta a satisfação!", dificuldade: "1", data_entrega: Date().addingTimeInterval(umDia * 2), fazParteDoPlanoDeHoje: true),
+                Tarefa(nome: "Toque aqui para ver os detalhes", descricao: "Toda tarefa tem informações extras. Toque no corpo de uma tarefa (nesta, por exemplo!) para expandir e ver a descrição, o prazo e a dificuldade. Toque novamente para fechar.", dificuldade: "1", data_entrega: Date().addingTimeInterval(umDia * 3), fazParteDoPlanoDeHoje: true),
+                Tarefa(nome: "Deslize para editar ou excluir", descricao: "Precisou ajustar algo ou a tarefa não é mais necessária? Deslize o dedo da direita para a esquerda sobre ela para revelar as opções. É fácil assim! (Só não me exclua, ok?)", dificuldade: "2", data_entrega: Date().addingTimeInterval(umDia * 4), fazParteDoPlanoDeHoje: true),
+                Tarefa(nome: "Adicione sua primeira tarefa real", descricao: "Agora é sua vez! Quando estiver pronto, toque no botão azul com o sinal de \"+\" no canto inferior direito para cadastrar suas próprias atividades da faculdade.", dificuldade: "3", data_entrega: Date().addingTimeInterval(umDia * 5), fazParteDoPlanoDeHoje: true),
+                Tarefa(nome: "Explore suas outras tarefas", descricao: "No topo da tela, você pode usar os filtros para alternar entre as tarefas que eu priorizei \"Para hoje\", \"Todas\" as suas tarefas pendentes ou as que você já finalizou em \"Concluídas\".", dificuldade: "1", data_entrega: Date().addingTimeInterval(umDia * 6)),
+                Tarefa(nome: "Ajuste seu perfil e seu ritmo", descricao: "Toque no ícone de pessoa no topo para ver seu perfil. E se o dia estiver mais corrido ou mais leve, clique em \"Alterar seu ritmo\" logo abaixo do seu nome para que eu possa ajustar o plano para você.", dificuldade: "2", data_entrega: Date().addingTimeInterval(umDia * 7))
+            ]
+            
+            self.tarefas.append(contentsOf: tarefasTutorial)
+            
+            // Marca que o tutorial foi criado para não criar de novo
+            UserDefaults.standard.set(true, forKey: tutorialKey)
+        }
+    }
     
     func verificarEGerarPlanoDoDia() {
         let ultimaAtualizacao = UserDefaults.standard.object(forKey: lastUpdateKey) as? Date
@@ -71,7 +99,6 @@ class TarefaModel: ObservableObject {
             
             if tarefas[index].concluida {
                 tarefas[index].data_conclusao = Date()
-                // tarefas[index].fazParteDoPlanoDeHoje = false
                 NotificationManager.shared.cancelNotifications(for: tarefas[index])
             } else {
                 tarefas[index].data_conclusao = nil
@@ -155,3 +182,4 @@ class TarefaModel: ObservableObject {
         self.tarefas = decodedTasks
     }
 }
+
