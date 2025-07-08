@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct PerfilView: View {
+
+    
     @Environment(\.dismiss) var dismiss
     @ObservedObject var userModel = UserModel.shared
     @ObservedObject var tarefaModel = TarefaModel.shared
@@ -8,6 +10,10 @@ struct PerfilView: View {
     @State private var curso: String
     @State private var periodo: String
     
+    // Para botao de edicao
+    @State var editando_0 = false
+    @State var editando_1 = false
+
     // Estados originais para detectar mudanças
     private let cursoOriginal: String
     private let periodoOriginal: String
@@ -56,74 +62,86 @@ struct PerfilView: View {
     }
 
     var body: some View {
-        ZStack {
-            Color("corFundo").ignoresSafeArea()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    HStack {
-                        Button(action: { dismiss() }) {
-                            Image(systemName: "chevron.left")
-                                .foregroundColor(.corPrimaria)
-                                .font(.system(size: 22))
-                                .bold()
+        NavigationView{
+            ZStack {
+                Color("corFundo").ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        HStack {
+                            Button(action: { dismiss() }) {
+                                Image(systemName: "chevron.left")
+                                    .foregroundColor(.corPrimaria)
+                                    .font(.system(size: 22))
+                                    .bold()
+                            }
+                            Spacer()
+                            
+                            NavigationLink(destination: AjudaView()) {
+                                Image(systemName: "questionmark.circle")
+                                    .foregroundColor(.corPrimaria)
+                                    .font(.system(size: 22))
+                                    .bold()
+                            }
                         }
-                        Spacer()
-                    }
-                    .padding(.top, 20)
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Meu perfil")
-                            .font(.system(size: 17))
-                            .fontWeight(.semibold)
-                            .foregroundColor(Color("corTextoSecundario"))
-
-                        Text(userModel.user.nome)
-                            .font(.system(size: 30, weight: .bold))
-                            .foregroundColor(Color("corPrimaria"))
-                    }
-
-                    VStack(spacing: 24) {
-                        campoDeEdicao(titulo: "Eu curso:", placeholder: "Design de Produto", texto: $curso)
-                        campoDeEdicao(titulo: "E estou no:", placeholder: "4 Período", texto: $periodo)
-                    }
-
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Resumo de Atividades")
-                            .font(.system(size: 20))
-                            .fontWeight(.semibold)
-                            .foregroundColor(Color("corPrimaria"))
-
-                        VStack(spacing: 12) {
+                        .padding(.top, 20)
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Meu perfil")
+                                .font(.system(size: 17))
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color("corTextoSecundario"))
+                            
+                            Text(userModel.user.nome)
+                                .font(.system(size: 30, weight: .bold))
+                                .foregroundColor(Color("corPrimaria"))
+                        }
+                        
+                        VStack(spacing: 24) {
+                            campoDeEdicao(titulo: "Eu curso:", placeholder: "Design de Produto", texto: $curso, editando: $editando_0)
+                            campoDeEdicao(titulo: "E estou no:", placeholder: "4 Período", texto: $periodo, editando: $editando_1)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 18) {
+                            Text("Resumo de Atividades")
+                                .font(.system(size: 20))
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color("corPrimaria"))
+                            
                             tarefasConcluidasCard()
                             modoPreferidoCard()
+                            
+                        }
+                        
+                        Spacer(minLength: 16)
+                        
+                        if houveMudancas {
+                            Button{
+                                salvarAlteracoes()
+                                editando_0 = false
+                                editando_1 = false
+                            } label: {
+                                Text("SALVAR")
+                                    .font(.system(size: 16, weight: .bold))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 52)
+                                    .background(Color("corPrimaria"))
+                                    .foregroundColor(Color("corFundo"))
+                                    .cornerRadius(12)
+                            }
+                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                            .animation(.easeInOut, value: houveMudancas)
                         }
                     }
-
-                    Spacer(minLength: 16)
-
-                    if houveMudancas {
-                        Button(action: salvarAlteracoes) {
-                            Text("SALVAR")
-                                .font(.system(size: 16, weight: .bold))
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 52)
-                                .background(Color("corPrimaria"))
-                                .foregroundColor(Color("corFundo"))
-                                .cornerRadius(12)
-                        }
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
-                        .animation(.easeInOut, value: houveMudancas)
-                    }
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 40)
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 40)
+                .onTapGesture {
+                    hideKeyboard()
+                }
             }
-            .onTapGesture {
-                hideKeyboard()
-            }
+            .navigationBarHidden(true)
         }
-        .navigationBarHidden(true)
     }
 
     private func salvarAlteracoes() {
@@ -140,7 +158,6 @@ struct PerfilView: View {
     @ViewBuilder
     private func tarefasConcluidasCard() -> some View {
         HStack(spacing: 16) {
-            //GeometryReader { geometry in
                 ZStack {
                     Image("gimoMascotePerfil")
                         .resizable()
@@ -154,7 +171,6 @@ struct PerfilView: View {
                         .offset(y: 15) // Ajuste fino para posicionar na placa
                 }
                 .frame(width: 132) // Container do ZStack
-           // }
             
             Text("Tarefas\nConcluídas") // Usando \n para quebra de linha
                 .font(.system(size: 20, weight: .semibold))
@@ -190,7 +206,7 @@ struct PerfilView: View {
             Spacer()
         }
         .padding(.horizontal, 20)
-        .padding(.vertical, 16)
+        .padding(.vertical, 7)
         .frame(maxWidth: .infinity)
         .frame(minHeight: 73)
         .background(Color("corCardPerfil"))
@@ -200,7 +216,8 @@ struct PerfilView: View {
 
     // --- CAMPO DE EDIÇÃO (VERSÃO CORRIGIDA) ---
     @ViewBuilder
-    private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>) -> some View {
+    private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>, editando: Binding<Bool>) -> some View {
+        
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(titulo)
@@ -209,10 +226,10 @@ struct PerfilView: View {
                 Spacer()
                 // --- CORREÇÃO: Botão "Editar" adicionado ---
                 Button("Editar") {
-                    // Ação para editar
+                    editando.wrappedValue = true
                 }
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(Color("corPrimaria"))
+                .foregroundColor(Color("corTextoTerciario"))
             }
 
             TextField(placeholder, text: texto)
@@ -221,9 +238,20 @@ struct PerfilView: View {
                 .padding(.horizontal, 16)
                 .frame(height: 52)
                 .frame(maxWidth: .infinity)
+                .disabled(!editando.wrappedValue)
                 .background(Color("corCardPrincipal"))
                 .cornerRadius(12)
                 // --- CORREÇÃO: Removido o overlay da borda ---
+                .background {
+                    if editando.wrappedValue {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(.corFundo)
+                            .stroke(Color.corStroke, lineWidth: 2)
+                    } else {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color("corCardPerfil"))
+                    }
+                }
         }
     }
 }

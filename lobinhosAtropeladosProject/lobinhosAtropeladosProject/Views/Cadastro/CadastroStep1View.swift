@@ -15,7 +15,7 @@ struct CadastroStep1View: View {
                     .padding(.top, 40)
 
                 VStack(spacing: 24) {
-                    campoDeEdicao(titulo: "Qual o seu nome?", placeholder: "NOME", texto: $nome)
+                    campoDeEdicao(titulo: "Como quer ser chamado?", placeholder: "APELIDO", texto: $nome)
                     campoDeEdicao(titulo: "Qual o seu curso?", placeholder: "CURSO", texto: $curso)
                     campoDeEdicao(titulo: "Em qual período você está?", placeholder: "PERÍODO", texto: $periodo)
                 }
@@ -34,18 +34,28 @@ struct CadastroStep1View: View {
     private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(titulo)
-                .font(.system(size: 14))
+                .font(.system(size: 16))
+                .fontWeight(.medium)
                 .foregroundColor(Color("corTextoSecundario"))
             
-            TextField(placeholder, text: texto)
+            TextField(placeholder, text: texto,
+                      prompt: Text(placeholder)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(.corStroke)
+                )
                 .font(.system(size: 16))
-                .padding()
-                .background(Color("corCardPrincipal"))
-                .cornerRadius(12)
                 .foregroundColor(.black)
+                .padding()
+                .background {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(.corFundo)
+                        .stroke(Color.corStroke, lineWidth: 2)
+                }
         }
     }
 }
+
+
 
 #if canImport(UIKit)
 
