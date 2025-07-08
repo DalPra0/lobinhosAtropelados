@@ -54,10 +54,10 @@ class TarefaModel: ObservableObject {
     func verificarEGerarPlanoDoDia() {
         let ultimaAtualizacao = AppGroup.userDefaults.object(forKey: lastUpdateKey) as? Date
         
-        let éNovoDia = ultimaAtualizacao == nil || !Calendar.current.isDateInToday(ultimaAtualizacao!)
+        let eNovoDia = ultimaAtualizacao == nil || !Calendar.current.isDateInToday(ultimaAtualizacao!)
         let naoExistePlano = !tarefas.contains(where: { $0.fazParteDoPlanoDeHoje && !$0.concluida })
 
-        if éNovoDia || naoExistePlano {
+        if eNovoDia || naoExistePlano {
             print("Gerando novo plano do dia. Motivo: É novo dia ou não existe plano ativo.")
             chamarIA(paraGerarPlanoCompleto: true)
         } else {
