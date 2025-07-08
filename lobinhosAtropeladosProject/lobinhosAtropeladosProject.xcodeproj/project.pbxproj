@@ -7,12 +7,43 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		15C08F132E1CA09A00E8BF2A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15C08F122E1CA09A00E8BF2A /* WidgetKit.framework */; };
+		15C08F152E1CA09A00E8BF2A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15C08F142E1CA09A00E8BF2A /* SwiftUI.framework */; };
+		15C08F242E1CA09C00E8BF2A /* GimoWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 15C08F102E1CA09A00E8BF2A /* GimoWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		15D965172E0F2C6100F754F6 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 15D965162E0F2C6100F754F6 /* GoogleGenerativeAI */; };
 		15D965192E0F2F3300F754F6 /* API_KEY.plist in Resources */ = {isa = PBXBuildFile; fileRef = 15D965182E0F2F3300F754F6 /* API_KEY.plist */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		15C08F222E1CA09C00E8BF2A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 158B52D32E0C77A800755C9F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 15C08F0F2E1CA09A00E8BF2A;
+			remoteInfo = GimoWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		15C08F292E1CA09C00E8BF2A /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				15C08F242E1CA09C00E8BF2A /* GimoWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		158B52DB2E0C77A800755C9F /* lobinhosAtropeladosProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lobinhosAtropeladosProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		15C08F102E1CA09A00E8BF2A /* GimoWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GimoWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		15C08F122E1CA09A00E8BF2A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		15C08F142E1CA09A00E8BF2A /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		15C08F2B2E1CA10600E8BF2A /* GimoWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GimoWidgetExtension.entitlements; sourceTree = "<group>"; };
 		15D965182E0F2F3300F754F6 /* API_KEY.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = API_KEY.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -23,6 +54,28 @@
 				Info.plist,
 			);
 			target = 158B52DA2E0C77A800755C9F /* lobinhosAtropeladosProject */;
+		};
+		15C08F282E1CA09C00E8BF2A /* Exceptions for "GimoWidget" folder in "GimoWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 15C08F0F2E1CA09A00E8BF2A /* GimoWidgetExtension */;
+		};
+		15C08F302E1CA27800E8BF2A /* Exceptions for "lobinhosAtropeladosProject" folder in "GimoWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				Model/Tarefa.swift,
+			);
+			target = 15C08F0F2E1CA09A00E8BF2A /* GimoWidgetExtension */;
+		};
+		15C08F322E1CA28500E8BF2A /* Exceptions for "Services" folder in "GimoWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SharedUserDefaults.swift,
+			);
+			target = 15C08F0F2E1CA09A00E8BF2A /* GimoWidgetExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -36,12 +89,24 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				1558B0882E131BF800499064 /* Exceptions for "lobinhosAtropeladosProject" folder in "lobinhosAtropeladosProject" target */,
+				15C08F302E1CA27800E8BF2A /* Exceptions for "lobinhosAtropeladosProject" folder in "GimoWidgetExtension" target */,
 			);
 			path = lobinhosAtropeladosProject;
 			sourceTree = "<group>";
 		};
+		15C08F162E1CA09A00E8BF2A /* GimoWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				15C08F282E1CA09C00E8BF2A /* Exceptions for "GimoWidget" folder in "GimoWidgetExtension" target */,
+			);
+			path = GimoWidget;
+			sourceTree = "<group>";
+		};
 		15D9651E2E0F2F6400F754F6 /* Services */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				15C08F322E1CA28500E8BF2A /* Exceptions for "Services" folder in "GimoWidgetExtension" target */,
+			);
 			path = Services;
 			sourceTree = "<group>";
 		};
@@ -61,16 +126,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		15C08F0D2E1CA09A00E8BF2A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15C08F152E1CA09A00E8BF2A /* SwiftUI.framework in Frameworks */,
+				15C08F132E1CA09A00E8BF2A /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		158B52D22E0C77A800755C9F = {
 			isa = PBXGroup;
 			children = (
+				15C08F2B2E1CA10600E8BF2A /* GimoWidgetExtension.entitlements */,
 				1558B0832E131B8A00499064 /* Fonts */,
 				15D9651E2E0F2F6400F754F6 /* Services */,
 				9BFAF6242E0EE1D6005B92A7 /* Common */,
 				158B52DD2E0C77A800755C9F /* lobinhosAtropeladosProject */,
+				15C08F162E1CA09A00E8BF2A /* GimoWidget */,
+				15C08F112E1CA09A00E8BF2A /* Frameworks */,
 				158B52DC2E0C77A800755C9F /* Products */,
 				15D965182E0F2F3300F754F6 /* API_KEY.plist */,
 			);
@@ -80,8 +157,18 @@
 			isa = PBXGroup;
 			children = (
 				158B52DB2E0C77A800755C9F /* lobinhosAtropeladosProject.app */,
+				15C08F102E1CA09A00E8BF2A /* GimoWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		15C08F112E1CA09A00E8BF2A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				15C08F122E1CA09A00E8BF2A /* WidgetKit.framework */,
+				15C08F142E1CA09A00E8BF2A /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -94,10 +181,12 @@
 				158B52D72E0C77A800755C9F /* Sources */,
 				158B52D82E0C77A800755C9F /* Frameworks */,
 				158B52D92E0C77A800755C9F /* Resources */,
+				15C08F292E1CA09C00E8BF2A /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				15C08F232E1CA09C00E8BF2A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				1558B0832E131B8A00499064 /* Fonts */,
@@ -113,6 +202,28 @@
 			productReference = 158B52DB2E0C77A800755C9F /* lobinhosAtropeladosProject.app */;
 			productType = "com.apple.product-type.application";
 		};
+		15C08F0F2E1CA09A00E8BF2A /* GimoWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 15C08F252E1CA09C00E8BF2A /* Build configuration list for PBXNativeTarget "GimoWidgetExtension" */;
+			buildPhases = (
+				15C08F0C2E1CA09A00E8BF2A /* Sources */,
+				15C08F0D2E1CA09A00E8BF2A /* Frameworks */,
+				15C08F0E2E1CA09A00E8BF2A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				15C08F162E1CA09A00E8BF2A /* GimoWidget */,
+			);
+			name = GimoWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = GimoWidgetExtension;
+			productReference = 15C08F102E1CA09A00E8BF2A /* GimoWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -124,6 +235,9 @@
 				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					158B52DA2E0C77A800755C9F = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					15C08F0F2E1CA09A00E8BF2A = {
 						CreatedOnToolsVersion = 16.4;
 					};
 				};
@@ -146,6 +260,7 @@
 			projectRoot = "";
 			targets = (
 				158B52DA2E0C77A800755C9F /* lobinhosAtropeladosProject */,
+				15C08F0F2E1CA09A00E8BF2A /* GimoWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -159,6 +274,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		15C08F0E2E1CA09A00E8BF2A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -169,7 +291,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		15C08F0C2E1CA09A00E8BF2A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		15C08F232E1CA09C00E8BF2A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 15C08F0F2E1CA09A00E8BF2A /* GimoWidgetExtension */;
+			targetProxy = 15C08F222E1CA09C00E8BF2A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		158B52E42E0C77A800755C9F /* Debug */ = {
@@ -298,8 +435,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = lobinhosAtropeladosProject/lobinhosAtropeladosProject.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 982D3NRR89;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -329,8 +467,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = lobinhosAtropeladosProject/lobinhosAtropeladosProject.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 982D3NRR89;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -355,6 +494,62 @@
 			};
 			name = Release;
 		};
+		15C08F262E1CA09C00E8BF2A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = GimoWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = 982D3NRR89;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GimoWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GimoWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dalpra.lobinhosAtropeladosProject.GimoWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		15C08F272E1CA09C00E8BF2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = GimoWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = 982D3NRR89;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GimoWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GimoWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dalpra.lobinhosAtropeladosProject.GimoWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -372,6 +567,15 @@
 			buildConfigurations = (
 				158B52E72E0C77A800755C9F /* Debug */,
 				158B52E82E0C77A800755C9F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		15C08F252E1CA09C00E8BF2A /* Build configuration list for PBXNativeTarget "GimoWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15C08F262E1CA09C00E8BF2A /* Debug */,
+				15C08F272E1CA09C00E8BF2A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

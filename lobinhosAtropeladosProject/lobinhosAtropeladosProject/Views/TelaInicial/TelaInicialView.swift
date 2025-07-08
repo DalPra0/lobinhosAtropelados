@@ -4,6 +4,7 @@ struct TelaInicialView: View {
     @ObservedObject var tarefaModel = TarefaModel.shared
     @ObservedObject var userModel = UserModel.shared
     
+    // Estados para os modais e alertas
     @State private var showModal_add = false
     @State private var showModal = false
     @State private var showModal_aux = false
@@ -13,8 +14,10 @@ struct TelaInicialView: View {
     @State private var mostrandoTelaPerfil = false
     @State private var mostrandoTelaAlterarModo = false
     
+    // Variável de estado para o filtro
     @State private var filtro: String = "Para hoje"
     
+    // Estados para o alerta de exportação
     @State private var mostrandoAlertaCalendario = false
     @State private var tituloAlertaCalendario = ""
     @State private var mensagemAlertaCalendario = ""
@@ -120,6 +123,12 @@ struct TelaInicialView: View {
         }
         .onAppear {
             tarefaModel.verificarEGerarPlanoDoDia()
+        }
+        // Manipulador de URL para o widget
+        .onOpenURL { url in
+            if url.scheme == "gimo" && url.host == "addTask" {
+                showModal_add = true
+            }
         }
     }
     

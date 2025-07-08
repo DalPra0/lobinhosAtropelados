@@ -2,6 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>gimo</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<string>gimo</string>
+		</dict>
+	</array>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Precisamos de acesso para adicionar as datas de entrega das suas tarefas ao seu calendário</string>
 	<key>UIAppFonts</key>

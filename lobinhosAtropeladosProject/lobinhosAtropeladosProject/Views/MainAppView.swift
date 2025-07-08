@@ -7,8 +7,9 @@ enum AppState: String, RawRepresentable {
 }
 
 struct MainAppView: View {
-    @AppStorage("appState") private var appState: AppState = .onboarding
-    @AppStorage("viuTelaTudoPronto") private var viuTelaTudoPronto: Bool = false
+    // --- MODIFICADO ---
+    @AppStorage("appState", store: AppGroup.userDefaults) private var appState: AppState = .onboarding
+    @AppStorage("viuTelaTudoPronto", store: AppGroup.userDefaults) private var viuTelaTudoPronto: Bool = false
     
     var body: some View {
         Group {
