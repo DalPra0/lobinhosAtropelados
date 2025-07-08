@@ -9,6 +9,7 @@ class TarefaModel: ObservableObject {
     private let lastUpdateKey = "LastPlanUpdateDate"
     private let tutorialKey = "HasCreatedTutorialTasks"
     private let geminiService = GeminiService()
+    private let calendarManager = CalendarManager.shared
     
     @Published var estaPriorizando = false
     @Published var tarefas: [Tarefa] = [] {
@@ -19,15 +20,47 @@ class TarefaModel: ObservableObject {
     
     private init() {
         carregarTarefas()
-        // Chama a criação do tutorial logo na inicialização
         criarTarefasIniciaisSeNecessario()
     }
     
-    // --- NOVA FUNÇÃO PARA CRIAR TAREFAS DO TUTORIAL ---
+    // --- FUNÇÃO PARA EXPORTAR PARA O CALENDÁRIO ---
+    func exportarTarefasParaCalendario(completion: @escaping (CalendarExportResult) -> Void) {
+        calendarManager.requestAccess { [weak self] granted in
+            guard let self = self else { return }
+            
+            if !granted {
+                completion(.permissionDenied)
+                return
+            }
+            
+            let tarefasParaExportar = self.tarefas.filter { !$0.concluida }
+            
+            self.calendarManager.exportar(tarefas: tarefasParaExportar) { result in
+                switch result {
+                case .success(let eventosExportados):
+                    if eventosExportados.isEmpty {
+                        completion(.noTasksToExport)
+                        return
+                    }
+                    
+                    // Atualiza o modelo de tarefas com os IDs dos eventos criados
+                    for (tarefaID, eventoID) in eventosExportados {
+                        if let index = self.tarefas.firstIndex(where: { $0.id == tarefaID }) {
+                            self.tarefas[index].idDoEventoNoCalendario = eventoID
+                        }
+                    }
+                    completion(.success(exportedCount: eventosExportados.count))
+                    
+                case .failure(let error):
+                    completion(.failure(error: error))
+                }
+            }
+        }
+    }
+    
     func criarTarefasIniciaisSeNecessario() {
         let tutorialJaCriado = UserDefaults.standard.bool(forKey: tutorialKey)
         
-        // Se as tarefas do tutorial ainda não foram criadas e a lista está vazia
         if !tutorialJaCriado && tarefas.isEmpty {
             print("Criando tarefas do tutorial pela primeira vez.")
             
@@ -44,7 +77,6 @@ class TarefaModel: ObservableObject {
             
             self.tarefas.append(contentsOf: tarefasTutorial)
             
-            // Marca que o tutorial foi criado para não criar de novo
             UserDefaults.standard.set(true, forKey: tutorialKey)
         }
     }
@@ -182,4 +214,3 @@ class TarefaModel: ObservableObject {
         self.tarefas = decodedTasks
     }
 }
-

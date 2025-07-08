@@ -11,8 +11,9 @@ struct Tarefa: Codable, Identifiable, Comparable {
     var data_entrega: Date
     var prioridade: Int?
     var fazParteDoPlanoDeHoje: Bool
+    var idDoEventoNoCalendario: String? // <-- NOVO CAMPO ADICIONADO
     
-    init(id: UUID = UUID(), nome: String, descricao: String?, dificuldade: String, concluida: Bool = false, data_entrega : Date, prioridade: Int? = nil, fazParteDoPlanoDeHoje: Bool = false) {
+    init(id: UUID = UUID(), nome: String, descricao: String?, dificuldade: String, concluida: Bool = false, data_entrega : Date, prioridade: Int? = nil, fazParteDoPlanoDeHoje: Bool = false, idDoEventoNoCalendario: String? = nil) {
         self.id = id
         self.nome = nome
         self.descricao = descricao
@@ -21,6 +22,7 @@ struct Tarefa: Codable, Identifiable, Comparable {
         self.data_entrega = data_entrega
         self.prioridade = prioridade
         self.fazParteDoPlanoDeHoje = fazParteDoPlanoDeHoje
+        self.idDoEventoNoCalendario = idDoEventoNoCalendario // <-- NOVO CAMPO ADICIONADO
     }
     
     static func < (lhs: Tarefa, rhs: Tarefa) -> Bool {

@@ -7,14 +7,18 @@ struct TelaInicialView: View {
     @State private var showModal_add = false
     @State private var showModal = false
     @State private var showModal_aux = false
-    
-    @State private var filtro: String = "Para hoje"
     @State private var tarefa_id_edicao: UUID? = nil
     @State private var id_tarefa_expandida: UUID? = nil
-    
     @State private var mostrandoAlertaLimpar = false
     @State private var mostrandoTelaPerfil = false
     @State private var mostrandoTelaAlterarModo = false
+    
+    @State private var filtro: String = "Para hoje"
+    
+    @State private var mostrandoAlertaCalendario = false
+    @State private var tituloAlertaCalendario = ""
+    @State private var mensagemAlertaCalendario = ""
+
     
     private var textoModo: String {
         switch userModel.user.modo_selecionado {
@@ -62,9 +66,18 @@ struct TelaInicialView: View {
                 cabecalhoView
                 
                 VStack(alignment: .leading, spacing: 24) {
-                    Text("Minhas tarefas")
-                        .bold()
-                        .font(.system(size: 25))
+                    HStack {
+                        Text("Minhas tarefas")
+                            .bold()
+                            .font(.system(size: 25))
+                        Spacer()
+                        // Botão de exportar
+                        Button(action: exportarTarefas) {
+                            Image(systemName: "calendar.badge.plus")
+                                .font(.title2)
+                                .foregroundColor(Color("corPrimaria"))
+                        }
+                    }
                     
                     filtrosView
                     
@@ -91,23 +104,42 @@ struct TelaInicialView: View {
         }
         .sheet(isPresented: $mostrandoTelaPerfil) { PerfilView() }
         .sheet(isPresented: $mostrandoTelaAlterarModo) { AlterarModoView() }
-        .onChange(of: showModal_aux) {
-            if showModal_aux { showModal = true }
-        }
-        .onChange(of: showModal) {
-            if !showModal {
-                showModal_aux = false
-                tarefa_id_edicao = nil
-            }
-        }
+        .onChange(of: showModal_aux) { if $1 { showModal = true } }
+        .onChange(of: showModal) { if !$1 { showModal_aux = false; tarefa_id_edicao = nil } }
         .alert("Atenção", isPresented: $mostrandoAlertaLimpar) {
             Button("Apagar Tudo", role: .destructive) { tarefaModel.limparTarefasConcluidas() }
             Button("Cancelar", role: .cancel) { }
         } message: {
             Text("Isso apagará seu histórico de tarefas concluídas e pode afetar a precisão da priorização futura. Deseja continuar?")
         }
+        // Alerta de calendário
+        .alert(tituloAlertaCalendario, isPresented: $mostrandoAlertaCalendario) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(mensagemAlertaCalendario)
+        }
         .onAppear {
             tarefaModel.verificarEGerarPlanoDoDia()
+        }
+    }
+    
+    private func exportarTarefas() {
+        tarefaModel.exportarTarefasParaCalendario { result in
+            switch result {
+            case .success(let count):
+                self.tituloAlertaCalendario = "Sucesso!"
+                self.mensagemAlertaCalendario = "\(count) nova(s) tarefa(s) foi(ram) exportada(s) para o seu calendário."
+            case .noTasksToExport:
+                self.tituloAlertaCalendario = "Tudo Certo!"
+                self.mensagemAlertaCalendario = "Todas as suas tarefas pendentes já estão no seu calendário."
+            case .permissionDenied:
+                self.tituloAlertaCalendario = "Acesso Negado"
+                self.mensagemAlertaCalendario = "Para exportar, por favor, autorize o acesso ao Calendário nas Ajustes do seu iPhone."
+            case .failure(let error):
+                self.tituloAlertaCalendario = "Erro"
+                self.mensagemAlertaCalendario = "Ocorreu um erro ao exportar: \(error.localizedDescription)"
+            }
+            self.mostrandoAlertaCalendario = true
         }
     }
     
@@ -139,20 +171,11 @@ struct TelaInicialView: View {
     
     private var listaDePendentesView: some View {
         List {
-            if tarefasFiltradas.isEmpty && filtro == "Para hoje" {
-                Text("O seu plano do dia está vazio! Adicione novas tarefas.")
+            if tarefasFiltradas.isEmpty {
+                Text(filtro == "Para hoje" ? "O seu plano do dia está vazio! Adicione novas tarefas." : "Você não tem nenhuma tarefa pendente. Aproveite o descanso!")
                     .foregroundColor(.corTextoSecundario)
                     .multilineTextAlignment(.center)
                     .padding(.top, 40)
-                    // --- CORREÇÃO ADICIONADA ---
-                    .listRowBackground(Color.corFundo)
-                    .listRowSeparator(.hidden)
-            } else if tarefasFiltradas.isEmpty && filtro == "Todas" {
-                Text("Você não tem nenhuma tarefa pendente. Aproveite o descanso!")
-                    .foregroundColor(.corTextoSecundario)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 40)
-                    // --- CORREÇÃO ADICIONADA ---
                     .listRowBackground(Color.corFundo)
                     .listRowSeparator(.hidden)
             } else {
@@ -180,7 +203,6 @@ struct TelaInicialView: View {
                     .foregroundColor(.corTextoSecundario)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.top, 40)
-                    // --- CORREÇÃO ADICIONADA ---
                     .listRowBackground(Color.corFundo)
                     .listRowSeparator(.hidden)
             } else {
