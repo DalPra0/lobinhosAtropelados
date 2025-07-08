@@ -9,8 +9,17 @@ struct CelulaDaTarefaView: View {
     
     @ObservedObject var tarefaModel = TarefaModel.shared
     
+    // Estados para a lógica de delay
+    @State private var isCheckedForDelay: Bool = false
+    @State private var workItem: DispatchWorkItem?
+    
     private var isExpanded: Bool {
         tarefaExpandidaID == tarefa.id
+    }
+    
+    // A tarefa está visualmente completa se estiver salva como concluída OU no meio do delay
+    private var isVisuallyCompleted: Bool {
+        tarefa.concluida || isCheckedForDelay
     }
     
     private var tempoRestante: String {
@@ -28,20 +37,24 @@ struct CelulaDaTarefaView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        // --- CORREÇÃO ESTRUTURAL ---
+        // 1. Criamos a view de conteúdo primeiro.
+        let cellContent = VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 16) {
-                Button(action: { tarefaModel.marcarTarefa(tarefa: tarefa) }) {
-                    Image(systemName: tarefa.concluida ? "checkmark.circle.fill" : "circle")
+                // Botão de checkmark
+                Button(action: handleTap) {
+                    Image(systemName: isVisuallyCompleted ? "checkmark.circle.fill" : "circle")
                         .font(.title2)
-                        .foregroundColor(tarefa.concluida ? Color("corSelect") : Color("corPrimaria"))
+                        .foregroundColor(isVisuallyCompleted ? Color("corSelect") : Color("corPrimaria"))
                 }.buttonStyle(.plain)
                 
+                // Conteúdo principal da tarefa
                 VStack(alignment: .leading, spacing: 4) {
                     Text(tarefa.nome)
                         .font(.system(size: 16, weight: .bold))
-                        .strikethrough(tarefa.concluida, color: Color("corTextoSecundario"))
+                        .strikethrough(isVisuallyCompleted, color: Color("corTextoSecundario"))
                     
-                    if !tarefa.concluida {
+                    if !isVisuallyCompleted {
                         HStack(spacing: 4) {
                             Image(systemName: "hourglass")
                                 .font(.caption)
@@ -54,7 +67,8 @@ struct CelulaDaTarefaView: View {
                 }
                 Spacer()
                 
-                if !tarefa.concluida {
+                // Ícone de expandir
+                if !isVisuallyCompleted {
                     Image(systemName: "chevron.down")
                         .font(.caption.bold())
                         .foregroundColor(Color("corTextoSecundario"))
@@ -62,14 +76,15 @@ struct CelulaDaTarefaView: View {
                 }
             }
             .padding()
-            .contentShape(Rectangle())
+            .contentShape(Rectangle()) // Define a área de toque
             .onTapGesture {
-                guard !tarefa.concluida else { return }
+                // Ação de toque para expandir/recolher
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
                     tarefaExpandidaID = isExpanded ? nil : tarefa.id
                 }
             }
             
+            // Conteúdo que aparece quando expandido
             if isExpanded {
                 VStack(alignment: .leading, spacing: 12) {
                     
@@ -83,28 +98,54 @@ struct CelulaDaTarefaView: View {
                     detalheItem(icone: "bolt.horizontal.icloud.fill", label: "Dificuldade: ", value: "Nível \(tarefa.dificuldade)")
 
                 }
-                .padding([.horizontal, .bottom])
+                .padding(.horizontal)
+                .padding(.bottom)
                 .transition(.asymmetric(insertion: .opacity.combined(with: .move(edge: .top)), removal: .opacity.animation(nil)))
             }
         }
         .background(Color("corFundoTarefa"))
         .cornerRadius(16)
-        .foregroundColor(tarefa.concluida ? Color("corTextoSecundario") : Color(UIColor.label))
-        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            if !tarefa.concluida {
-                Button(role: .destructive) {
-                    tarefaModel.deletar_tarefa(id: tarefa.id)
-                } label: {
-                    Label("Excluir", systemImage: "trash")
+        .foregroundColor(isVisuallyCompleted ? Color("corTextoSecundario") : Color(UIColor.label))
+
+        // 2. Aplicamos o swipeActions à view de conteúdo já construída.
+        return cellContent
+            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                if !tarefa.concluida {
+                    Button(role: .destructive) {
+                        tarefaModel.deletar_tarefa(id: tarefa.id)
+                    } label: {
+                        Label("Excluir", systemImage: "trash")
+                    }
+                    
+                    Button {
+                        tarefaParaEditar = tarefa.id
+                        showEditModal = true
+                    } label: {
+                        Label("Editar", systemImage: "pencil")
+                    }.tint(.blue)
                 }
-                
-                Button {
-                    tarefaParaEditar = tarefa.id
-                    showEditModal = true
-                } label: {
-                    Label("Editar", systemImage: "pencil")
-                }.tint(.blue)
             }
+    }
+    
+    private func handleTap() {
+        if self.tarefa.concluida {
+            self.workItem?.cancel()
+            self.isCheckedForDelay = false
+            tarefaModel.marcarTarefa(tarefa: tarefa)
+            return
+        }
+
+        if self.isCheckedForDelay {
+            self.workItem?.cancel()
+            self.isCheckedForDelay = false
+        } else {
+            self.isCheckedForDelay = true
+            
+            let newWorkItem = DispatchWorkItem {
+                tarefaModel.marcarTarefa(tarefa: tarefa)
+            }
+            self.workItem = newWorkItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: newWorkItem)
         }
     }
     

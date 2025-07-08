@@ -58,7 +58,7 @@ struct TelaInicialView: View {
             Color.corFundo
                 .ignoresSafeArea()
             
-            VStack(alignment: .leading, spacing: 32) {
+            VStack(alignment: .leading, spacing: 24) {
                 cabecalhoView
                 
                 VStack(alignment: .leading, spacing: 24) {
@@ -138,65 +138,78 @@ struct TelaInicialView: View {
     }
     
     private var listaDePendentesView: some View {
-        ScrollView {
-            LazyVStack(spacing: 12) {
-                if tarefasFiltradas.isEmpty && filtro == "Para hoje" {
-                    Text("O seu plano do dia está vazio! Adicione novas tarefas.")
-                        .foregroundColor(.corTextoSecundario)
-                        .multilineTextAlignment(.center)
-                        .padding(.top, 40)
-                } else if tarefasFiltradas.isEmpty && filtro == "Todas" {
-                    Text("Você não tem nenhuma tarefa pendente. Aproveite o descanso!")
-                        .foregroundColor(.corTextoSecundario)
-                        .multilineTextAlignment(.center)
-                        .padding(.top, 40)
-                } else {
-                    ForEach(tarefasFiltradas) { tarefa in
-                        CelulaDaTarefaView(
-                            tarefa: tarefa,
-                            tarefaExpandidaID: $id_tarefa_expandida,
-                            tarefaParaEditar: $tarefa_id_edicao,
-                            showEditModal: $showModal_aux
-                        )
-                    }
+        List {
+            if tarefasFiltradas.isEmpty && filtro == "Para hoje" {
+                Text("O seu plano do dia está vazio! Adicione novas tarefas.")
+                    .foregroundColor(.corTextoSecundario)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 40)
+                    // --- CORREÇÃO ADICIONADA ---
+                    .listRowBackground(Color.corFundo)
+                    .listRowSeparator(.hidden)
+            } else if tarefasFiltradas.isEmpty && filtro == "Todas" {
+                Text("Você não tem nenhuma tarefa pendente. Aproveite o descanso!")
+                    .foregroundColor(.corTextoSecundario)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 40)
+                    // --- CORREÇÃO ADICIONADA ---
+                    .listRowBackground(Color.corFundo)
+                    .listRowSeparator(.hidden)
+            } else {
+                ForEach(tarefasFiltradas) { tarefa in
+                    CelulaDaTarefaView(
+                        tarefa: tarefa,
+                        tarefaExpandidaID: $id_tarefa_expandida,
+                        tarefaParaEditar: $tarefa_id_edicao,
+                        showEditModal: $showModal_aux
+                    )
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+                    .listRowBackground(Color.corFundo)
                 }
             }
         }
+        .listStyle(.plain)
         .scrollIndicators(.hidden)
     }
     
     private var listaDeConcluidasView: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: 16) {
-                if datasOrdenadas.isEmpty {
-                    Text("Nenhuma tarefa concluída ainda.")
-                        .foregroundColor(.corTextoSecundario)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.top, 40)
-                } else {
-                    ForEach(datasOrdenadas, id: \.self) { data in
-                        Section {
-                            ForEach(tarefasConcluidasAgrupadas[data] ?? []) { tarefa in
-                                CelulaDaTarefaView(
-                                    tarefa: tarefa,
-                                    tarefaExpandidaID: .constant(nil),
-                                    tarefaParaEditar: .constant(nil),
-                                    showEditModal: .constant(false)
-                                )
-                            }
-                        } header: {
-                            HStack {
-                                Text(data, style: .date)
-                                    .font(.headline).foregroundColor(.corTextoSecundario)
-                                Spacer()
-                                Button("Limpar") { mostrandoAlertaLimpar = true }
-                                    .font(.caption).foregroundColor(.red)
-                            }
+        List {
+            if datasOrdenadas.isEmpty {
+                Text("Nenhuma tarefa concluída ainda.")
+                    .foregroundColor(.corTextoSecundario)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, 40)
+                    // --- CORREÇÃO ADICIONADA ---
+                    .listRowBackground(Color.corFundo)
+                    .listRowSeparator(.hidden)
+            } else {
+                ForEach(datasOrdenadas, id: \.self) { data in
+                    Section {
+                        ForEach(tarefasConcluidasAgrupadas[data] ?? []) { tarefa in
+                            CelulaDaTarefaView(
+                                tarefa: tarefa,
+                                tarefaExpandidaID: .constant(nil),
+                                tarefaParaEditar: .constant(nil),
+                                showEditModal: .constant(false)
+                            )
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+                            .listRowBackground(Color.corFundo)
+                        }
+                    } header: {
+                        HStack {
+                            Text(data, style: .date)
+                                .font(.headline).foregroundColor(.corTextoSecundario)
+                            Spacer()
+                            Button("Limpar") { mostrandoAlertaLimpar = true }
+                                .font(.caption).foregroundColor(.red)
                         }
                     }
                 }
             }
         }
+        .listStyle(.plain)
         .scrollIndicators(.hidden)
     }
     

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct OnboardingPageInfo {
     let id = UUID()
+    let image: String
     let title: String
     let description: String
 }
@@ -11,6 +12,11 @@ struct OnboardingPageView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
+            Image(page.image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 260, height: 260)
+            
             Text(page.title)
                 .font(.system(size: 26.05, weight: .bold))
                 .foregroundColor(Color("corPrimaria"))

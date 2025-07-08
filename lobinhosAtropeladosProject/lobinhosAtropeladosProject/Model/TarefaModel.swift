@@ -71,7 +71,7 @@ class TarefaModel: ObservableObject {
             
             if tarefas[index].concluida {
                 tarefas[index].data_conclusao = Date()
-                tarefas[index].fazParteDoPlanoDeHoje = false
+                // tarefas[index].fazParteDoPlanoDeHoje = false
                 NotificationManager.shared.cancelNotifications(for: tarefas[index])
             } else {
                 tarefas[index].data_conclusao = nil

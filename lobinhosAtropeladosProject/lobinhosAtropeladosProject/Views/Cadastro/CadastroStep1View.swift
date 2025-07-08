@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 struct CadastroStep1View: View {
     @Binding var nome: String
@@ -37,12 +38,26 @@ struct CadastroStep1View: View {
                 .font(.system(size: 14))
                 .foregroundColor(Color("corTextoSecundario"))
             
-            TextField(placeholder, text: texto)
+            let baseTextField = TextField(placeholder, text: texto)
                 .font(.system(size: 16))
                 .padding()
                 .background(Color("corCardPrincipal"))
                 .cornerRadius(12)
                 .foregroundColor(.black)
+
+            // --- CORREÇÃO APLICADA AQUI ---
+            if placeholder == "PERÍODO" {
+                baseTextField
+                    .keyboardType(.numberPad)
+                    .onReceive(Just(texto.wrappedValue)) { newValue in
+                        let filtered = newValue.filter { "0123456789".contains($0) }
+                        if filtered != newValue {
+                            texto.wrappedValue = filtered
+                        }
+                    }
+            } else {
+                baseTextField
+            }
         }
     }
 }

@@ -71,6 +71,7 @@ struct CadastroView: View {
     
     private func proximaPagina() {
         if currentPage == 0 {
+            hideKeyboard()
             withAnimation { currentPage = 1 }
         } else {
             guard let modo = modoMapping[estiloOrganizacao] else { return }

@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 struct PerfilView: View {
     @Environment(\.dismiss) var dismiss
@@ -8,7 +9,6 @@ struct PerfilView: View {
     @State private var curso: String
     @State private var periodo: String
     
-    // Estados originais para detectar mudanças
     private let cursoOriginal: String
     private let periodoOriginal: String
 
@@ -23,7 +23,6 @@ struct PerfilView: View {
         self.periodoOriginal = periodoInicial
     }
     
-    // Propriedade computada para verificar se houve alterações
     private var houveMudancas: Bool {
         return curso != cursoOriginal || periodo != periodoOriginal
     }
@@ -43,7 +42,6 @@ struct PerfilView: View {
         }
     }
     
-    // Propriedade para retornar a cor correta do modo
     private var corDoModo: Color {
         switch userModel.user.modo_selecionado {
         case 1:
@@ -136,29 +134,25 @@ struct PerfilView: View {
         dismiss()
     }
 
-    // --- CARD DE TAREFAS CONCLUÍDAS (VERSÃO CORRIGIDA) ---
     @ViewBuilder
     private func tarefasConcluidasCard() -> some View {
         HStack(spacing: 16) {
-            //GeometryReader { geometry in
-                ZStack {
-                    Image("gimoMascotePerfil")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 132, height: 132) // Aumentando o mascote
-                    
-                    // --- CORREÇÃO: Posição e estilo do número ---
-                    Text("\(tarefasConcluidasCount)")
-                        .font(.system(size: 17, weight: .bold))
-                        .foregroundColor(Color("corPrimaria"))
-                        .offset(y: 15) // Ajuste fino para posicionar na placa
-                }
-                .frame(width: 132) // Container do ZStack
-           // }
+            ZStack {
+                Image("gimoMascotePerfil")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 132, height: 132)
+                
+                Text("\(tarefasConcluidasCount)")
+                    .font(.system(size: 17, weight: .bold))
+                    .foregroundColor(Color("corPrimaria"))
+                    .offset(y: 15)
+            }
+            .frame(width: 132)
             
-            Text("Tarefas\nConcluídas") // Usando \n para quebra de linha
+            Text("Tarefas\nConcluídas")
                 .font(.system(size: 20, weight: .semibold))
-                .foregroundColor(Color("corTextoSecundario")) // Corrigindo a cor do texto
+                .foregroundColor(Color("corTextoSecundario"))
                 .lineSpacing(4)
             
             Spacer()
@@ -166,13 +160,11 @@ struct PerfilView: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
         .frame(maxWidth: .infinity)
-        .frame(minHeight: 112) // Altura mínima para acomodar o conteúdo
+        .frame(minHeight: 112)
         .background(Color("corCardPerfil"))
         .cornerRadius(12)
-        // --- CORREÇÃO: Removido o overlay da borda ---
     }
 
-    // --- CARD DE MODO PREFERIDO (VERSÃO CORRIGIDA) ---
     @ViewBuilder
     private func modoPreferidoCard() -> some View {
         HStack(spacing: 10) {
@@ -195,10 +187,8 @@ struct PerfilView: View {
         .frame(minHeight: 73)
         .background(Color("corCardPerfil"))
         .cornerRadius(12)
-        // --- CORREÇÃO: Removido o overlay da borda ---
     }
 
-    // --- CAMPO DE EDIÇÃO (VERSÃO CORRIGIDA) ---
     @ViewBuilder
     private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -207,7 +197,6 @@ struct PerfilView: View {
                     .font(.system(size: 14))
                     .foregroundColor(Color("corTextoSecundario"))
                 Spacer()
-                // --- CORREÇÃO: Botão "Editar" adicionado ---
                 Button("Editar") {
                     // Ação para editar
                 }
@@ -215,7 +204,7 @@ struct PerfilView: View {
                 .foregroundColor(Color("corPrimaria"))
             }
 
-            TextField(placeholder, text: texto)
+            let baseTextField = TextField(placeholder, text: texto)
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundColor(Color("corTextoSecundario"))
                 .padding(.horizontal, 16)
@@ -223,7 +212,20 @@ struct PerfilView: View {
                 .frame(maxWidth: .infinity)
                 .background(Color("corCardPrincipal"))
                 .cornerRadius(12)
-                // --- CORREÇÃO: Removido o overlay da borda ---
+            
+            // --- CORREÇÃO APLICADA AQUI ---
+            if titulo == "E estou no:" {
+                baseTextField
+                    .keyboardType(.numberPad)
+                    .onReceive(Just(texto.wrappedValue)) { newValue in
+                        let filtered = newValue.filter { "0123456789".contains($0) }
+                        if filtered != newValue {
+                            texto.wrappedValue = filtered
+                        }
+                    }
+            } else {
+                baseTextField
+            }
         }
     }
 }

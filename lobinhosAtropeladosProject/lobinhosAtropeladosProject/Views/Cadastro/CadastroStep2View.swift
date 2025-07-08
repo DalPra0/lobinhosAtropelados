@@ -6,7 +6,6 @@ struct CadastroStep2View: View {
     private let opcoes = [
         "Poucas tarefas e um dia tranquilo.",
         "Algumas tarefas, mas sem sobrecarregar meu dia.",
-        "Ser produtivo, mas ter pausas para um descanso.",
         "Foco total, quero finalizar minhas tarefas o mais rápido possível."
     ]
 

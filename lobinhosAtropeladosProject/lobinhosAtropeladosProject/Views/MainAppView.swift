@@ -11,19 +11,22 @@ struct MainAppView: View {
     @AppStorage("viuTelaTudoPronto") private var viuTelaTudoPronto: Bool = false
     
     var body: some View {
-        switch appState {
-        case .onboarding:
-            OnboardingView(appState: $appState)
-            
-        case .cadastro:
-            CadastroView(appState: $appState)
-            
-        case .mainApp:
-            if !viuTelaTudoPronto {
-                TudoProntoView(foiApresentada: $viuTelaTudoPronto)
-            } else {
-                ContentView()
+        Group {
+            switch appState {
+            case .onboarding:
+                OnboardingView(appState: $appState)
+                
+            case .cadastro:
+                CadastroView(appState: $appState)
+                
+            case .mainApp:
+                if !viuTelaTudoPronto {
+                    TudoProntoView(foiApresentada: $viuTelaTudoPronto)
+                } else {
+                    ContentView()
+                }
             }
         }
+        .preferredColorScheme(.light)
     }
 }

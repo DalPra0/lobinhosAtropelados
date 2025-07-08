@@ -6,9 +6,9 @@ struct OnboardingView: View {
     @State private var currentPage = 0
     
     private let pages: [OnboardingPageInfo] = [
-        OnboardingPageInfo(title: "Bem-vindo ao Gimo!", description: "Organize suas tarefas da faculdade, e nunca mais perca prazos."),
-        OnboardingPageInfo(title: "Feito para universitários", description: "Cadastre seu curso, período e tarefas. Deixa que a gente organiza!"),
-        OnboardingPageInfo(title: "Sua rotina, do seu jeito", description: "Defina prioridades e visualize tarefas. Mais foco, menos estresse.")
+        OnboardingPageInfo(image: "gimoMascoteOnBoarding1", title: "Bem-vindo ao Gimo!", description: "Organize suas tarefas da faculdade, e nunca mais perca prazos."),
+        OnboardingPageInfo(image: "gimoMascoteOnBoarding2", title: "Feito para universitários", description: "Cadastre seu curso, período e tarefas. Deixa que a gente organiza!"),
+        OnboardingPageInfo(image: "gimoMascoteOnBoarding3", title: "Sua rotina, do seu jeito", description: "Defina prioridades e visualize tarefas. Mais foco, menos estresse.")
     ]
 
     var body: some View {
@@ -24,7 +24,7 @@ struct OnboardingView: View {
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
-                .frame(height: 150)
+                .frame(height: 400)
 
                 VStack(spacing: 24) {
                     HStack(spacing: 8) {
