@@ -5,16 +5,17 @@ struct CadastroStep3View: View {
 
     private var modoInfo: (mascote: String, descricao: String) {
         switch estiloOrganizacao {
-        case "Poucas tarefas e um dia tranquilo.":
-            return ("gimoMascoteTranquilo", "Seu modo é **tranquilo**. Você gosta de dias leves, calmos e com poucas tarefas. O essencial é progredir sem se sobrecarregar!")
+        case "Um dia **tranquilo**, com poucas tarefas.":
+            return ("gimoMascoteTranquilo", "Modo **tranquilo** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
         
-        case "Foco total, quero finalizar minhas tarefas o mais rápido possível.":
-            return ("gimoMascoteIntenso", "Seu modo é **intenso**. Você tem muita energia e quer aproveitar cada minuto para ser super produtivo(a). Adora um dia cheio de desafios!")
+        case "Um dia **intenso**. Quero aproveitar para realizar muitas atividades.":
+            return ("gimoMascoteIntenso", "Modo **moderado** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
         
         default:
-            return ("gimoMascoteModerado", "Seu modo é **moderado**. Você prefere dias produtivos sem exageros. Consegue lidar com algumas tarefas, mas prioriza o seu bem-estar.")
+            return ("gimoMascoteModerado", "Modo **intenso** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
         }
     }
+    
 
     var body: some View {
         VStack(spacing: 24) {
