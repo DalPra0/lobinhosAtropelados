@@ -13,10 +13,9 @@ struct CadastroView: View {
     @State private var currentPage = 0
     
     private let modoMapping: [String: Int] = [
-        "Poucas tarefas e um dia tranquilo.": 1,
-        "Algumas tarefas, mas sem sobrecarregar meu dia.": 2,
-        "Ser produtivo, mas ter pausas para um descanso.": 2,
-        "Foco total, quero finalizar minhas tarefas o mais rápido possível.": 3
+        "Um dia **tranquilo**, com poucas tarefas.":1,
+        "Um dia **moderado**, que seja produtivo mas sem exageros.":2,
+        "Um dia **intenso**. Quero aproveitar para realizar muitas atividades.":3
     ]
     
     var body: some View {

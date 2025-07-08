@@ -192,7 +192,7 @@ struct PerfilView: View {
     @ViewBuilder
     private func modoPreferidoCard() -> some View {
         HStack(spacing: 10) {
-            Text("Modo\nPreferido")
+            Text("Modo Preferido")
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundColor(Color("corTextoSecundario"))
                 .lineSpacing(4)

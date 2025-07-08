@@ -10,12 +10,12 @@ struct CadastroStep1View: View {
             VStack(alignment: .leading, spacing: 32) {
                 
                 Text("Vamos nos conhecer melhor?")
-                    .font(.system(size: 28, weight: .bold))
+                    .font(.system(size: 26, weight: .bold))
                     .foregroundColor(Color("corPrimaria"))
                     .padding(.top, 40)
 
                 VStack(spacing: 24) {
-                    campoDeEdicao(titulo: "Como quer ser chamado?", placeholder: "APELIDO", texto: $nome)
+                    campoDeEdicao(titulo: "Como você gostaria de ser chamado?", placeholder: "APELIDO", texto: $nome)
                     campoDeEdicao(titulo: "Qual o seu curso?", placeholder: "CURSO", texto: $curso)
                     campoDeEdicao(titulo: "Em qual período você está?", placeholder: "PERÍODO", texto: $periodo)
                 }

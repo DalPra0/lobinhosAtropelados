@@ -4,9 +4,9 @@ struct CadastroStep2View: View {
     @Binding var estiloOrganizacao: String
     
     private let opcoes = [
-        "Poucas tarefas e um dia tranquilo.",
-        "Algumas tarefas, mas sem sobrecarregar meu dia.",
-        "Foco total, quero finalizar minhas tarefas o mais rápido possível."
+        "Um dia **tranquilo**, com poucas tarefas.",
+        "Um dia **moderado**, que seja produtivo mas sem exageros.",
+        "Um dia **intenso**. Quero aproveitar para realizar muitas atividades."
     ]
 
     var body: some View {
@@ -19,6 +19,7 @@ struct CadastroStep2View: View {
                 
                 Text("Eu prefiro...")
                     .font(.system(size: 16))
+                    .fontWeight(.semibold)
                     .foregroundColor(Color("corTextoSecundario"))
             }
             .padding(.top, 40)
@@ -58,7 +59,7 @@ private struct BotaoDeOpcao: View {
                     .font(.title2)
                     .foregroundColor(Color("corPrimaria"))
                 
-                Text(texto)
+                Text((try! AttributedString(markdown: texto)))
                     .font(.system(size: 16))
                     .multilineTextAlignment(.leading)
                 
