@@ -12,20 +12,24 @@ struct CarregamentoView: View {
  
     var body: some View {
         VStack(alignment: .leading) {
-            Text("RAM")
-                .bold()
- 
-            ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 3)
-                    .fill(Color(.systemGray6))
-                RoundedRectangle(cornerRadius: 3)
-                    .fill(.indigo.gradient)
-                    .frame(width: drawingWidth ? 250 : 0, alignment: .leading)
-                    .animation(.easeInOut(duration: 10).repeatForever(autoreverses: false), value: drawingWidth)
-            }
-            .frame(width: 250, height: 12)
-            .onAppear {
-                drawingWidth.toggle()
+
+            ZStack {
+                Color("corFundo").ignoresSafeArea()
+                
+                
+                ZStack(alignment: .leading) {
+                    
+                    RoundedRectangle(cornerRadius: 30)
+                        .fill(Color(.systemGray6))
+                    RoundedRectangle(cornerRadius: 30)
+                        .fill(Color("corPrimaria"))
+                        .frame(width: drawingWidth ? 250 : 0, alignment: .leading)
+                        .animation(.easeInOut(duration: 10).repeatForever(autoreverses: false), value: drawingWidth)
+                }
+                .frame(width: 250, height: 12)
+                .onAppear {
+                    drawingWidth.toggle()
+                }
             }
         }
     }
