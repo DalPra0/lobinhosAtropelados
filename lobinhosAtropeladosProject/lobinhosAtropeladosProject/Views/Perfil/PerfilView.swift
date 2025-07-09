@@ -1,7 +1,8 @@
 import SwiftUI
-import Combine
 
 struct PerfilView: View {
+
+    
     @Environment(\.dismiss) var dismiss
     @ObservedObject var userModel = UserModel.shared
     @ObservedObject var tarefaModel = TarefaModel.shared
@@ -9,6 +10,11 @@ struct PerfilView: View {
     @State private var curso: String
     @State private var periodo: String
     
+    // Para botao de edicao
+    @State var editando_0 = false
+    @State var editando_1 = false
+
+    // Estados originais para detectar mudanças
     private let cursoOriginal: String
     private let periodoOriginal: String
 
@@ -23,6 +29,7 @@ struct PerfilView: View {
         self.periodoOriginal = periodoInicial
     }
     
+    // Propriedade computada para verificar se houve alterações
     private var houveMudancas: Bool {
         return curso != cursoOriginal || periodo != periodoOriginal
     }
@@ -42,6 +49,7 @@ struct PerfilView: View {
         }
     }
     
+    // Propriedade para retornar a cor correta do modo
     private var corDoModo: Color {
         switch userModel.user.modo_selecionado {
         case 1:
@@ -54,74 +62,86 @@ struct PerfilView: View {
     }
 
     var body: some View {
-        ZStack {
-            Color("corFundo").ignoresSafeArea()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    HStack {
-                        Button(action: { dismiss() }) {
-                            Image(systemName: "chevron.left")
-                                .foregroundColor(.corPrimaria)
-                                .font(.system(size: 22))
-                                .bold()
+        NavigationView{
+            ZStack {
+                Color("corFundo").ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        HStack {
+                            Button(action: { dismiss() }) {
+                                Image(systemName: "chevron.left")
+                                    .foregroundColor(.corPrimaria)
+                                    .font(.system(size: 22))
+                                    .bold()
+                            }
+                            Spacer()
+                            
+                            NavigationLink(destination: AjudaView()) {
+                                Image(systemName: "questionmark.circle")
+                                    .foregroundColor(.corPrimaria)
+                                    .font(.system(size: 22))
+                                    .bold()
+                            }
                         }
-                        Spacer()
-                    }
-                    .padding(.top, 20)
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Meu perfil")
-                            .font(.system(size: 17))
-                            .fontWeight(.semibold)
-                            .foregroundColor(Color("corTextoSecundario"))
-
-                        Text(userModel.user.nome)
-                            .font(.system(size: 30, weight: .bold))
-                            .foregroundColor(Color("corPrimaria"))
-                    }
-
-                    VStack(spacing: 24) {
-                        campoDeEdicao(titulo: "Eu curso:", placeholder: "Design de Produto", texto: $curso)
-                        campoDeEdicao(titulo: "E estou no:", placeholder: "4 Período", texto: $periodo)
-                    }
-
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Resumo de Atividades")
-                            .font(.system(size: 20))
-                            .fontWeight(.semibold)
-                            .foregroundColor(Color("corPrimaria"))
-
-                        VStack(spacing: 12) {
+                        .padding(.top, 20)
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Meu perfil")
+                                .font(.system(size: 17))
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color("corTextoSecundario"))
+                            
+                            Text(userModel.user.nome)
+                                .font(.system(size: 30, weight: .bold))
+                                .foregroundColor(Color("corPrimaria"))
+                        }
+                        
+                        VStack(spacing: 24) {
+                            campoDeEdicao(titulo: "Eu curso:", placeholder: "Design de Produto", texto: $curso, editando: $editando_0)
+                            campoDeEdicao(titulo: "E estou no período:", placeholder: "4", texto: $periodo, editando: $editando_1)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 18) {
+                            Text("Resumo de Atividades")
+                                .font(.system(size: 20))
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color("corPrimaria"))
+                            
                             tarefasConcluidasCard()
                             modoPreferidoCard()
+                            
+                        }
+                        
+                        Spacer(minLength: 16)
+                        
+                        if houveMudancas {
+                            Button{
+                                salvarAlteracoes()
+                                editando_0 = false
+                                editando_1 = false
+                            } label: {
+                                Text("SALVAR")
+                                    .font(.system(size: 16, weight: .bold))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 52)
+                                    .background(Color("corPrimaria"))
+                                    .foregroundColor(Color("corFundo"))
+                                    .cornerRadius(12)
+                            }
+                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                            .animation(.easeInOut, value: houveMudancas)
                         }
                     }
-
-                    Spacer(minLength: 16)
-
-                    if houveMudancas {
-                        Button(action: salvarAlteracoes) {
-                            Text("SALVAR")
-                                .font(.system(size: 16, weight: .bold))
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 52)
-                                .background(Color("corPrimaria"))
-                                .foregroundColor(Color("corFundo"))
-                                .cornerRadius(12)
-                        }
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
-                        .animation(.easeInOut, value: houveMudancas)
-                    }
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 40)
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 40)
+                .onTapGesture {
+                    hideKeyboard()
+                }
             }
-            .onTapGesture {
-                hideKeyboard()
-            }
+            .navigationBarHidden(true)
         }
-        .navigationBarHidden(true)
     }
 
     private func salvarAlteracoes() {
@@ -134,25 +154,27 @@ struct PerfilView: View {
         dismiss()
     }
 
+    // --- CARD DE TAREFAS CONCLUÍDAS (VERSÃO CORRIGIDA) ---
     @ViewBuilder
     private func tarefasConcluidasCard() -> some View {
         HStack(spacing: 16) {
-            ZStack {
-                Image("gimoMascotePerfil")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 132, height: 132)
-                
-                Text("\(tarefasConcluidasCount)")
-                    .font(.system(size: 17, weight: .bold))
-                    .foregroundColor(Color("corPrimaria"))
-                    .offset(y: 15)
-            }
-            .frame(width: 132)
+                ZStack {
+                    Image("gimoMascotePerfil")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 132, height: 132) // Aumentando o mascote
+                    
+                    // --- CORREÇÃO: Posição e estilo do número ---
+                    Text("\(tarefasConcluidasCount)")
+                        .font(.system(size: 17, weight: .bold))
+                        .foregroundColor(Color("corPrimaria"))
+                        .offset(y: 15) // Ajuste fino para posicionar na placa
+                }
+                .frame(width: 132) // Container do ZStack
             
-            Text("Tarefas\nConcluídas")
+            Text("Tarefas\nConcluídas") // Usando \n para quebra de linha
                 .font(.system(size: 20, weight: .semibold))
-                .foregroundColor(Color("corTextoSecundario"))
+                .foregroundColor(Color("corTextoSecundario")) // Corrigindo a cor do texto
                 .lineSpacing(4)
             
             Spacer()
@@ -160,15 +182,17 @@ struct PerfilView: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
         .frame(maxWidth: .infinity)
-        .frame(minHeight: 112)
+        .frame(minHeight: 112) // Altura mínima para acomodar o conteúdo
         .background(Color("corCardPerfil"))
         .cornerRadius(12)
+        // --- CORREÇÃO: Removido o overlay da borda ---
     }
 
+    // --- CARD DE MODO PREFERIDO (VERSÃO CORRIGIDA) ---
     @ViewBuilder
     private func modoPreferidoCard() -> some View {
         HStack(spacing: 10) {
-            Text("Modo\nPreferido")
+            Text("Modo Preferido")
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundColor(Color("corTextoSecundario"))
                 .lineSpacing(4)
@@ -182,50 +206,52 @@ struct PerfilView: View {
             Spacer()
         }
         .padding(.horizontal, 20)
-        .padding(.vertical, 16)
+        .padding(.vertical, 7)
         .frame(maxWidth: .infinity)
         .frame(minHeight: 73)
         .background(Color("corCardPerfil"))
         .cornerRadius(12)
+        // --- CORREÇÃO: Removido o overlay da borda ---
     }
 
+    // --- CAMPO DE EDIÇÃO (VERSÃO CORRIGIDA) ---
     @ViewBuilder
-    private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>) -> some View {
+    private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>, editando: Binding<Bool>) -> some View {
+        
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(titulo)
                     .font(.system(size: 14))
                     .foregroundColor(Color("corTextoSecundario"))
                 Spacer()
+                // --- CORREÇÃO: Botão "Editar" adicionado ---
                 Button("Editar") {
-                    // Ação para editar
+                    editando.wrappedValue = true
                 }
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(Color("corPrimaria"))
+                .foregroundColor(Color("corTextoTerciario"))
             }
 
-            let baseTextField = TextField(placeholder, text: texto)
+            TextField(placeholder, text: texto)
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundColor(Color("corTextoSecundario"))
                 .padding(.horizontal, 16)
                 .frame(height: 52)
                 .frame(maxWidth: .infinity)
+                .disabled(!editando.wrappedValue)
                 .background(Color("corCardPrincipal"))
                 .cornerRadius(12)
-            
-            // --- CORREÇÃO APLICADA AQUI ---
-            if titulo == "E estou no:" {
-                baseTextField
-                    .keyboardType(.numberPad)
-                    .onReceive(Just(texto.wrappedValue)) { newValue in
-                        let filtered = newValue.filter { "0123456789".contains($0) }
-                        if filtered != newValue {
-                            texto.wrappedValue = filtered
-                        }
+                // --- CORREÇÃO: Removido o overlay da borda ---
+                .background {
+                    if editando.wrappedValue {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(.corFundo)
+                            .stroke(Color.corStroke, lineWidth: 2)
+                    } else {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color("corCardPerfil"))
                     }
-            } else {
-                baseTextField
-            }
+                }
         }
     }
 }

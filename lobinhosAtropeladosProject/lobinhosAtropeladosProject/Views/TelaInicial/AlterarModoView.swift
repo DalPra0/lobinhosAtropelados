@@ -8,10 +8,9 @@ struct AlterarModoView: View {
     @State private var estiloSelecionado: String
     
     private let opcoes = [
-        "Poucas tarefas e um dia tranquilo.",
-        "Algumas tarefas, mas sem sobrecarregar meu dia.",
-        "Ser produtivo, mas ter pausas para um descanso.",
-        "Foco total, quero finalizar minhas tarefas o mais rápido possível."
+        "Um dia **tranquilo**, com poucas tarefas.",
+        "Um dia **moderado**, que seja produtivo mas sem exageros.",
+        "Um dia **intenso**. Quero aproveitar para realizar muitas atividades."
     ]
 
     init() {
@@ -37,6 +36,7 @@ struct AlterarModoView: View {
                     
                     Text("Eu prefiro...")
                         .font(.system(size: 16))
+                        .fontWeight(.semibold)
                         .foregroundColor(Color("corTextoSecundario"))
                 }
 
@@ -79,10 +79,9 @@ struct AlterarModoView: View {
 
     private func obterModo(para estilo: String) -> Int? {
         let opcoes: [String: Int] = [
-            "Poucas tarefas e um dia tranquilo.": 1,
-            "Algumas tarefas, mas sem sobrecarregar meu dia.": 2,
-            "Ser produtivo, mas ter pausas para um descanso.": 2,
-            "Foco total, quero finalizar minhas tarefas o mais rápido possível.": 3
+            "Um dia **tranquilo**, com poucas tarefas.":1,
+            "Um dia **moderado**, que seja produtivo mas sem exageros.":2,
+            "Um dia **intenso**. Quero aproveitar para realizar muitas atividades.":3
         ]
         return opcoes.first(where: { $0.key == estilo })?.value
     }
@@ -107,7 +106,7 @@ private struct BotaoDeOpcao: View {
                     .font(.title2)
                     .foregroundColor(Color("corPrimaria"))
                 
-                Text(texto)
+                Text((try! AttributedString(markdown: texto)))
                     .font(.system(size: 16))
                     .multilineTextAlignment(.leading)
                 
