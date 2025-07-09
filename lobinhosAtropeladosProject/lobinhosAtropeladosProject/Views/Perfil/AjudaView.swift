@@ -104,7 +104,7 @@ struct AjudaView: View {
                             .font(.system(size: 20))
                             .fontWeight(.semibold)
                             .foregroundColor(Color("corPrimaria"))
-                        Text("Se o seu dia estiver mais corrido ou mais leve, clique em \"Alterar seu ritmo\" logo abaixo do seu nome, na tela inicial, para que eu possa ajustar o plano para você.")
+                        Text("Se o seu dia estiver mais corrido ou mais leve, clique em \"Editar\" na tela inicial, para que eu possa ajustar o plano para você.")
                             .font(.system(size: 18))
                             .foregroundColor(Color("corTextoSecundario"))
                     }
