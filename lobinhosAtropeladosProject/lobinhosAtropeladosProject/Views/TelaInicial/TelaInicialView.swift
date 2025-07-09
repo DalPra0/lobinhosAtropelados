@@ -187,12 +187,12 @@ struct TelaInicialView: View {
                 }
             }
             
-            HStack(spacing: 16) {
+            HStack(spacing: 12) {
                 
                 Image(mascote)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 57, height: 55)
+                    .frame(width: 97, height: 95)
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(textoModo)
