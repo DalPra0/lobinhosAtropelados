@@ -92,6 +92,9 @@ struct GimoWidgetEntryView : View {
                 .padding()
             }
         }
+        .containerBackground(for: .widget) {
+            Color("corFundoTarefa")
+        }
     }
     
     private func InfoLinha(icone: String, label: String, value: String) -> some View {
