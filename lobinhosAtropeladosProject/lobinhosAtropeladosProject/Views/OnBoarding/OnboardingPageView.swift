@@ -15,7 +15,7 @@ struct OnboardingPageView: View {
             Image(page.image)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 260, height: 260)
+                .frame(width: 267, height: 267)
             
             Text(page.title)
                 .font(.system(size: 26.05, weight: .bold))

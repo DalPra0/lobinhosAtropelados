@@ -48,7 +48,7 @@ struct CadastroView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(isButtonDisabled ? Color.gray.opacity(0.5) : Color("corPrimaria"))
-                        .foregroundColor(Color("corFundo"))
+                        .foregroundColor(.white)
                         .cornerRadius(16)
                 }
                 .disabled(isButtonDisabled)

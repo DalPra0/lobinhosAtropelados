@@ -1,7 +1,21 @@
 import SwiftUI
 
 struct CelulaDaTarefaView: View {
+    let index : Int
+    let filtro: String
     let tarefa: Tarefa
+    
+    var corFundo : Color{
+        if index == 1{
+            return Color(.corPrioridade1)
+        }
+        else if index == 2{
+            return Color(.corSelect)
+        }
+        else{
+            return Color(.corPrioridade3)
+        }
+    }
     
     @Binding var tarefaExpandidaID: UUID?
     @Binding var tarefaParaEditar: UUID?
@@ -67,12 +81,17 @@ struct CelulaDaTarefaView: View {
                 }
                 Spacer()
                 
-                // Ícone de expandir
-                if !isVisuallyCompleted {
-                    Image(systemName: "chevron.down")
-                        .font(.caption.bold())
-                        .foregroundColor(Color("corTextoSecundario"))
-                        .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                // Prioridade
+                if filtro == "Para hoje" {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(corFundo)
+                        .frame(width: 30, height: 30)
+                        .overlay(
+                            Text("\(index)")
+                                .font(.system(size: 16))
+                                .fontWeight(.semibold)
+                                .foregroundColor(.white)
+                        )
                 }
             }
             .padding()
@@ -94,7 +113,7 @@ struct CelulaDaTarefaView: View {
                             .foregroundColor(Color(UIColor.darkGray))
                     }
                     
-                    detalheItem(icone: "hourglass", label: "Prazo: ", value: tarefa.data_entrega.formatted(.dateTime.day().month(.wide).year()))
+                    detalheItem(icone: "hourglass", label: "Prazo: ", value: tarefa.data_entrega.formatted(.dateTime.locale(Locale(identifier: "pt_BR")).day().month(.wide).year()))
                     detalheItem(icone: "bolt.horizontal.icloud.fill", label: "Dificuldade: ", value: "Nível \(tarefa.dificuldade)")
 
                 }

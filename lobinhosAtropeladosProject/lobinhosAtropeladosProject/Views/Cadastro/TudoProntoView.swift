@@ -7,11 +7,11 @@ struct TudoProntoView: View {
     private var modoInfo: (mascote: String, descricao: String) {
         switch userModel.user.modo_selecionado {
         case 1:
-            return ("gimoMascoteTranquilo", "Seu modo é **tranquilo**. Você gosta de dias leves, calmos e com poucas tarefas. O essencial é progredir sem se sobrecarregar!")
+            return ("gimoMascoteVerde", "Seu modo é **tranquilo**. Você gosta de dias leves, calmos e com poucas tarefas. O essencial é progredir sem se sobrecarregar!")
         case 3:
-            return ("gimoMascoteIntenso", "Seu modo é **intenso**. Você tem muita energia e quer aproveitar cada minuto para ser super produtivo(a). Adora um dia cheio de desafios!")
+            return ("gimoMascoteLaranja", "Seu modo é **intenso**. Você tem muita energia e quer aproveitar cada minuto para ser super produtivo(a). Adora um dia cheio de desafios!")
         default:
-            return ("gimoMascoteModerado", "Seu modo é **moderado**. Você prefere dias produtivos sem exageros. Consegue lidar com algumas tarefas, mas prioriza o seu bem-estar.")
+            return ("gimoMascoteAmarelo", "Seu modo é **moderado**. Você prefere dias produtivos sem exageros. Consegue lidar com algumas tarefas, mas prioriza o seu bem-estar.")
         }
     }
     
@@ -56,7 +56,7 @@ struct TudoProntoView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color("corPrimaria"))
-                        .foregroundColor(Color("corFundo"))
+                        .foregroundColor(.white)
                         .cornerRadius(16)
                 }
             }

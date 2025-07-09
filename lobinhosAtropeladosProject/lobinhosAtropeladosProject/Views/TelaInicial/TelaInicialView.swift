@@ -32,6 +32,15 @@ struct TelaInicialView: View {
         }
     }
     
+    private var mascote: String {
+        switch userModel.user.modo_selecionado {
+        case 1: return "gimoMascoteVerde"
+        case 2: return "gimoMascoteAmarelo"
+        case 3: return "gimoMascoteLaranja"
+        default: return "gimoMascoteNeutro"
+        }
+    }
+    
     private var corModo: Color {
         switch userModel.user.modo_selecionado {
         case 1: return Color("corModoTranquilo")
@@ -65,34 +74,38 @@ struct TelaInicialView: View {
             Color.corFundo
                 .ignoresSafeArea()
             
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 32) {
                 cabecalhoView
                 
-                VStack(alignment: .leading, spacing: 24) {
-                    HStack {
-                        Text("Minhas tarefas")
-                            .bold()
-                            .font(.system(size: 25))
-                        Spacer()
-                        // Botão de exportar
-                        Button(action: exportarTarefas) {
-                            Image(systemName: "calendar.badge.plus")
-                                .font(.title2)
-                                .foregroundColor(Color("corPrimaria"))
+                VStack(alignment: .leading){
+                    VStack(alignment: .leading, spacing: 14) {
+                        HStack {
+                            Text("Minhas tarefas")
+                                .bold()
+                                .font(.system(size: 25))
+                            Spacer()
+                            // Botão de exportar
+                            Button(action: exportarTarefas) {
+                                Image(systemName: "calendar.badge.plus")
+                                    .font(.title2)
+                                    .foregroundColor(Color("corPrimaria"))
+                            }
                         }
+                        
+                        filtrosView
                     }
+                        
+                        if filtro == "Concluídas" {
+                            listaDeConcluidasView
+                        } else {
+                            listaDePendentesView
+                        }
                     
-                    filtrosView
-                    
-                    if filtro == "Concluídas" {
-                        listaDeConcluidasView
-                    } else {
-                        listaDePendentesView
-                    }
                 }
+                    
             }
             .padding(.horizontal, 24)
-            .padding(.top, 80)
+            .padding(.top, 60)
             //fix de posicao
             .ignoresSafeArea()
             
@@ -155,28 +168,64 @@ struct TelaInicialView: View {
     }
     
     private var cabecalhoView: some View {
-        HStack(spacing: 8) {
-            VStack(alignment: .leading, spacing: 5) {
-                Text("Olá \(userModel.user.nome),")
-                    .font(.body).fontWeight(.semibold).foregroundColor(.corTextoSecundario)
-                Text(textoModo)
-                    .font(.system(size: 22)).fontWeight(.semibold).foregroundColor(corModo)
-                Button("Clique aqui para alterar") { mostrandoTelaAlterarModo = true }
-                    .font(.system(size: 13)).fontWeight(.regular).foregroundColor(.corTextoTerciario)
+        
+        VStack(alignment: .leading, spacing: 18) {
+            
+            HStack {
+                Spacer()
+                Button(action: { mostrandoTelaPerfil = true }) {
+                    ZStack{
+                        Image(systemName: "person")
+                            .foregroundColor(.corPrimaria).font(.system(size: 18))
+                        
+                        
+                        Circle()
+                            .stroke(Color.corPrimaria, lineWidth: 1) // Borda do círculo
+                            .frame(width: 32, height: 32) // Tamanho do círculo
+                        
+                    }
+                }
             }
-            Spacer()
-            Button(action: { mostrandoTelaPerfil = true }) {
-                Image(systemName: "person")
-                    .foregroundColor(.corPrimaria).font(.system(size: 30)).bold()
+            
+            HStack(spacing: 16) {
+                
+                Image(mascote)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 57, height: 55)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(textoModo)
+                        .font(.system(size: 22)).fontWeight(.semibold).foregroundColor(corModo)
+                    Button("Editar") { mostrandoTelaAlterarModo = true }
+                        .font(.system(size: 13)).fontWeight(.medium).foregroundColor(.corTextoTerciario)
+                }
+                Spacer()
             }
         }
     }
     
     private var filtrosView: some View {
-        HStack(spacing: 8) {
-            BotaoFiltro(titulo: "Para hoje", filtroSelecionado: $filtro)
-            BotaoFiltro(titulo: "Concluídas", filtroSelecionado: $filtro)
-            BotaoFiltro(titulo: "Todas", filtroSelecionado: $filtro)
+        VStack(alignment: .leading, spacing: 10){
+            HStack(spacing: 8) {
+                BotaoFiltro(titulo: "Para hoje", filtroSelecionado: $filtro)
+                BotaoFiltro(titulo: "Concluídas", filtroSelecionado: $filtro)
+                BotaoFiltro(titulo: "Todas", filtroSelecionado: $filtro)
+            }
+            //label
+            if filtro == "Para hoje"{
+                Text("As suas tarefas priorizadas serão exibidas aqui")
+                    .font(.footnote)
+                    .foregroundColor(.corLabelIncial)
+            }else if filtro == "Concluídas"{
+                Text("As suas tarefas concluídas serão exibidas aqui")
+                    .font(.footnote)
+                    .foregroundColor(.corLabelIncial)
+            }else{
+                Text("Aqui você verá todas as tarefas que não foram concluídas")
+                    .font(.footnote)
+                    .foregroundColor(.corLabelIncial)
+            }
         }
     }
     
@@ -190,8 +239,8 @@ struct TelaInicialView: View {
                     .listRowBackground(Color.corFundo)
                     .listRowSeparator(.hidden)
             } else {
-                ForEach(tarefasFiltradas) { tarefa in
-                    CelulaDaTarefaView(
+                ForEach(Array(tarefasFiltradas.enumerated()), id: \.element.id) { index, tarefa in
+                    CelulaDaTarefaView(index:index+1,filtro:filtro,
                         tarefa: tarefa,
                         tarefaExpandidaID: $id_tarefa_expandida,
                         tarefaParaEditar: $tarefa_id_edicao,
@@ -220,7 +269,7 @@ struct TelaInicialView: View {
                 ForEach(datasOrdenadas, id: \.self) { data in
                     Section {
                         ForEach(tarefasConcluidasAgrupadas[data] ?? []) { tarefa in
-                            CelulaDaTarefaView(
+                            CelulaDaTarefaView(index:0,filtro:"Concluídas",
                                 tarefa: tarefa,
                                 tarefaExpandidaID: .constant(nil),
                                 tarefaParaEditar: .constant(nil),
@@ -234,6 +283,7 @@ struct TelaInicialView: View {
                         HStack {
                             Text(data, style: .date)
                                 .font(.headline).foregroundColor(.corTextoSecundario)
+                                .environment(\.locale, Locale(identifier: "pt_BR"))
                             Spacer()
                             Button("Limpar") { mostrandoAlertaLimpar = true }
                                 .font(.caption).foregroundColor(.red)
@@ -251,9 +301,15 @@ struct TelaInicialView: View {
             Spacer()
             HStack {
                 Spacer()
-                Button { showModal_add = true } label: {
-                    Image(systemName: "plus.circle.fill")
-                        .foregroundColor(.corPrimaria).font(.system(size: 45))
+                ZStack{
+                    Circle()
+                        .frame(width:35, height: 35)
+                        .foregroundColor(.white)
+                    Button { showModal_add = true } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundColor(.corPrimaria).font(.system(size: 45))
+                    }
+
                 }
                 .padding([.horizontal, .bottom], 20)
             }

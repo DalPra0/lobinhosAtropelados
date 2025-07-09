@@ -98,8 +98,8 @@ struct PerfilView: View {
                         }
                         
                         VStack(spacing: 24) {
-                            campoDeEdicao(titulo: "Eu curso:", placeholder: "Design de Produto", texto: $curso, editando: $editando_0)
-                            campoDeEdicao(titulo: "E estou no período:", placeholder: "4", texto: $periodo, editando: $editando_1)
+                            campoDeEdicao(titulo: "Eu curso:", placeholder: "Ex: Design de Produto", texto: $curso, editando: $editando_0)
+                            campoDeEdicao(titulo: "E estou no período:", placeholder: "Ex: 4", texto: $periodo, editando: $editando_1)
                         }
                         
                         VStack(alignment: .leading, spacing: 18) {
@@ -126,7 +126,7 @@ struct PerfilView: View {
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 52)
                                     .background(Color("corPrimaria"))
-                                    .foregroundColor(Color("corFundo"))
+                                    .foregroundColor(.white)
                                     .cornerRadius(12)
                             }
                             .transition(.opacity.combined(with: .move(edge: .bottom)))
@@ -239,13 +239,12 @@ struct PerfilView: View {
                 .frame(height: 52)
                 .frame(maxWidth: .infinity)
                 .disabled(!editando.wrappedValue)
-                .background(Color("corCardPrincipal"))
                 .cornerRadius(12)
                 // --- CORREÇÃO: Removido o overlay da borda ---
                 .background {
                     if editando.wrappedValue {
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(.corFundo)
+                            .fill(.clear)
                             .stroke(Color.corStroke, lineWidth: 2)
                     } else {
                         RoundedRectangle(cornerRadius: 12)

@@ -27,7 +27,7 @@ struct OnboardingView: View {
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .frame(height: 400)
 
-                VStack(spacing: 24) {
+ 
                     /*
                     HStack(spacing: 8) {
                         ForEach(pages.indices, id: \.self) { index in
@@ -51,13 +51,12 @@ struct OnboardingView: View {
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Color("corPrimaria"))
-                            .foregroundColor(Color("corFundo"))
+                            .foregroundColor(.white)
                             .cornerRadius(16)
                     }
-                }
                 .padding(.horizontal, 24)
             }
-            .padding(.bottom, 64)
+            .padding(.bottom, 40)
         }
     }
 }

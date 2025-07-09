@@ -6,13 +6,13 @@ struct CadastroStep3View: View {
     private var modoInfo: (mascote: String, descricao: String) {
         switch estiloOrganizacao {
         case "Um dia **tranquilo**, com poucas tarefas.":
-            return ("gimoMascoteTranquilo", "Modo **tranquilo** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
+            return ("gimoMascoteVerde", "Modo **tranquilo** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
         
         case "Um dia **intenso**. Quero aproveitar para realizar muitas atividades.":
-            return ("gimoMascoteIntenso", "Modo **moderado** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
+            return ("gimoMascoteLaranja", "Modo **moderado** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
         
         default:
-            return ("gimoMascoteModerado", "Modo **intenso** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
+            return ("gimoMascoteAmarelo", "Modo **intenso** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
         }
     }
     
