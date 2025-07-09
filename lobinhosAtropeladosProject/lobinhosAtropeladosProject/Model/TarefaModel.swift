@@ -5,12 +5,9 @@ import SwiftUI
 class TarefaModel: ObservableObject {
     static let shared = TarefaModel()
     
-    // As chaves de salvamento permanecem as mesmas
     private let saveKey = "TarefasLoboApp"
     private let lastUpdateKey = "LastPlanUpdateDate"
     private let tutorialKey = "HasCreatedTutorialTasks"
-    
-    // Managers e Serviços
     private let geminiService = GeminiService()
     private let calendarManager = CalendarManager.shared
     
@@ -25,62 +22,6 @@ class TarefaModel: ObservableObject {
         carregarTarefas()
         criarTarefasIniciaisSeNecessario()
     }
-    
-    // --- FUNÇÕES MODIFICADAS PARA APP GROUP ---
-
-    func criarTarefasIniciaisSeNecessario() {
-        let tutorialJaCriado = AppGroup.userDefaults.bool(forKey: tutorialKey)
-        
-        if !tutorialJaCriado && tarefas.isEmpty {
-            print("Criando tarefas do tutorial pela primeira vez.")
-            
-            let umDia: TimeInterval = 60 * 60 * 24
-            
-            let tarefasTutorial = [
-                Tarefa(nome: "Bem-vindo(a) ao Gimo! ✨", descricao: "Este é o seu plano de hoje, montado especialmente para você! Para concluir uma tarefa como esta, basta tocar no círculo à esquerda. Experimente agora e sinta a satisfação!", dificuldade: "1", data_entrega: Date().addingTimeInterval(umDia * 2), fazParteDoPlanoDeHoje: true),
-                Tarefa(nome: "Toque aqui para ver os detalhes", descricao: "Toda tarefa tem informações extras. Toque no corpo de uma tarefa (nesta, por exemplo!) para expandir e ver a descrição, o prazo e a dificuldade. Toque novamente para fechar.", dificuldade: "1", data_entrega: Date().addingTimeInterval(umDia * 3), fazParteDoPlanoDeHoje: true),
-                Tarefa(nome: "Deslize para editar ou excluir", descricao: "Precisou ajustar algo ou a tarefa não é mais necessária? Deslize o dedo da direita para a esquerda sobre ela para revelar as opções. É fácil assim! (Só não me exclua, ok?)", dificuldade: "2", data_entrega: Date().addingTimeInterval(umDia * 4), fazParteDoPlanoDeHoje: true),
-                Tarefa(nome: "Adicione sua primeira tarefa real", descricao: "Agora é sua vez! Quando estiver pronto, toque no botão azul com o sinal de \"+\" no canto inferior direito para cadastrar suas próprias atividades da faculdade.", dificuldade: "3", data_entrega: Date().addingTimeInterval(umDia * 5), fazParteDoPlanoDeHoje: true),
-                Tarefa(nome: "Explore suas outras tarefas", descricao: "No topo da tela, você pode usar os filtros para alternar entre as tarefas que eu priorizei \"Para hoje\", \"Todas\" as suas tarefas pendentes ou as que você já finalizou em \"Concluídas\".", dificuldade: "1", data_entrega: Date().addingTimeInterval(umDia * 6)),
-                Tarefa(nome: "Ajuste seu perfil e seu ritmo", descricao: "Toque no ícone de pessoa no topo para ver seu perfil. E se o dia estiver mais corrido ou mais leve, clique em \"Alterar seu ritmo\" logo abaixo do seu nome para que eu possa ajustar o plano para você.", dificuldade: "2", data_entrega: Date().addingTimeInterval(umDia * 7))
-            ]
-            
-            self.tarefas.append(contentsOf: tarefasTutorial)
-            
-            AppGroup.userDefaults.set(true, forKey: tutorialKey)
-        }
-    }
-    
-    func verificarEGerarPlanoDoDia() {
-        let ultimaAtualizacao = AppGroup.userDefaults.object(forKey: lastUpdateKey) as? Date
-        
-        let eNovoDia = ultimaAtualizacao == nil || !Calendar.current.isDateInToday(ultimaAtualizacao!)
-        let naoExistePlano = !tarefas.contains(where: { $0.fazParteDoPlanoDeHoje && !$0.concluida })
-
-        if eNovoDia || naoExistePlano {
-            print("Gerando novo plano do dia. Motivo: É novo dia ou não existe plano ativo.")
-            chamarIA(paraGerarPlanoCompleto: true)
-        } else {
-            print("O plano do dia já está atualizado e ativo.")
-        }
-    }
-    
-    private func salvarTarefas() {
-        if let encodedData = try? JSONEncoder().encode(tarefas) {
-            AppGroup.userDefaults.set(encodedData, forKey: saveKey)
-        }
-    }
-    
-    private func carregarTarefas() {
-        guard let savedData = AppGroup.userDefaults.data(forKey: saveKey),
-              let decodedTasks = try? JSONDecoder().decode([Tarefa].self, from: savedData) else {
-            self.tarefas = []
-            return
-        }
-        self.tarefas = decodedTasks
-    }
-
-    // --- RESTANTE DAS FUNÇÕES ---
     
     func exportarTarefasParaCalendario(completion: @escaping (CalendarExportResult) -> Void) {
         calendarManager.requestAccess { [weak self] granted in
@@ -115,11 +56,52 @@ class TarefaModel: ObservableObject {
         }
     }
     
+    func criarTarefasIniciaisSeNecessario() {
+        let tutorialJaCriado = AppGroup.userDefaults.bool(forKey: tutorialKey)
+        
+        if !tutorialJaCriado && tarefas.isEmpty {
+            print("Criando tarefas do tutorial pela primeira vez.")
+            
+            let umDia: TimeInterval = 60 * 60 * 24
+            
+            let tarefasTutorial = [
+                Tarefa(nome: "Bem-vindo(a) ao Gimo! ✨", descricao: "Este é o seu plano de hoje, montado especialmente para você! Para concluir uma tarefa como esta, basta tocar no círculo à esquerda. Experimente agora e sinta a satisfação!", dificuldade: "1", data_entrega: Date().addingTimeInterval(umDia * 2), fazParteDoPlanoDeHoje: true),
+                Tarefa(nome: "Toque aqui para ver os detalhes", descricao: "Toda tarefa tem informações extras. Toque no corpo de uma tarefa (nesta, por exemplo!) para expandir e ver a descrição, o prazo e a dificuldade. Toque novamente para fechar.", dificuldade: "1", data_entrega: Date().addingTimeInterval(umDia * 3), fazParteDoPlanoDeHoje: true),
+                Tarefa(nome: "Deslize para editar ou excluir", descricao: "Precisou ajustar algo ou a tarefa não é mais necessária? Deslize o dedo da direita para a esquerda sobre ela para revelar as opções. É fácil assim! (Só não me exclua, ok?)", dificuldade: "2", data_entrega: Date().addingTimeInterval(umDia * 4), fazParteDoPlanoDeHoje: true),
+                Tarefa(nome: "Adicione sua primeira tarefa real", descricao: "Agora é sua vez! Quando estiver pronto, toque no botão azul com o sinal de \"+\" no canto inferior direito para cadastrar suas próprias atividades da faculdade.", dificuldade: "3", data_entrega: Date().addingTimeInterval(umDia * 5), fazParteDoPlanoDeHoje: true),
+                Tarefa(nome: "Explore suas outras tarefas", descricao: "No topo da tela, você pode usar os filtros para alternar entre as tarefas que eu priorizei \"Para hoje\", \"Todas\" as suas tarefas pendentes ou as que você já finalizou em \"Concluídas\".", dificuldade: "1", data_entrega: Date().addingTimeInterval(umDia * 6)),
+                Tarefa(nome: "Ajuste seu perfil e seu ritmo", descricao: "Toque no ícone de pessoa no topo para ver seu perfil. E se o dia estiver mais corrido ou mais leve, clique em \"Alterar seu ritmo\" logo abaixo do seu nome para que eu possa ajustar o plano para você.", dificuldade: "2", data_entrega: Date().addingTimeInterval(umDia * 7))
+            ]
+            
+            self.tarefas.append(contentsOf: tarefasTutorial)
+            
+            AppGroup.userDefaults.set(true, forKey: tutorialKey)
+        }
+    }
+    
+    func verificarEGerarPlanoDoDia() {
+        let ultimaAtualizacao = AppGroup.userDefaults.object(forKey: lastUpdateKey) as? Date
+        
+        let éNovoDia = ultimaAtualizacao == nil || !Calendar.current.isDateInToday(ultimaAtualizacao!)
+        
+        let naoExistePlano = !tarefas.contains(where: { $0.fazParteDoPlanoDeHoje && !$0.concluida })
+
+        if éNovoDia || naoExistePlano {
+            print("Gerando novo plano do dia. Motivo: É novo dia ou não existe plano ativo.")
+            chamarIA(paraGerarPlanoCompleto: true)
+        } else {
+            print("O plano do dia já está atualizado e ativo.")
+        }
+    }
+    
+    
     func adiciona_tarefa(Nome: String, Descricao: String?, Dificuldade: String, Data_entrega: Date) {
         let novaTarefa = Tarefa(nome: Nome, descricao: Descricao, dificuldade: Dificuldade, data_entrega: Data_entrega)
         tarefas.append(novaTarefa)
         NotificationManager.shared.scheduleNotifications(for: novaTarefa)
-        chamarIA(paraGerarPlanoCompleto: false)
+        // --- CORREÇÃO APLICADA AQUI ---
+        // Força a IA a gerar um novo plano completo para incluir a nova tarefa, se necessário.
+        chamarIA(paraGerarPlanoCompleto: true)
     }
     
     func atualizar_tarefa(id: UUID, Nome: String, Descricao: String?, Dificuldade: String, Data_entrega: Date) {
@@ -131,7 +113,9 @@ class TarefaModel: ObservableObject {
             
             let tarefaAtualizada = tarefas[index]
             NotificationManager.shared.scheduleNotifications(for: tarefaAtualizada)
-            chamarIA(paraGerarPlanoCompleto: false)
+            // --- CORREÇÃO APLICADA AQUI ---
+            // Também força a IA a reavaliar o plano, pois a data ou dificuldade podem ter mudado.
+            chamarIA(paraGerarPlanoCompleto: true)
         }
     }
     
@@ -207,6 +191,7 @@ class TarefaModel: ObservableObject {
             self.estaPriorizando = false
         }
     }
+
     
     func limparTarefasConcluidas() {
         let tarefasParaLimpar = tarefas.filter { $0.concluida }
@@ -214,5 +199,20 @@ class TarefaModel: ObservableObject {
             NotificationManager.shared.cancelNotifications(for: tarefa)
         }
         tarefas.removeAll { $0.concluida }
+    }
+    
+    private func salvarTarefas() {
+        if let encodedData = try? JSONEncoder().encode(tarefas) {
+            AppGroup.userDefaults.set(encodedData, forKey: saveKey)
+        }
+    }
+    
+    private func carregarTarefas() {
+        guard let savedData = AppGroup.userDefaults.data(forKey: saveKey),
+              let decodedTasks = try? JSONDecoder().decode([Tarefa].self, from: savedData) else {
+            self.tarefas = []
+            return
+        }
+        self.tarefas = decodedTasks
     }
 }

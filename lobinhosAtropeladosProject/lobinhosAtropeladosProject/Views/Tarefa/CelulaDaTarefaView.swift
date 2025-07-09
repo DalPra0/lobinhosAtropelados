@@ -1,29 +1,18 @@
 import SwiftUI
 
 struct CelulaDaTarefaView: View {
-    let index : Int
+    let index: Int
     let filtro: String
     let tarefa: Tarefa
-    
-    var corFundo : Color{
-        if index == 1{
-            return Color(.corPrioridade1)
-        }
-        else if index == 2{
-            return Color(.corSelect)
-        }
-        else{
-            return Color(.corPrioridade3)
-        }
-    }
     
     @Binding var tarefaExpandidaID: UUID?
     @Binding var tarefaParaEditar: UUID?
     @Binding var showEditModal: Bool
     
+    let onDelete: () -> Void
+    
     @ObservedObject var tarefaModel = TarefaModel.shared
     
-    // Estados para a lógica de delay
     @State private var isCheckedForDelay: Bool = false
     @State private var workItem: DispatchWorkItem?
     
@@ -31,7 +20,6 @@ struct CelulaDaTarefaView: View {
         tarefaExpandidaID == tarefa.id
     }
     
-    // A tarefa está visualmente completa se estiver salva como concluída OU no meio do delay
     private var isVisuallyCompleted: Bool {
         tarefa.concluida || isCheckedForDelay
     }
@@ -51,18 +39,14 @@ struct CelulaDaTarefaView: View {
     }
 
     var body: some View {
-        // --- CORREÇÃO ESTRUTURAL ---
-        // 1. Criamos a view de conteúdo primeiro.
         let cellContent = VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 16) {
-                // Botão de checkmark
                 Button(action: handleTap) {
                     Image(systemName: isVisuallyCompleted ? "checkmark.circle.fill" : "circle")
                         .font(.title2)
                         .foregroundColor(isVisuallyCompleted ? Color("corSelect") : Color("corPrimaria"))
                 }.buttonStyle(.plain)
                 
-                // Conteúdo principal da tarefa
                 VStack(alignment: .leading, spacing: 4) {
                     Text(tarefa.nome)
                         .font(.system(size: 16, weight: .bold))
@@ -81,44 +65,33 @@ struct CelulaDaTarefaView: View {
                 }
                 Spacer()
                 
-                // Prioridade
-                if filtro == "Para hoje" {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(corFundo)
-                        .frame(width: 30, height: 30)
-                        .overlay(
-                            Text("\(index)")
-                                .font(.system(size: 16))
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                        )
+                if !isVisuallyCompleted {
+                    Image(systemName: "chevron.down")
+                        .font(.caption.bold())
+                        .foregroundColor(Color("corTextoSecundario"))
+                        .rotationEffect(.degrees(isExpanded ? 180 : 0))
                 }
             }
             .padding()
-            .contentShape(Rectangle()) // Define a área de toque
+            .contentShape(Rectangle())
             .onTapGesture {
-                // Ação de toque para expandir/recolher
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
                     tarefaExpandidaID = isExpanded ? nil : tarefa.id
                 }
             }
             
-            // Conteúdo que aparece quando expandido
             if isExpanded {
                 VStack(alignment: .leading, spacing: 12) {
-                    
                     if let descricao = tarefa.descricao, !descricao.isEmpty {
                         (Text("Descrição: ").bold() + Text(descricao))
                             .font(.callout)
                             .foregroundColor(Color(UIColor.darkGray))
                     }
                     
-                    detalheItem(icone: "hourglass", label: "Prazo: ", value: tarefa.data_entrega.formatted(.dateTime.locale(Locale(identifier: "pt_BR")).day().month(.wide).year()))
+                    detalheItem(icone: "hourglass", label: "Prazo: ", value: tarefa.data_entrega.formatted(.dateTime.day().month(.wide).year()))
                     detalheItem(icone: "bolt.horizontal.icloud.fill", label: "Dificuldade: ", value: "Nível \(tarefa.dificuldade)")
-
                 }
-                .padding(.horizontal)
-                .padding(.bottom)
+                .padding([.horizontal, .bottom])
                 .transition(.asymmetric(insertion: .opacity.combined(with: .move(edge: .top)), removal: .opacity.animation(nil)))
             }
         }
@@ -126,12 +99,11 @@ struct CelulaDaTarefaView: View {
         .cornerRadius(16)
         .foregroundColor(isVisuallyCompleted ? Color("corTextoSecundario") : Color(UIColor.label))
 
-        // 2. Aplicamos o swipeActions à view de conteúdo já construída.
         return cellContent
             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                 if !tarefa.concluida {
                     Button(role: .destructive) {
-                        tarefaModel.deletar_tarefa(id: tarefa.id)
+                        onDelete()
                     } label: {
                         Label("Excluir", systemImage: "trash")
                     }

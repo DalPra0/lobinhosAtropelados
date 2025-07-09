@@ -1,7 +1,6 @@
 import WidgetKit
 import SwiftUI
 
-// O Provider continua o mesmo da versão anterior.
 struct Provider: TimelineProvider {
     typealias Entry = TaskEntry
 
@@ -40,33 +39,27 @@ struct TaskEntry: TimelineEntry {
     let tarefa: Tarefa?
 }
 
-// --- ATUALIZAÇÃO PARA USAR A PALETA DE CORES DO APP ---
 struct GimoWidgetEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
         ZStack {
-            // Contêiner externo usa a cor de fundo das tarefas do seu app.
             Color("corFundoTarefa")
             
             if let tarefa = entry.tarefa {
-                // Contêiner interno usa a cor dos cards do seu app.
                 ZStack {
                     RoundedRectangle(cornerRadius: 16)
                         .fill(Color("corCardPrincipal"))
                     
                     VStack(alignment: .leading, spacing: 8) {
-                        // Título
                         Text(tarefa.nome)
                             .font(.system(size: 17, weight: .bold))
                             .foregroundColor(Color("corTextoPrincipal"))
                         
-                        // Dias restantes
                         Text(formatarDiasRestantes(from: tarefa.data_entrega))
                             .font(.caption)
                             .foregroundColor(Color("corTextoSecundario"))
 
-                        // Descrição
                         (Text("Descrição: ").bold() + Text(tarefa.descricao ?? "Sem descrição."))
                             .font(.caption)
                             .lineLimit(3)
@@ -74,10 +67,8 @@ struct GimoWidgetEntryView : View {
 
                         Spacer()
                         
-                        // Prazo
                         InfoLinha(icone: "hourglass", label: "Prazo:", value: tarefa.data_entrega.formatted(.dateTime.day().month().year()))
                         
-                        // Dificuldade
                         InfoLinha(icone: "chart.bar.fill", label: "Dificuldade:", value: formatarDificuldade(tarefa.dificuldade))
                     }
                     .padding()
@@ -85,7 +76,6 @@ struct GimoWidgetEntryView : View {
                 .padding(12)
                 
             } else {
-                // View para quando não há tarefas
                 VStack {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.largeTitle)
@@ -102,7 +92,6 @@ struct GimoWidgetEntryView : View {
         }
     }
     
-    // View auxiliar para as linhas de informação
     private func InfoLinha(icone: String, label: String, value: String) -> some View {
         HStack(spacing: 4) {
             Image(systemName: icone)
@@ -114,7 +103,6 @@ struct GimoWidgetEntryView : View {
         .foregroundColor(Color("corTextoSecundario"))
     }
     
-    // Função para formatar os dias restantes
     private func formatarDiasRestantes(from dataEntrega: Date) -> String {
         let calendar = Calendar.current
         let hoje = calendar.startOfDay(for: Date())
@@ -130,7 +118,6 @@ struct GimoWidgetEntryView : View {
         return "Prazo indefinido"
     }
     
-    // Função para formatar a dificuldade
     private func formatarDificuldade(_ dificuldade: String) -> String {
         switch dificuldade {
         case "1": return "Muito Baixa"
@@ -143,7 +130,6 @@ struct GimoWidgetEntryView : View {
     }
 }
 
-// A definição principal do Widget continua a mesma
 struct GimoWidget: Widget {
     let kind: String = "GimoWidget"
 
@@ -157,7 +143,6 @@ struct GimoWidget: Widget {
     }
 }
 
-// Preview atualizado para mostrar os dois modos
 struct GimoWidget_Previews: PreviewProvider {
     static var previews: some View {
         let tarefaExemplo = Tarefa(nome: "Tarefa 1", descricao: "essa tarefa é uma tarefa da matéria de biologia e a data de entrega é em 29/12", dificuldade: "4", data_entrega: Calendar.current.date(byAdding: .day, value: 10, to: Date())!)
