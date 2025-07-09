@@ -7,27 +7,32 @@ enum AppState: String, RawRepresentable {
 }
 
 struct MainAppView: View {
-    // --- MODIFICADO ---
+    @State private var isAppLoading: Bool = true
+    
     @AppStorage("appState", store: AppGroup.userDefaults) private var appState: AppState = .onboarding
     @AppStorage("viuTelaTudoPronto", store: AppGroup.userDefaults) private var viuTelaTudoPronto: Bool = false
     
     var body: some View {
-        Group {
-            switch appState {
-            case .onboarding:
-                OnboardingView(appState: $appState)
+        if isAppLoading {
+            CarregamentoView(isActive: $isAppLoading)
+        } else {
+            Group {
+                switch appState {
+                case .onboarding:
+                    OnboardingView(appState: $appState)
                 
-            case .cadastro:
-                CadastroView(appState: $appState)
+                case .cadastro:
+                    CadastroView(appState: $appState)
                 
-            case .mainApp:
-                if !viuTelaTudoPronto {
-                    TudoProntoView(foiApresentada: $viuTelaTudoPronto)
-                } else {
-                    ContentView()
+                case .mainApp:
+                    if !viuTelaTudoPronto {
+                        TudoProntoView(foiApresentada: $viuTelaTudoPronto)
+                    } else {
+                        ContentView()
+                    }
                 }
             }
+            .preferredColorScheme(.light)
         }
-        .preferredColorScheme(.light)
     }
 }
