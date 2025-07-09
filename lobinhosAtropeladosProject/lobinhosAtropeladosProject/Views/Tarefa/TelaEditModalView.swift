@@ -31,13 +31,11 @@ struct TelaEditModalView: View {
     
     var body: some View {
         ZStack{
-            //fundo
                 Color.corFundo
                     .ignoresSafeArea()
             
             ScrollView {
                 VStack (alignment:.leading,spacing : 30){
-                    //botao de fechar
                     HStack{
                         Button{
                             dismiss()

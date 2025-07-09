@@ -8,9 +8,7 @@
 import WidgetKit
 import SwiftUI
 
-// Este widget é muito mais simples, pois não precisa carregar dados dinâmicos.
 
-// 1. Provider simples que não faz nada.
 struct AddTaskProvider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry(date: Date())
@@ -27,36 +25,31 @@ struct AddTaskProvider: TimelineProvider {
     }
 }
 
-// 2. Estrutura de dados mínima.
 struct SimpleEntry: TimelineEntry {
     let date: Date
 }
 
-// 3. O Visual do Widget de Atalho
 struct AddTaskWidgetEntryView : View {
     var entry: AddTaskProvider.Entry
     
-    // URL que será aberta quando o widget for tocado.
     let addTaskURL = URL(string: "gimo://addTask")
 
     var body: some View {
-        // ZStack para colocar o ícone sobre a cor de fundo.
         ZStack {
-            Color("corPrimaria") // Usa a cor primária do seu app.
+            Color("corPrimaria")
 
             if let url = addTaskURL {
-                // O Link envolve toda a área, transformando o widget em um botão.
                 Link(destination: url) {
                     Image(systemName: "plus")
                         .font(.system(size: 50, weight: .bold))
                         .foregroundColor(.white)
                 }
             }
-        }
+        }.ignoresSafeArea()
     }
 }
 
-// 4. A Definição do Widget de Atalho
+
 struct AddTaskWidget: Widget {
     let kind: String = "AddTaskWidget"
 
@@ -66,6 +59,6 @@ struct AddTaskWidget: Widget {
         }
         .configurationDisplayName("Adicionar Tarefa")
         .description("Um atalho rápido para criar uma nova tarefa.")
-        .supportedFamilies([.systemSmall]) // Define que este widget é 1x1 (quadrado pequeno).
+        .supportedFamilies([.systemSmall])
     }
 }
