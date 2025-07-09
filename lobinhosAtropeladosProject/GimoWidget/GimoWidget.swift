@@ -47,31 +47,33 @@ struct GimoWidgetEntryView : View {
             Color("corFundoTarefa")
             
             if let tarefa = entry.tarefa {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(Color("corCardPrincipal"))
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(tarefa.nome)
-                            .font(.system(size: 17, weight: .bold))
-                            .foregroundColor(Color("corTextoPrincipal"))
+                HStack{
+                    ZStack{
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color("corCardPrincipal"))
                         
-                        Text(formatarDiasRestantes(from: tarefa.data_entrega))
-                            .font(.caption)
-                            .foregroundColor(Color("corTextoSecundario"))
-
-                        (Text("Descrição: ").bold() + Text(tarefa.descricao ?? "Sem descrição."))
-                            .font(.caption)
-                            .lineLimit(3)
-                            .foregroundColor(Color("corTextoSecundario"))
-
-                        Spacer()
-                        
-                        InfoLinha(icone: "hourglass", label: "Prazo:", value: tarefa.data_entrega.formatted(.dateTime.day().month().year()))
-                        
-                        InfoLinha(icone: "chart.bar.fill", label: "Dificuldade:", value: formatarDificuldade(tarefa.dificuldade))
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(tarefa.nome)
+                                .font(.system(size: 17, weight: .bold))
+                                .foregroundColor(Color("corTextoPrincipal"))
+                            
+                            Text(formatarDiasRestantes(from: tarefa.data_entrega))
+                                .font(.caption)
+                                .foregroundColor(Color("corTextoSecundario"))
+                            
+                            (Text("Descrição: ").bold() + Text(tarefa.descricao ?? "Sem descrição."))
+                                .font(.caption)
+                                .lineLimit(3)
+                                .foregroundColor(Color("corTextoSecundario"))
+                            
+                            Spacer()
+                            
+                            InfoLinha(icone: "hourglass", label: "Prazo:", value: tarefa.data_entrega.formatted(.dateTime.day().month().year()))
+                            
+                            InfoLinha(icone: "chart.bar.fill", label: "Dificuldade:", value: formatarDificuldade(tarefa.dificuldade))
+                        }
+                        .padding()
                     }
-                    .padding()
                 }
                 .padding(12)
                 
@@ -158,3 +160,5 @@ struct GimoWidget_Previews: PreviewProvider {
         }
     }
 }
+
+
