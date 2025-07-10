@@ -24,6 +24,18 @@ struct CelulaDaTarefaView: View {
         tarefa.concluida || isCheckedForDelay
     }
     
+    var corFundo : Color{
+        if index == 1{
+            return Color(.corPrioridade1)
+        }
+        else if index == 2{
+            return Color(.corSelect)
+        }
+        else{
+            return Color(.corPrioridade3)
+        }
+    }
+    
     private var tempoRestante: String {
         let calendar = Calendar.current
         let hoje = calendar.startOfDay(for: Date())
@@ -65,12 +77,25 @@ struct CelulaDaTarefaView: View {
                 }
                 Spacer()
                 
-                if !isVisuallyCompleted {
+                // Prioridade
+                if filtro == "Para hoje" {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(corFundo)
+                        .frame(width: 30, height: 30)
+                        .overlay(
+                            Text("\(index)")
+                                .font(.system(size: 16))
+                                .fontWeight(.semibold)
+                                .foregroundColor(.white)
+                        )
+                }
+                
+                /*if !isVisuallyCompleted {
                     Image(systemName: "chevron.down")
                         .font(.caption.bold())
                         .foregroundColor(Color("corTextoSecundario"))
                         .rotationEffect(.degrees(isExpanded ? 180 : 0))
-                }
+                }*/
             }
             .padding()
             .contentShape(Rectangle())
