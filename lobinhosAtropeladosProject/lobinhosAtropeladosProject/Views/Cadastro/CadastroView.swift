@@ -12,6 +12,17 @@ struct CadastroView: View {
     
     @State private var currentPage = 0
     
+    init(appState: Binding<AppState>) {
+        _appState = appState
+        let user = UserModel.shared.user
+        if user.periodo != ""{
+            _nome = State(initialValue: user.nome)
+            _curso = State(initialValue: user.curso)
+            _periodo = State(initialValue: user.periodo)
+            _estiloOrganizacao = State(initialValue: user.estiloOrganizacao ?? "")
+        }
+    }
+    
     private let modoMapping: [String: Int] = [
         "Um dia **tranquilo**, com poucas tarefas.":1,
         "Um dia **moderado**, que seja produtivo mas sem exageros.":2,
@@ -23,27 +34,36 @@ struct CadastroView: View {
             Color("corFundo").ignoresSafeArea()
             
             VStack(spacing: 24) {
-                HStack(spacing: 8) {
-                    ForEach(0..<2) { index in
-                        Circle()
-                            .fill(currentPage == index ? Color("corPrimaria") : Color.gray.opacity(0.4))
-                            .frame(width: 8, height: 8)
+                if appState == .cadastro2{
+                    HStack{
+                        Button{
+                            guard let modo = modoMapping[estiloOrganizacao] else { return }
+                            userModel.atualizarEstiloOrganizacao(estilo: estiloOrganizacao)
+                            userModel.atualizar_modo(modo: modo)
+                            appState = .cadastro1
+
+                        }label:
+                        {
+                            Image(systemName: "chevron.left")
+                                .foregroundColor(.corPrimaria)
+                                .font(.system(size: 22))
+                                .bold()
+                                .padding(.top,4)
+                        }
+                        Spacer()
                     }
+                    .padding(.horizontal,24)
                 }
-                .padding(.top)
-                .animation(.easeInOut, value: currentPage)
                 
-                TabView(selection: $currentPage) {
+                if appState == .cadastro1 {
                     CadastroStep1View(nome: $nome, curso: $curso, periodo: $periodo)
-                        .tag(0)
-                    
+                }else{
                     CadastroStep2View(estiloOrganizacao: $estiloOrganizacao)
-                        .tag(1)
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
+                
                 
                 Button(action: proximaPagina) {
-                    Text(currentPage == 1 ? "FINALIZAR CADASTRO" : "PRÓXIMO")
+                    Text("PRÓXIMO")
                         .font(.system(size: 16, weight: .bold))
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -54,12 +74,13 @@ struct CadastroView: View {
                 .disabled(isButtonDisabled)
                 .padding(.horizontal, 24)
             }
-            .padding(.bottom, 40)
+            .padding(.bottom, 24)
+            
         }
     }
     
     private var isButtonDisabled: Bool {
-        if currentPage == 0 {
+        if appState == .cadastro1 {
             return nome.trimmingCharacters(in: .whitespaces).isEmpty ||
                    curso.trimmingCharacters(in: .whitespaces).isEmpty ||
                    periodo.trimmingCharacters(in: .whitespaces).isEmpty
@@ -69,12 +90,14 @@ struct CadastroView: View {
     }
     
     private func proximaPagina() {
-        if currentPage == 0 {
+        if appState == .cadastro1 {
             hideKeyboard()
-            withAnimation { currentPage = 1 }
+            userModel.atualizarUsuario(nome: nome, bio: "", curso: curso, periodo: periodo)
+            withAnimation {
+            appState = .cadastro2
+        }
         } else {
             guard let modo = modoMapping[estiloOrganizacao] else { return }
-            userModel.atualizarUsuario(nome: nome, bio: "", curso: curso, periodo: periodo)
             userModel.atualizarEstiloOrganizacao(estilo: estiloOrganizacao)
             userModel.atualizar_modo(modo: modo)
             

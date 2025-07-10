@@ -7,23 +7,22 @@ struct CadastroStep1View: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 32) {
+            VStack(alignment: .leading, spacing: 30) {
                 
                 Text("Vamos nos conhecer melhor?")
                     .font(.system(size: 26, weight: .bold))
                     .foregroundColor(Color("corPrimaria"))
-                    .padding(.top, 40)
-
-                VStack(spacing: 24) {
-                    campoDeEdicao(titulo: "Como você gostaria de ser chamado?", placeholder: "APELIDO", texto: $nome)
-                    campoDeEdicao(titulo: "Qual o seu curso?", placeholder: "CURSO", texto: $curso)
-                    campoDeEdicao(titulo: "Em qual período você está?", placeholder: "PERÍODO", texto: $periodo)
+                
+                VStack(spacing: 10) {
+                    campoDeEdicao(titulo: "Como você gostaria de ser chamado?", placeholder: "APELIDO", texto: $nome, numerico: false)
+                    campoDeEdicao(titulo: "Qual o seu curso?", placeholder: "CURSO", texto: $curso, numerico: false)
+                    campoDeEdicao(titulo: "Em qual período você está?", placeholder: "PERÍODO", texto: $periodo, numerico : true)
                 }
                 
-                Spacer()
             }
             .padding(.horizontal, 24)
-            .padding(.bottom, 50)
+            .padding(.bottom, 180)//ver
+            .padding(.top,133)
         }
         .onTapGesture {
             hideKeyboard()
@@ -31,7 +30,7 @@ struct CadastroStep1View: View {
     }
     
     @ViewBuilder
-    private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>) -> some View {
+    private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>, numerico : Bool) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(titulo)
                 .font(.system(size: 16))
@@ -43,6 +42,7 @@ struct CadastroStep1View: View {
                     .font(.system(size: 13, weight: .bold))
                     .foregroundColor(.corStroke)
                 )
+                .keyboardType(numerico ? .numberPad : .default)
                 .font(.system(size: 16))
                 .foregroundColor(.black)
                 .padding()

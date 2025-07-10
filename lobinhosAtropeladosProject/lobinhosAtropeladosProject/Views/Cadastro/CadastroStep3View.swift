@@ -9,10 +9,10 @@ struct CadastroStep3View: View {
             return ("gimoMascoteVerde", "Modo **tranquilo** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
         
         case "Um dia **intenso**. Quero aproveitar para realizar muitas atividades.":
-            return ("gimoMascoteLaranja", "Modo **moderado** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
+            return ("gimoMascoteLaranja", "Modo **intenso** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
         
         default:
-            return ("gimoMascoteAmarelo", "Modo **intenso** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
+            return ("gimoMascoteAmarelo", "Modo **moderado** ativado. **Não se preocupe**: você pode mudar para outro modo sempre que quiser!")
         }
     }
     
@@ -48,5 +48,7 @@ struct CadastroStep3View: View {
                 .multilineTextAlignment(.center)
         }
         .padding(40)
+        .padding(.horizontal,24)
+
     }
 }

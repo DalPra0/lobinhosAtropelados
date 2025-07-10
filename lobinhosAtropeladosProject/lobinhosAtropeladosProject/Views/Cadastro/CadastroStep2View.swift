@@ -10,21 +10,20 @@ struct CadastroStep2View: View {
     ]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 32) {
-            
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Quando o assunto é organização, o que você prefere?")
-                    .font(.system(size: 28, weight: .bold))
+        VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 31) {
+                Text("Na sua rotina de tarefas,qual seu modo preferido?")
+                    .font(.system(size: 25, weight: .bold))
                     .foregroundColor(Color("corPrimaria"))
                 
                 Text("Eu prefiro...")
-                    .font(.system(size: 16))
+                    .font(.system(size: 15))
                     .fontWeight(.semibold)
                     .foregroundColor(Color("corTextoSecundario"))
             }
-            .padding(.top, 40)
+            .padding(.top, 82)
 
-            VStack(spacing: 16) {
+            VStack(spacing: 10) {
                 ForEach(opcoes, id: \.self) { opcao in
                     BotaoDeOpcao(
                         texto: opcao,
@@ -60,18 +59,18 @@ private struct BotaoDeOpcao: View {
                     .foregroundColor(Color("corPrimaria"))
                 
                 Text((try! AttributedString(markdown: texto)))
-                    .font(.system(size: 16))
+                    .font(.system(size: 15))
                     .multilineTextAlignment(.leading)
                 
                 Spacer()
             }
             .padding(12)
             .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color("corCardPrincipal"))
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color("corCardPerfil"))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 12)
                     .stroke(isSelected ? Color("corPrimaria") : Color.clear, lineWidth: 2)
             )
         }
