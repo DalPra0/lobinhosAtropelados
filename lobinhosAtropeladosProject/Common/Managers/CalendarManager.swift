@@ -1,10 +1,3 @@
-//
-//  CalendarManager.swift
-//  lobinhosAtropeladosProject
-//
-//  Created by Lucas Dal Pra Brascher on 07/07/25.
-//
-
 import Foundation
 import EventKit
 
@@ -62,5 +55,19 @@ class CalendarManager {
         }
         
         completion(.success(eventosExportadosComSucesso))
+    }
+    
+    func deletarEvento(comIdentificador identifier: String) {
+        guard let evento = eventStore.event(withIdentifier: identifier) else {
+            print("Evento com identificador \(identifier) não encontrado no calendário.")
+            return
+        }
+        
+        do {
+            try eventStore.remove(evento, span: .thisEvent)
+            print("Evento do calendário removido com sucesso.")
+        } catch {
+            print("Erro ao remover evento do calendário: \(error.localizedDescription)")
+        }
     }
 }

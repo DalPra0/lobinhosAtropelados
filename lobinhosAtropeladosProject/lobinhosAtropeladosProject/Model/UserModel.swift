@@ -13,7 +13,6 @@ class UserModel: ObservableObject {
     }
     
     private init() {
-        // Carrega o usuário do armazenamento compartilhado
         if let savedData = AppGroup.userDefaults.data(forKey: userSaveKey),
            let decodedUser = try? JSONDecoder().decode(User.self, from: savedData) {
             self.user = decodedUser
@@ -21,12 +20,10 @@ class UserModel: ObservableObject {
             return
         }
         
-        // Se não houver usuário salvo, cria um padrão
         self.user = User(nome: "Fulano", bio: "", curso: "", periodo: "")
         print("Nenhum usuário salvo encontrado. Criado usuário padrão.")
     }
     
-    // Salva o usuário no armazenamento compartilhado
     private func saveUser() {
         if let encodedData = try? JSONEncoder().encode(user) {
             AppGroup.userDefaults.set(encodedData, forKey: userSaveKey)
@@ -34,7 +31,6 @@ class UserModel: ObservableObject {
         }
     }
     
-    // --- FUNÇÕES DE ATUALIZAÇÃO DO USUÁRIO ---
     
     func criarUsuario(nome: String, bio: String, curso: String, periodo: String) {
         self.user = User(nome: nome, bio: bio, curso: curso, periodo: periodo)

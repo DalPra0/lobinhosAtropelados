@@ -23,6 +23,21 @@ class TarefaModel: ObservableObject {
         criarTarefasIniciaisSeNecessario()
     }
     
+    func deletar_tarefa(id: UUID) {
+        if let index = tarefas.firstIndex(where: { $0.id == id }) {
+            let tarefaRemovida = tarefas[index]
+            
+            NotificationManager.shared.cancelNotifications(for: tarefaRemovida)
+            
+            if let idDoEvento = tarefaRemovida.idDoEventoNoCalendario {
+                calendarManager.deletarEvento(comIdentificador: idDoEvento)
+            }
+            
+            tarefas.remove(at: index)
+        }
+    }
+    
+    
     func exportarTarefasParaCalendario(completion: @escaping (CalendarExportResult) -> Void) {
         calendarManager.requestAccess { [weak self] granted in
             guard let self = self else { return }
@@ -99,8 +114,6 @@ class TarefaModel: ObservableObject {
         let novaTarefa = Tarefa(nome: Nome, descricao: Descricao, dificuldade: Dificuldade, data_entrega: Data_entrega)
         tarefas.append(novaTarefa)
         NotificationManager.shared.scheduleNotifications(for: novaTarefa)
-        // --- CORREÇÃO APLICADA AQUI ---
-        // Força a IA a gerar um novo plano completo para incluir a nova tarefa, se necessário.
         chamarIA(paraGerarPlanoCompleto: true)
     }
     
@@ -113,17 +126,7 @@ class TarefaModel: ObservableObject {
             
             let tarefaAtualizada = tarefas[index]
             NotificationManager.shared.scheduleNotifications(for: tarefaAtualizada)
-            // --- CORREÇÃO APLICADA AQUI ---
-            // Também força a IA a reavaliar o plano, pois a data ou dificuldade podem ter mudado.
             chamarIA(paraGerarPlanoCompleto: true)
-        }
-    }
-    
-    func deletar_tarefa(id: UUID) {
-        if let index = tarefas.firstIndex(where: { $0.id == id }) {
-            let tarefaRemovida = tarefas[index]
-            NotificationManager.shared.cancelNotifications(for: tarefaRemovida)
-            tarefas.remove(at: index)
         }
     }
     
@@ -139,6 +142,8 @@ class TarefaModel: ObservableObject {
                 NotificationManager.shared.scheduleNotifications(for: tarefas[index])
             }
             tarefas.sort()
+            
+            verificarEGerarPlanoDoDia()
         }
     }
     

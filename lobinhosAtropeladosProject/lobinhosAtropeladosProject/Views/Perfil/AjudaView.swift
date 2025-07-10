@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AjudaView: View {
     
-    @Environment(\.dismiss) var dismiss//para fazer funcao de back
+    @Environment(\.dismiss) var dismiss
 
     
     var body: some View {

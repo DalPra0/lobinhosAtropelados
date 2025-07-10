@@ -21,7 +21,7 @@ struct CadastroStep1View: View {
                 
             }
             .padding(.horizontal, 24)
-            .padding(.bottom, 180)//ver
+            .padding(.bottom, 180)
             .padding(.top,133)
         }
         .onTapGesture {

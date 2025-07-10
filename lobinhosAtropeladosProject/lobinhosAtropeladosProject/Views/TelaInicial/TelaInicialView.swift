@@ -4,32 +4,26 @@ struct TelaInicialView: View {
     @ObservedObject var tarefaModel = TarefaModel.shared
     @ObservedObject var userModel = UserModel.shared
     
-    // Estados para os modais e alertas
     @State private var showModal_add = false
     @State private var showModal = false
     @State private var showModal_aux = false
     @State private var tarefa_id_edicao: UUID? = nil
     @State private var id_tarefa_expandida: UUID? = nil
     
-    // --- CORREÇÃO: Variáveis de estado adicionadas de volta ---
     @State private var mostrandoAlertaLimpar = false
     @State private var mostrandoTelaPerfil = false
     @State private var mostrandoTelaAlterarModo = false
     
-    // Variável de estado para o filtro
     @State private var filtro: String = "Para hoje"
     
-    // Estados para os alertas de confirmação
     @State private var mostrandoAlertaConfirmarCalendario = false
     @State private var mostrandoAlertaDeletar = false
     @State private var tarefaParaDeletarID: UUID? = nil
     
-    // Estados para o alerta de status da exportação
     @State private var mostrandoAlertaStatusCalendario = false
     @State private var tituloAlertaStatusCalendario = ""
     @State private var mensagemAlertaStatusCalendario = ""
     
-    // Propriedades computadas
     private var textoModo: String {
         switch userModel.user.modo_selecionado {
         case 1: return "Seu dia será tranquilo!"
