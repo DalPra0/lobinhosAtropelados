@@ -113,8 +113,22 @@ struct CelulaDaTarefaView: View {
                             .foregroundColor(Color(UIColor.darkGray))
                     }
                     
-                    detalheItem(icone: "hourglass", label: "Prazo: ", value: tarefa.data_entrega.formatted(.dateTime.locale(Locale(identifier: "pt_BR")).day().month(.wide).year()))
-                    detalheItem(icone: "bolt.horizontal.icloud.fill", label: "Dificuldade: ", value: "Nível \(tarefa.dificuldade)")
+                    HStack{
+                        
+                        VStack (alignment: .center, spacing: 12){
+                            Image(systemName: "hourglass")
+                                .font(.system(size: CGFloat(13)))
+                                .foregroundColor(.secondary)
+                            
+                            Image(systemName: "dumbbell.fill")
+                                .font(.system(size: CGFloat(12)))
+                                .foregroundColor(.secondary)
+                        }
+                        VStack(alignment: .leading, spacing: 12){
+                            detalheItem(label: "Prazo: ", value: tarefa.data_entrega.formatted(.dateTime.locale(Locale(identifier: "pt_BR")).day().month(.wide).year()))
+                            detalheItem(label: "Dificuldade: ", value: "Nível \(tarefa.dificuldade)")
+                        }
+                    }
 
                 }
                 .padding(.horizontal)
@@ -168,11 +182,8 @@ struct CelulaDaTarefaView: View {
         }
     }
     
-    private func detalheItem(icone: String, label: String, value: String) -> some View {
+    private func detalheItem(label: String, value: String) -> some View {
         HStack(alignment: .top) {
-            Image(systemName: icone)
-                .font(.caption)
-                .foregroundColor(.secondary)
             
             (Text(label).bold() + Text(value))
                 .font(.caption)

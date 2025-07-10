@@ -169,7 +169,7 @@ struct TelaInicialView: View {
     
     private var cabecalhoView: some View {
         
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading) {
             
             HStack {
                 Spacer()
@@ -187,7 +187,7 @@ struct TelaInicialView: View {
                 }
             }
             
-            HStack(spacing: 12) {
+            HStack(spacing: 4) {
                 
                 Image(mascote)
                     .resizable()
@@ -200,7 +200,6 @@ struct TelaInicialView: View {
                     Button("Editar") { mostrandoTelaAlterarModo = true }
                         .font(.system(size: 13)).fontWeight(.medium).foregroundColor(.corTextoTerciario)
                 }
-                Spacer()
             }
         }
     }

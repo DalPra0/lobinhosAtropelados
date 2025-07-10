@@ -43,10 +43,10 @@ struct OnboardingView: View {
                         if currentPage < pages.count - 1 {
                             withAnimation { currentPage += 1 }
                         } else {
-                            appState = .cadastro
+                            appState = .cadastro1
                         }
                     }) {
-                        Text(currentPage == pages.count - 1 ? "VAMOS LÁ!" : "PRÓXIMO")
+                        Text(currentPage == pages.count - 1 ? "COMEÇAR" : "PRÓXIMO")
                             .font(.system(size: 16, weight: .bold))
                             .frame(maxWidth: .infinity)
                             .padding()
@@ -56,7 +56,9 @@ struct OnboardingView: View {
                     }
                 .padding(.horizontal, 24)
             }
-            .padding(.bottom, 40)
+            .padding(.top, 40)
+            .padding(.bottom, 24)
+
         }
     }
 }

@@ -11,7 +11,7 @@ struct OnboardingPageView: View {
     let page: OnboardingPageInfo
 
     var body: some View {
-        VStack(alignment: .center, spacing: 16) {
+        VStack(alignment: .center, spacing: 10) {
             Image(page.image)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -24,6 +24,7 @@ struct OnboardingPageView: View {
 
             Text(page.description)
                 .font(.system(size: 16))
+                .fontWeight(.medium)
                 .foregroundColor(Color("corTextoSecundario"))
                 .multilineTextAlignment(.center)
                 .lineSpacing(4)

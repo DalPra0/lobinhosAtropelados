@@ -98,8 +98,8 @@ struct PerfilView: View {
                         }
                         
                         VStack(spacing: 24) {
-                            campoDeEdicao(titulo: "Eu curso:", placeholder: "Ex: Design de Produto", texto: $curso, editando: $editando_0)
-                            campoDeEdicao(titulo: "E estou no período:", placeholder: "Ex: 4", texto: $periodo, editando: $editando_1)
+                            campoDeEdicao(titulo: "Eu curso:", placeholder: "Ex: Design de Produto", texto: $curso, editando: $editando_0, numerico: false)
+                            campoDeEdicao(titulo: "E estou no período:", placeholder: "Ex: 4", texto: $periodo, editando: $editando_1, numerico:true)
                         }
                         
                         VStack(alignment: .leading, spacing: 18) {
@@ -216,7 +216,7 @@ struct PerfilView: View {
 
     // --- CAMPO DE EDIÇÃO (VERSÃO CORRIGIDA) ---
     @ViewBuilder
-    private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>, editando: Binding<Bool>) -> some View {
+    private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>, editando: Binding<Bool>, numerico:Bool) -> some View {
         
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -239,6 +239,7 @@ struct PerfilView: View {
                 .frame(height: 52)
                 .frame(maxWidth: .infinity)
                 .disabled(!editando.wrappedValue)
+                .keyboardType(numerico ? .numberPad : .default)
                 .cornerRadius(12)
                 // --- CORREÇÃO: Removido o overlay da borda ---
                 .background {

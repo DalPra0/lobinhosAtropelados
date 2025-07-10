@@ -2,7 +2,8 @@ import SwiftUI
 
 enum AppState: String, RawRepresentable {
     case onboarding
-    case cadastro
+    case cadastro1
+    case cadastro2
     case mainApp
 }
 
@@ -16,13 +17,16 @@ struct MainAppView: View {
             switch appState {
             case .onboarding:
                 OnboardingView(appState: $appState)
+                                
+            case .cadastro1:
+                CadastroView(appState: $appState)
                 
-            case .cadastro:
+            case .cadastro2:
                 CadastroView(appState: $appState)
                 
             case .mainApp:
                 if !viuTelaTudoPronto {
-                    TudoProntoView(foiApresentada: $viuTelaTudoPronto)
+                    TudoProntoView(appState: $appState,foiApresentada: $viuTelaTudoPronto)
                 } else {
                     ContentView()
                 }
@@ -30,4 +34,8 @@ struct MainAppView: View {
         }
         .preferredColorScheme(.light)
     }
+}
+
+#Preview {
+    MainAppView()
 }
