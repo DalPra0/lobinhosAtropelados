@@ -57,7 +57,7 @@ struct AlterarModoView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(estiloSelecionado.isEmpty ? Color.gray.opacity(0.5) : Color("corPrimaria"))
-                        .foregroundColor(Color("corFundo"))
+                        .foregroundColor(.white)
                         .cornerRadius(16)
                 }
                 .disabled(estiloSelecionado.isEmpty)

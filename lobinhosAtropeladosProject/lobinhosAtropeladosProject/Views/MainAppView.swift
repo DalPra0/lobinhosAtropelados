@@ -14,10 +14,10 @@ struct MainAppView: View {
     @AppStorage("viuTelaTudoPronto", store: AppGroup.userDefaults) private var viuTelaTudoPronto: Bool = false
     
     var body: some View {
-        if isAppLoading {
+       if isAppLoading {
             CarregamentoView(isActive: $isAppLoading)
         } else {
-            Group {
+        Group {
                 switch appState {
                 case .onboarding:
                     OnboardingView(appState: $appState)
@@ -30,7 +30,7 @@ struct MainAppView: View {
                 
                 case .mainApp:
                     if !viuTelaTudoPronto {
-                        TudoProntoView(foiApresentada: $viuTelaTudoPronto)
+                        TudoProntoView(appState: $appState,foiApresentada: $viuTelaTudoPronto)
                     } else {
                         ContentView()
                     }
