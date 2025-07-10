@@ -1,8 +1,13 @@
 import SwiftUI
+import Combine
 
 struct PerfilView: View {
-
     
+    private enum FocusField: Hashable {
+        case curso
+        case periodo
+    }
+
     @Environment(\.dismiss) var dismiss
     @ObservedObject var userModel = UserModel.shared
     @ObservedObject var tarefaModel = TarefaModel.shared
@@ -12,6 +17,8 @@ struct PerfilView: View {
     
     @State var editando_0 = false
     @State var editando_1 = false
+    
+    @FocusState private var focusedField: FocusField?
 
     private let cursoOriginal: String
     private let periodoOriginal: String
@@ -94,8 +101,8 @@ struct PerfilView: View {
                         }
                         
                         VStack(spacing: 24) {
-                            campoDeEdicao(titulo: "Eu curso:", placeholder: "Ex: Design de Produto", texto: $curso, editando: $editando_0, numerico: false)
-                            campoDeEdicao(titulo: "E estou no período:", placeholder: "Ex: 4", texto: $periodo, editando: $editando_1, numerico:true)
+                            campoDeEdicao(titulo: "Eu curso:", placeholder: "Ex: Design de Produto", texto: $curso, editando: $editando_0, numerico: false, focusIdentifier: .curso)
+                            campoDeEdicao(titulo: "E estou no período:", placeholder: "Ex: 4", texto: $periodo, editando: $editando_1, numerico:true, focusIdentifier: .periodo)
                         }
                         
                         VStack(alignment: .leading, spacing: 18) {
@@ -106,7 +113,6 @@ struct PerfilView: View {
                             
                             tarefasConcluidasCard()
                             modoPreferidoCard()
-                            
                         }
                         
                         Spacer(minLength: 16)
@@ -206,7 +212,7 @@ struct PerfilView: View {
     }
 
     @ViewBuilder
-    private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>, editando: Binding<Bool>, numerico:Bool) -> some View {
+    private func campoDeEdicao(titulo: String, placeholder: String, texto: Binding<String>, editando: Binding<Bool>, numerico:Bool, focusIdentifier: FocusField) -> some View {
         
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -216,6 +222,10 @@ struct PerfilView: View {
                 Spacer()
                 Button("Editar") {
                     editando.wrappedValue = true
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        focusedField = focusIdentifier
+                    }
                 }
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundColor(Color("corTextoTerciario"))
@@ -230,6 +240,7 @@ struct PerfilView: View {
                 .disabled(!editando.wrappedValue)
                 .keyboardType(numerico ? .numberPad : .default)
                 .cornerRadius(12)
+                .focused($focusedField, equals: focusIdentifier)
                 .background {
                     if editando.wrappedValue {
                         RoundedRectangle(cornerRadius: 12)
@@ -242,8 +253,4 @@ struct PerfilView: View {
                 }
         }
     }
-}
-
-#Preview {
-    PerfilView()
 }

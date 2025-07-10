@@ -16,6 +16,7 @@ struct CarregamentoView: View {
             VStack{
                 Image(frames[currentFrame])
                     .resizable()
+                    .scaledToFit()
                     .frame(width: 200, height: 200)
                 
                 ZStack(alignment: .leading) {
