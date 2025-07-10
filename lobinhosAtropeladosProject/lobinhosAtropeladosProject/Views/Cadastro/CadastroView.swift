@@ -37,9 +37,11 @@ struct CadastroView: View {
                 if appState == .cadastro2{
                     HStack{
                         Button{
-                            appState = .cadastro1
                             guard let modo = modoMapping[estiloOrganizacao] else { return }
+                            userModel.atualizarEstiloOrganizacao(estilo: estiloOrganizacao)
                             userModel.atualizar_modo(modo: modo)
+                            appState = .cadastro1
+
                         }label:
                         {
                             Image(systemName: "chevron.left")
