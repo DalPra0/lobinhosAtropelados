@@ -10,6 +10,8 @@ struct TelaInicialView: View {
     @State private var showModal_aux = false
     @State private var tarefa_id_edicao: UUID? = nil
     @State private var id_tarefa_expandida: UUID? = nil
+    
+    // --- CORREÇÃO: Variáveis de estado adicionadas de volta ---
     @State private var mostrandoAlertaLimpar = false
     @State private var mostrandoTelaPerfil = false
     @State private var mostrandoTelaAlterarModo = false
@@ -17,12 +19,17 @@ struct TelaInicialView: View {
     // Variável de estado para o filtro
     @State private var filtro: String = "Para hoje"
     
-    // Estados para o alerta de exportação
-    @State private var mostrandoAlertaCalendario = false
-    @State private var tituloAlertaCalendario = ""
-    @State private var mensagemAlertaCalendario = ""
-
+    // Estados para os alertas de confirmação
+    @State private var mostrandoAlertaConfirmarCalendario = false
+    @State private var mostrandoAlertaDeletar = false
+    @State private var tarefaParaDeletarID: UUID? = nil
     
+    // Estados para o alerta de status da exportação
+    @State private var mostrandoAlertaStatusCalendario = false
+    @State private var tituloAlertaStatusCalendario = ""
+    @State private var mensagemAlertaStatusCalendario = ""
+    
+    // Propriedades computadas
     private var textoModo: String {
         switch userModel.user.modo_selecionado {
         case 1: return "Seu dia será tranquilo!"
@@ -71,8 +78,7 @@ struct TelaInicialView: View {
 
     var body: some View {
         ZStack {
-            Color.corFundo
-                .ignoresSafeArea()
+            Color.corFundo.ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 32) {
                 cabecalhoView
@@ -81,32 +87,27 @@ struct TelaInicialView: View {
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
                             Text("Minhas tarefas")
-                                .bold()
-                                .font(.system(size: 25))
+                                .bold().font(.system(size: 25))
                             Spacer()
-                            // Botão de exportar
-                            Button(action: exportarTarefas) {
+                            Button(action: {
+                                mostrandoAlertaConfirmarCalendario = true
+                            }) {
                                 Image(systemName: "calendar.badge.plus")
-                                    .font(.title2)
-                                    .foregroundColor(Color("corPrimaria"))
+                                    .font(.title2).foregroundColor(Color("corPrimaria"))
                             }
                         }
-                        
                         filtrosView
                     }
-                        
-                        if filtro == "Concluídas" {
-                            listaDeConcluidasView
-                        } else {
-                            listaDePendentesView
-                        }
                     
+                    if filtro == "Concluídas" {
+                        listaDeConcluidasView
+                    } else {
+                        listaDePendentesView
+                    }
                 }
-                    
             }
             .padding(.horizontal, 24)
             .padding(.top, 60)
-            //fix de posicao
             .ignoresSafeArea()
             
             botaoAdicionarView
@@ -124,22 +125,37 @@ struct TelaInicialView: View {
         .sheet(isPresented: $mostrandoTelaAlterarModo) { AlterarModoView() }
         .onChange(of: showModal_aux) { if $1 { showModal = true } }
         .onChange(of: showModal) { if !$1 { showModal_aux = false; tarefa_id_edicao = nil } }
+        
         .alert("Atenção", isPresented: $mostrandoAlertaLimpar) {
             Button("Apagar Tudo", role: .destructive) { tarefaModel.limparTarefasConcluidas() }
             Button("Cancelar", role: .cancel) { }
         } message: {
             Text("Isso apagará seu histórico de tarefas concluídas e pode afetar a precisão da priorização futura. Deseja continuar?")
         }
-        // Alerta de calendário
-        .alert(tituloAlertaCalendario, isPresented: $mostrandoAlertaCalendario) {
+        .alert("Confirmar Exportação", isPresented: $mostrandoAlertaConfirmarCalendario) {
+            Button("Exportar") { exportarTarefas() }
+            Button("Cancelar", role: .cancel) { }
+        } message: {
+            Text("As tarefas pendentes serão adicionadas ao seu calendário padrão. Deseja continuar?")
+        }
+        .alert("Confirmar Exclusão", isPresented: $mostrandoAlertaDeletar) {
+            Button("Excluir", role: .destructive) {
+                if let id = tarefaParaDeletarID {
+                    tarefaModel.deletar_tarefa(id: id)
+                }
+            }
+            Button("Cancelar", role: .cancel) { }
+        } message: {
+            Text("Esta ação não pode ser desfeita.")
+        }
+        .alert(tituloAlertaStatusCalendario, isPresented: $mostrandoAlertaStatusCalendario) {
             Button("OK", role: .cancel) { }
         } message: {
-            Text(mensagemAlertaCalendario)
+            Text(mensagemAlertaStatusCalendario)
         }
         .onAppear {
             tarefaModel.verificarEGerarPlanoDoDia()
         }
-        // Manipulador de URL para o widget
         .onOpenURL { url in
             if url.scheme == "gimo" && url.host == "addTask" {
                 showModal_add = true
@@ -151,49 +167,44 @@ struct TelaInicialView: View {
         tarefaModel.exportarTarefasParaCalendario { result in
             switch result {
             case .success(let count):
-                self.tituloAlertaCalendario = "Sucesso!"
-                self.mensagemAlertaCalendario = "\(count) nova(s) tarefa(s) foi(ram) exportada(s) para o seu calendário."
+                self.tituloAlertaStatusCalendario = "Sucesso!"
+                self.mensagemAlertaStatusCalendario = "\(count) nova(s) tarefa(s) foi(ram) exportada(s) para o seu calendário."
             case .noTasksToExport:
-                self.tituloAlertaCalendario = "Tudo Certo!"
-                self.mensagemAlertaCalendario = "Todas as suas tarefas pendentes já estão no seu calendário."
+                self.tituloAlertaStatusCalendario = "Tudo Certo!"
+                self.mensagemAlertaStatusCalendario = "Todas as suas tarefas pendentes já estão no seu calendário."
             case .permissionDenied:
-                self.tituloAlertaCalendario = "Acesso Negado"
-                self.mensagemAlertaCalendario = "Para exportar, por favor, autorize o acesso ao Calendário nas Ajustes do seu iPhone."
+                self.tituloAlertaStatusCalendario = "Acesso Negado"
+                self.mensagemAlertaStatusCalendario = "Para exportar, por favor, autorize o acesso ao Calendário nas Ajustes do seu iPhone."
             case .failure(let error):
-                self.tituloAlertaCalendario = "Erro"
-                self.mensagemAlertaCalendario = "Ocorreu um erro ao exportar: \(error.localizedDescription)"
+                self.tituloAlertaStatusCalendario = "Erro"
+                self.mensagemAlertaStatusCalendario = "Ocorreu um erro ao exportar: \(error.localizedDescription)"
             }
-            self.mostrandoAlertaCalendario = true
+            self.mostrandoAlertaStatusCalendario = true
         }
     }
     
     private var cabecalhoView: some View {
         
         VStack(alignment: .leading) {
-            
             HStack {
                 Spacer()
                 Button(action: { mostrandoTelaPerfil = true }) {
                     ZStack{
                         Image(systemName: "person")
                             .foregroundColor(.corPrimaria).font(.system(size: 18))
-                        
-                        
                         Circle()
-                            .stroke(Color.corPrimaria, lineWidth: 1) // Borda do círculo
-                            .frame(width: 32, height: 32) // Tamanho do círculo
-                        
+                            .stroke(Color.corPrimaria, lineWidth: 1)
+                            .frame(width: 32, height: 32)
                     }
                 }
             }
             
             HStack(spacing: 4) {
-                
+
                 Image(mascote)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 97, height: 95)
-                
                 VStack(alignment: .leading, spacing: 4) {
                     Text(textoModo)
                         .font(.system(size: 22)).fontWeight(.semibold).foregroundColor(corModo)
@@ -211,19 +222,15 @@ struct TelaInicialView: View {
                 BotaoFiltro(titulo: "Concluídas", filtroSelecionado: $filtro)
                 BotaoFiltro(titulo: "Todas", filtroSelecionado: $filtro)
             }
-            //label
             if filtro == "Para hoje"{
                 Text("As suas tarefas priorizadas serão exibidas aqui")
-                    .font(.footnote)
-                    .foregroundColor(.corLabelIncial)
-            }else if filtro == "Concluídas"{
+                    .font(.footnote).foregroundColor(.corLabelIncial)
+            } else if filtro == "Concluídas"{
                 Text("As suas tarefas concluídas serão exibidas aqui")
-                    .font(.footnote)
-                    .foregroundColor(.corLabelIncial)
-            }else{
+                    .font(.footnote).foregroundColor(.corLabelIncial)
+            } else {
                 Text("Aqui você verá todas as tarefas que não foram concluídas")
-                    .font(.footnote)
-                    .foregroundColor(.corLabelIncial)
+                    .font(.footnote).foregroundColor(.corLabelIncial)
             }
         }
     }
@@ -239,11 +246,17 @@ struct TelaInicialView: View {
                     .listRowSeparator(.hidden)
             } else {
                 ForEach(Array(tarefasFiltradas.enumerated()), id: \.element.id) { index, tarefa in
-                    CelulaDaTarefaView(index:index+1,filtro:filtro,
+                    CelulaDaTarefaView(
+                        index: index + 1,
+                        filtro: filtro,
                         tarefa: tarefa,
                         tarefaExpandidaID: $id_tarefa_expandida,
                         tarefaParaEditar: $tarefa_id_edicao,
-                        showEditModal: $showModal_aux
+                        showEditModal: $showModal_aux,
+                        onDelete: {
+                            self.tarefaParaDeletarID = tarefa.id
+                            self.mostrandoAlertaDeletar = true
+                        }
                     )
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
@@ -268,11 +281,14 @@ struct TelaInicialView: View {
                 ForEach(datasOrdenadas, id: \.self) { data in
                     Section {
                         ForEach(tarefasConcluidasAgrupadas[data] ?? []) { tarefa in
-                            CelulaDaTarefaView(index:0,filtro:"Concluídas",
+                            CelulaDaTarefaView(
+                                index: 0,
+                                filtro: "Concluídas",
                                 tarefa: tarefa,
                                 tarefaExpandidaID: .constant(nil),
                                 tarefaParaEditar: .constant(nil),
-                                showEditModal: .constant(false)
+                                showEditModal: .constant(false),
+                                onDelete: {}
                             )
                             .listRowSeparator(.hidden)
                             .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
@@ -308,7 +324,6 @@ struct TelaInicialView: View {
                         Image(systemName: "plus.circle.fill")
                             .foregroundColor(.corPrimaria).font(.system(size: 45))
                     }
-
                 }
                 .padding([.horizontal, .bottom], 20)
             }
